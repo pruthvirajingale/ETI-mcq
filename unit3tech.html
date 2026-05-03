@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unit 3 - Blockchain Technology</title>
+    <title>Eti MCQ</title>
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -141,7 +141,6 @@
             line-height: 1.55;
         }
 
-        /* Hide native radio */
         input[type="radio"] { display: none; }
 
         .opt-label {
@@ -167,15 +166,12 @@
 
         .radio-dot { display: none; }
 
-        /* Checked — highlight the row only */
         input[type="radio"]:checked + .opt-label {
             border-color: var(--accent);
             background: var(--accent-dim);
             color: var(--text-primary);
-
         }
 
-        /* Submit Button */
         .btn-submit {
             width: 100%;
             padding: 13px;
@@ -220,14 +216,87 @@
             color: var(--accent);
         }
 
-        .review-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 16px;
-            margin-bottom: 10px;
-            animation: fadeUp 0.3s ease both;
+        /* Filter tabs */
+        .filter-tabs {
+            display: flex;
+            gap: 6px;
+            margin: 24px 0 20px;
         }
+
+        .filter-tab {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 7px 14px;
+            border-radius: 99px;
+            border: 1px solid var(--border);
+            background: transparent;
+            font-family: 'Sora', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.18s;
+        }
+
+        .filter-tab:hover {
+            border-color: var(--border-hover);
+            color: var(--text-primary);
+            background: var(--surface-2);
+        }
+
+        .filter-tab.active {
+            background: var(--surface-2);
+            color: var(--text-primary);
+            border-color: var(--border-hover);
+        }
+
+        .filter-tab.active.tab-all {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .filter-tab.active.tab-wrong {
+            border-color: var(--wrong);
+            color: var(--wrong);
+        }
+
+        .filter-tab.active.tab-correct {
+            border-color: var(--correct);
+            color: var(--correct);
+        }
+
+        .tab-badge {
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 1px 6px;
+            border-radius: 99px;
+            background: var(--surface);
+        }
+
+        .filter-tab.active.tab-all .tab-badge { background: var(--accent-dim); color: var(--accent); }
+        .filter-tab.active.tab-wrong .tab-badge { background: var(--wrong-dim); color: var(--wrong); }
+        .filter-tab.active.tab-correct .tab-badge { background: var(--correct-dim); color: var(--correct); }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            display: none;
+        }
+
+        .empty-state-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+.review-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 10px;
+}
 
         .review-card .q-text {
             font-size: 0.93rem;
@@ -294,7 +363,7 @@
                 <span class="dot"></span>
                 <span class="eyebrow-text">Assessment</span>
             </div>
-            <h1>Unit 3 - Blockchain Technology</h1>
+            <h1>Unit 3 — Blockchain Technology</h1>
             <p class="subtitle">Select one answer for each question below.</p>
         </header>
         <div class="divider"></div>
@@ -309,10 +378,27 @@
                 <span class="dot" style="background:#00e07a; box-shadow: 0 0 8px rgba(0,224,122,0.4);"></span>
                 <span class="eyebrow-text" style="color:#00e07a;">Results</span>
             </div>
-            <h1>Assessment Complete</h1>
+            <h1>Results</h1>
             <div id="final-score" class="score-pill"></div>
         </header>
-        <div class="divider"></div>
+
+        <div class="filter-tabs">
+            <button class="filter-tab tab-all active" onclick="setFilter('all', this)">
+                All <span class="tab-badge" id="badge-all">0</span>
+            </button>
+            <button class="filter-tab tab-wrong" onclick="setFilter('wrong', this)">
+                Wrong <span class="tab-badge" id="badge-wrong">0</span>
+            </button>
+            <button class="filter-tab tab-correct" onclick="setFilter('correct', this)">
+                Correct <span class="tab-badge" id="badge-correct">0</span>
+            </button>
+        </div>
+
+        <div class="empty-state" id="empty-state">
+            <div class="empty-state-icon">🎯</div>
+            <div>No wrong answers — perfect score!</div>
+        </div>
+
         <div id="explanations-list"></div>
         <button class="btn-retry" onclick="location.reload()">↺ &nbsp;Retake Assessment</button>
     </div>
@@ -321,7 +407,7 @@
 
 <script>
     const quizData = [
-   { q: 'Blockchain is a:', opts: ['Centralized database', 'Distributed ledger technology', 'Cloud storage system', 'Programming language'], ans: 1, exp: 'Blockchain is a distributed ledger technology where data is shared and synchronized across multiple nodes without a central authority.' },
+{ q: 'Blockchain is a:', opts: ['Centralized database', 'Distributed ledger technology', 'Cloud storage system', 'Programming language'], ans: 1, exp: 'Blockchain is a distributed ledger technology where data is shared and synchronized across multiple nodes without a central authority.' },
   { q: 'Blockchain stores data in the form of:', opts: ['Tables', 'Files', 'Blocks', 'Arrays'], ans: 2, exp: 'Blockchain stores data in blocks that are chained together in chronological order, forming an immutable chain of records.' },
   { q: 'Each block in blockchain contains:', opts: ['Only transactions', 'Hash of previous block', 'Timestamp', 'All of the above'], ans: 3, exp: 'Each block contains the hash of the previous block, a timestamp, and transaction data — all together.' },
   { q: 'Blockchain works on the principle of:', opts: ['Central authority', 'Peer-to-peer network', 'Client-server model', 'Standalone system'], ans: 1, exp: 'Blockchain operates on a peer-to-peer network where all participants share equal responsibility in maintaining the ledger.' },
@@ -424,7 +510,6 @@
 
 ];
 
-    // --- Shuffle helper ---
     function shuffle(arr) {
         const a = [...arr];
         for (let i = a.length - 1; i > 0; i--) {
@@ -434,8 +519,6 @@
         return a;
     }
 
-    // Randomize question order; also randomize each question's option order
-    // and track where the correct answer ended up.
     const shuffledQuestions = shuffle(quizData).map(item => {
         const correctText = item.opts[item.ans];
         const shuffledOpts = shuffle(item.opts);
@@ -445,7 +528,6 @@
 
     const qList = document.getElementById('questions-list');
 
-    // Build quiz
     shuffledQuestions.forEach((item, i) => {
         const div = document.createElement('div');
         div.className = 'q-block';
@@ -462,7 +544,6 @@
         qList.appendChild(div);
     });
 
-    // Progress bar
     shuffledQuestions.forEach((_, i) => {
         qList.querySelectorAll(`input[name="q${i}"]`).forEach(radio => {
             radio.addEventListener('change', updateProgress);
@@ -476,12 +557,46 @@
         document.getElementById('progress').style.width = `${(answered / shuffledQuestions.length) * 100}%`;
     }
 
+    // Store all cards and their status for filtering
+    let allCards = [];
+    let currentFilter = 'all';
+
+    function setFilter(filter, btn) {
+        currentFilter = filter;
+
+        // Update active tab
+        document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+        btn.classList.add('active');
+
+        // Show/hide cards
+        let visible = 0;
+        allCards.forEach(({ el, isCorrect }) => {
+            const show = filter === 'all' ||
+                         (filter === 'wrong' && !isCorrect) ||
+                         (filter === 'correct' && isCorrect);
+                el.hidden = !show;
+            if (show) visible++;
+        });
+
+        // Show empty state if no wrong answers when filtering wrong
+        const emptyState = document.getElementById('empty-state');
+        if (visible === 0 && filter === 'wrong') {
+            emptyState.style.display = 'block';
+            emptyState.innerHTML = '<div class="empty-state-icon">🎯</div><div>No wrong answers — perfect score!</div>';
+        } else if (visible === 0 && filter === 'correct') {
+            emptyState.style.display = 'block';
+            emptyState.innerHTML = '<div class="empty-state-icon">📚</div><div>No correct answers yet.</div>';
+        } else {
+            emptyState.style.display = 'none';
+        }
+    }
+
     function processQuiz() {
         let score = 0;
         const expList = document.getElementById('explanations-list');
         expList.innerHTML = '';
+        allCards = [];
 
-        // Results shown in the same shuffled order as the quiz
         shuffledQuestions.forEach((item, i) => {
             const selected = document.querySelector(`input[name="q${i}"]:checked`);
             const userVal = selected ? parseInt(selected.value) : null;
@@ -490,7 +605,6 @@
 
             const card = document.createElement('div');
             card.className = 'review-card';
-            card.style.animationDelay = `${i * 0.07}s`;
 
             let userRow = '';
             if (userVal !== null && !isCorrect) {
@@ -498,6 +612,13 @@
                     <div class="answer-row wrong">
                         <div class="answer-meta">Your Answer</div>
                         <div class="answer-text">${item.opts[userVal]}</div>
+                    </div>
+                `;
+            } else if (userVal === null && !isCorrect) {
+                userRow = `
+                    <div class="answer-row wrong">
+                        <div class="answer-meta">Your Answer</div>
+                        <div class="answer-text" style="color: var(--text-muted); font-style: italic;">Not answered</div>
                     </div>
                 `;
             }
@@ -512,7 +633,15 @@
                 <div class="explanation">${item.exp}</div>
             `;
             expList.appendChild(card);
+            allCards.push({ el: card, isCorrect });
         });
+
+        const wrongCount = allCards.filter(c => !c.isCorrect).length;
+        const correctCount = allCards.filter(c => c.isCorrect).length;
+
+        document.getElementById('badge-all').textContent = shuffledQuestions.length;
+        document.getElementById('badge-wrong').textContent = wrongCount;
+        document.getElementById('badge-correct').textContent = correctCount;
 
         document.getElementById('quiz-ui').style.display = 'none';
         document.getElementById('review-section').style.display = 'block';
@@ -521,6 +650,13 @@
         document.getElementById('final-score').innerHTML = `
             <span class="score-val">${score} / ${shuffledQuestions.length}</span> correct &nbsp;·&nbsp; ${pct}%
         `;
+
+        // Auto-switch to wrong tab if there are wrong answers
+        if (wrongCount > 0) {
+            const wrongTab = document.querySelector('.filter-tab.tab-wrong');
+            setFilter('wrong', wrongTab);
+        }
+
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 </script>
