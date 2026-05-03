@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technical Assessment</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0b0e;
+            --surface: #111318;
+            --surface-2: #181b22;
+            --border: #22262f;
+            --border-hover: #3a3f52;
+            --text-primary: #eef0f6;
+            --text-secondary: #9098b0;
+            --text-muted: #4a5068;
+            --accent: #00d4e8;
+            --accent-dim: rgba(0, 212, 232, 0.11);
+            --accent-glow: rgba(0, 212, 232, 0.3);
+            --correct: #00e07a;
+            --correct-dim: rgba(0, 224, 122, 0.1);
+            --wrong: #ff4d5a;
+            --wrong-dim: rgba(255, 77, 90, 0.1);
+            --radius: 10px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Sora', sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        body::before { display: none; }
+
+        .container {
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 48px 20px 80px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header { margin-bottom: 36px; }
+
+        .header-eyebrow {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent-glow);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(0.85); }
+        }
+
+        .eyebrow-text {
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+
+        h1 {
+            font-size: 1.55rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+            line-height: 1.3;
+        }
+
+        .subtitle {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+
+        .divider { display: none; }
+
+        .progress-bar {
+            height: 2px;
+            background: var(--border);
+            border-radius: 99px;
+            margin-bottom: 36px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #7c3aed);
+            border-radius: 99px;
+            transition: width 0.4s ease;
+        }
+
+        .q-block {
+            margin-bottom: 28px;
+            animation: fadeUp 0.35s ease both;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .q-block:nth-child(1) { animation-delay: 0.05s; }
+        .q-block:nth-child(2) { animation-delay: 0.1s; }
+        .q-block:nth-child(3) { animation-delay: 0.15s; }
+        .q-block:nth-child(4) { animation-delay: 0.2s; }
+        .q-block:nth-child(5) { animation-delay: 0.25s; }
+
+        .q-number {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .q-text {
+            font-size: 0.97rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 14px;
+            display: block;
+            line-height: 1.55;
+        }
+
+        /* Hide native radio */
+        input[type="radio"] { display: none; }
+
+        .opt-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 7px;
+            cursor: pointer;
+            transition: border-color 0.18s, background 0.18s, color 0.18s;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            background: var(--surface);
+        }
+
+        .opt-label:hover {
+            border-color: var(--border-hover);
+            background: var(--surface-2);
+            color: var(--text-primary);
+        }
+
+        .radio-dot { display: none; }
+
+        /* Checked — highlight the row only */
+        input[type="radio"]:checked + .opt-label {
+            border-color: var(--accent);
+            background: var(--accent-dim);
+            color: var(--text-primary);
+
+        }
+
+        /* Submit Button */
+        .btn-submit {
+            width: 100%;
+            padding: 13px;
+            background: var(--accent);
+            color: var(--bg);
+            border: none;
+            border-radius: var(--radius);
+            font-family: 'Sora', sans-serif;
+            font-size: 0.92rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.18s, transform 0.18s, box-shadow 0.18s;
+            margin-top: 8px;
+            letter-spacing: 0.01em;
+            box-shadow: 0 0 18px var(--accent-glow);
+        }
+
+        .btn-submit:hover {
+            opacity: 0.88;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 28px var(--accent-glow);
+        }
+
+        .btn-submit:active { transform: translateY(0); }
+
+        .score-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            padding: 6px 14px;
+            border-radius: 99px;
+            font-size: 0.83rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-top: 12px;
+        }
+
+        .score-val {
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .review-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 10px;
+            animation: fadeUp 0.3s ease both;
+        }
+
+        .review-card .q-text {
+            font-size: 0.93rem;
+            margin-bottom: 14px;
+        }
+
+        .answer-row {
+            padding: 8px 12px;
+            border-radius: 7px;
+            margin-bottom: 7px;
+        }
+
+        .answer-row.correct { background: var(--correct-dim); border: 1px solid rgba(0,224,122,0.18); }
+        .answer-row.wrong { background: var(--wrong-dim); border: 1px solid rgba(255,77,90,0.13); }
+
+        .answer-icon { display: none; }
+
+        .answer-meta {
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+        .answer-row.correct .answer-meta { color: var(--correct); }
+        .answer-row.wrong .answer-meta { color: var(--wrong); }
+
+        .answer-text { font-size: 0.86rem; color: var(--text-primary); font-weight: 500; }
+
+        .explanation {
+            font-size: 0.84rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+            margin-top: 4px;
+        }
+
+        .btn-retry {
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-family: 'Sora', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.18s;
+            margin-top: 20px;
+        }
+        .btn-retry:hover { border-color: var(--border-hover); color: var(--text-primary); background: var(--surface); }
+
+        #review-section { display: none; }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div id="quiz-ui">
+        <header>
+            <div class="header-eyebrow">
+                <span class="dot"></span>
+                <span class="eyebrow-text">Assessment</span>
+            </div>
+            <h1>Unit 1 - AI Fundamentals</h1>
+            <p class="subtitle">Select one answer for each question below.</p>
+        </header>
+        <div class="divider"></div>
+        <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+        <div id="questions-list"></div>
+        <button class="btn-submit" onclick="processQuiz()">Submit Assessment</button>
+    </div>
+
+    <div id="review-section">
+        <header>
+            <div class="header-eyebrow">
+                <span class="dot" style="background:#00e07a; box-shadow: 0 0 8px rgba(0,224,122,0.4);"></span>
+                <span class="eyebrow-text" style="color:#00e07a;">Results</span>
+            </div>
+            <h1>Assessment Complete</h1>
+            <div id="final-score" class="score-pill"></div>
+        </header>
+        <div class="divider"></div>
+        <div id="explanations-list"></div>
+        <button class="btn-retry" onclick="location.reload()">↺ &nbsp;Retake Assessment</button>
+    </div>
+
+</div>
+
+<script>
+    const quizData = [
+   { q: 'What is the full form of "AI"?', opts: ['Artificially Intelligent', 'Artificial Intelligence', 'Artificially Intelligence', 'Advanced Intelligence'], ans: 1, exp: 'AI stands for Artificial Intelligence — the simulation of human intelligence processes by machines.' },
+      { q: 'What is Artificial Intelligence?', opts: ['A field that aims to make humans more intelligent', 'A field that aims to improve the security', 'A field that aims to develop intelligent machines', 'A field that aims to mine the data'], ans: 2, exp: 'AI is a branch of computer science focused on building systems that can perform tasks requiring human-like intelligence.' },
+      { q: 'Who is the inventor of Artificial Intelligence?', opts: ['Geoffrey Hinton', 'Andrew Ng', 'John McCarthy', 'Jürgen Schmidhuber'], ans: 2, exp: 'John McCarthy coined the term "Artificial Intelligence" in 1956 and is widely regarded as the father of AI.' },
+      { q: 'Which of the following is the branch of Artificial Intelligence?', opts: ['Machine Learning', 'Cyber forensics', 'Full-Stack Developer', 'Network Design'], ans: 0, exp: 'Machine Learning is a key branch of AI that enables systems to learn from data without being explicitly programmed.' },
+      { q: 'What is the goal of Artificial Intelligence?', opts: ['To solve artificial problems', 'To extract scientific causes', 'To explain various sorts of intelligence', 'To solve real-world problems'], ans: 2, exp: 'A core goal of AI is to explain and replicate the various forms of intelligence found in humans and other beings.' },
+      { q: 'Which of the following is an application of Artificial Intelligence?', opts: ['It helps to exploit vulnerabilities to secure the firm', 'Language understanding and problem-solving (Text analytics and NLP)', 'Easy to create a website', 'It helps to deploy applications on the cloud'], ans: 1, exp: 'NLP (Natural Language Processing) is a major AI application enabling machines to understand and process human language.' },
+      { q: 'In how many categories is the process of Artificial Intelligence categorized?', opts: ['Categorized into 5 categories', 'Processes are categorized based on the input provided', 'Categorized into 3 categories', 'Process is not categorized'], ans: 2, exp: 'AI is categorized into 3 main types: Narrow AI, General AI, and Super AI (also classified by capabilities and functionality).' },
+      { q: 'Based on which of the following parameter is Artificial Intelligence categorized?', opts: ['Based on functionally only', 'Based on capabilities only', 'Based on capabilities and functionally', 'It is not categorized'], ans: 2, exp: 'AI is categorized based on both capabilities (Narrow, General, Super) and functionality (Reactive, Limited Memory, Theory of Mind, Self-Aware).' },
+      { q: 'Which of the following is a component of Artificial Intelligence?', opts: ['Learning', 'Training', 'Designing', 'Puzzling'], ans: 0, exp: 'Learning is a fundamental component of AI — it allows systems to improve performance from experience over time.' },
+      { q: 'What is the function of an Artificial Intelligence "Agent"?', opts: ['Mapping of goal sequence to an action', 'Work without the direct interference of the people', 'Mapping of precept sequence to an action', 'Mapping of environment sequence to an action'], ans: 2, exp: 'An AI agent maps a percept (perception) sequence to an action — it perceives its environment and responds accordingly.' },
+      { q: 'Which of the following is not a type of Artificial Intelligence agent?', opts: ['Learning AI agent', 'Goal-based AI agent', 'Simple reflex AI agent', 'Unity-based AI agent'], ans: 3, exp: 'Unity-based AI agent is not a standard AI agent type. The common types are Simple Reflex, Model-Based, Goal-Based, Utility-Based, and Learning agents.' },
+      { q: 'Which of the following is not the commonly used programming language for Artificial Intelligence?', opts: ['Perl', 'Java', 'PROLOG', 'LISP'], ans: 0, exp: 'Perl is not commonly used for AI. LISP, PROLOG, Python, and Java are among the primary languages used in AI development.' },
+      { q: 'What is the name of the Artificial Intelligence system developed by Daniel Bobrow?', opts: ['Program known as BACON', 'System known as STUDENT', 'Program known as SHRDLU', 'System known as SIMD'], ans: 1, exp: 'STUDENT was developed by Daniel Bobrow in 1964 as one of the first natural language processing programs.' },
+      { q: 'What is the function of the system Student?', opts: ['Program that can read algebra word problems only', 'System which can solve algebra word problems but not read', 'System which can read and solve algebra word problems', 'None of the mentioned'], ans: 2, exp: 'The STUDENT system could both read and solve algebra word problems written in natural English.' },
+      { q: 'Which of the following is not an application of artificial intelligence?', opts: ['Face recognition system', 'Chatbots', 'LIDAR', 'DBMS'], ans: 3, exp: 'DBMS (Database Management System) is not an AI application — it is a system for storing and managing databases.' },
+      { q: 'Which of the following machine requires input from the humans but can interpret the outputs themselves?', opts: ['Actuators', 'Sensor', 'Agents', 'AI system'], ans: 3, exp: 'An AI system takes human input but processes and interprets the results autonomously using its intelligence.' },
+      { q: '________ number of informed search methods are there in Artificial Intelligence.', opts: ['4', '3', '2', '1'], ans: 0, exp: 'There are 4 informed (heuristic) search methods in AI: Best-First Search, A* Search, Hill Climbing, and Beam Search.' },
+      { q: 'The total number of proposition symbols in AI are ________.', opts: ['3 proposition symbols', '1 proposition symbols', '2 proposition symbols', 'No proposition symbols'], ans: 3, exp: 'In propositional logic, the proposition symbols are the basic building blocks — any number can be used, they are not fixed.' },
+      { q: 'The total number of logical symbols in AI are ________.', opts: ['There are 3 logical symbols', 'There are 5 logical symbols', 'Number of logical symbols are based on the input', 'Logical symbols are not used'], ans: 1, exp: 'There are 5 logical connective symbols in AI: AND (∧), OR (∨), NOT (¬), IMPLIES (→), and BICONDITIONAL (↔).' },
+      { q: 'Which of the following are the approaches to Artificial Intelligence?', opts: ['Applied approach', 'Strong approach', 'Weak approach', 'All of the mentioned'], ans: 3, exp: 'AI can be approached as Applied AI, Strong AI (general intelligence), or Weak AI (narrow task-specific intelligence).' },
+      { q: 'Face Recognition system is based on which type of approach?', opts: ['Weak AI approach', 'Applied AI approach', 'Cognitive AI approach', 'Strong AI approach'], ans: 1, exp: 'Face recognition is an Applied AI approach — it applies AI techniques to solve a specific real-world problem.' },
+      { q: 'Which of the following is an advantage of artificial intelligence?', opts: ['Reduces the time taken to solve the problem', 'Helps in providing security', 'Have the ability to think hence makes the work easier', 'All of the above'], ans: 3, exp: 'AI offers multiple advantages including faster problem-solving, enhanced security capabilities, and automation of complex cognitive tasks.' },
+      { q: 'Which of the following can improve the performance of an AI agent?', opts: ['Perceiving', 'Learning', 'Observing', 'All of the mentioned'], ans: 1, exp: 'Learning is the primary mechanism that improves an AI agent\'s performance over time based on experience and feedback.' },
+      { q: 'Which of the following is/are the composition for AI agents?', opts: ['Program only', 'Architecture only', 'Both Program and Architecture', 'None of the mentioned'], ans: 2, exp: 'An AI agent is composed of both a Program (the decision-making logic) and an Architecture (the hardware/software platform it runs on).' },
+      { q: 'On which of the following approach is a basic line following robot based?', opts: ['Applied approach', 'Weak approach', 'Strong approach', 'Cognitive approach'], ans: 3, exp: 'A line-following robot mimics cognitive behavior by perceiving and responding to its environment, making it a cognitive AI approach.' },
+      { q: 'Artificial Intelligence has evolved extremely in all the fields except for ________.', opts: ['Web mining', 'Construction of plans in real time dynamic systems', 'Understanding natural language robustly', 'All of the mentioned'], ans: 3, exp: 'AI still faces significant challenges in all three areas: web mining at scale, real-time dynamic planning, and truly robust natural language understanding.' },
+      { q: 'Which of the following is an example of artificial intelligent agent/agents?', opts: ['Autonomous Spacecraft', 'Human', 'Robot', 'All of the mentioned'], ans: 3, exp: 'All three — autonomous spacecraft, humans (as biological agents), and robots — can be considered AI agents that perceive and act in environments.' },
+      { q: 'Which of the following is an expansion of Artificial Intelligence application?', opts: ['Game Playing', 'Planning and Scheduling', 'Diagnosis', 'All of the mentioned'], ans: 1, exp: 'Planning and Scheduling is a core AI application area. All options listed are AI applications, but the answer focuses on Planning & Scheduling.' },
+      { q: 'What is an AI \'agent\'?', opts: ['Takes input from the surroundings and uses its intelligence and performs the desired operations', 'An embedded program controlling line following robot', 'Perceives its environment through sensors and acting upon that environment through actuators', 'All of the mentioned'], ans: 3, exp: 'All descriptions together define an AI agent: it senses the environment, uses intelligence to decide, and acts through actuators.' },
+      { q: 'Which of the following environment is strategic?', opts: ['Rational', 'Deterministic', 'Partial', 'Stochastic'], ans: 1, exp: 'A deterministic environment is strategic — the outcome of each action is certain and predictable, enabling precise planning.' },
+      { q: 'What is the name of Artificial Intelligence which allows machines to handle vague information with a deftness that mimics human intuition?', opts: ['Human intelligence', 'Boolean logic', 'Functional logic', 'Fuzzy logic'], ans: 3, exp: 'Fuzzy Logic allows machines to deal with imprecise or vague information using degrees of truth rather than strict true/false.' },
+      { q: 'Which of the following produces hypotheses that are easy to read for humans?', opts: ['Machine Learning', 'ILP', 'First-order logic', 'Propositional logic'], ans: 1, exp: 'Inductive Logic Programming (ILP) produces human-readable hypotheses in logical form, making its outputs interpretable.' },
+      { q: 'What does the Bayesian network provide?', opts: ['Partial description of the domain', 'Complete description of the problem', 'Complete description of the domain', 'None of the mentioned'], ans: 2, exp: 'A Bayesian network provides a complete probabilistic description of a domain, representing variables and their conditional dependencies.' },
+      { q: 'What is the total number of quantification available in artificial intelligence?', opts: ['4', '3', '1', '2'], ans: 3, exp: 'There are 2 quantifiers in AI logic: Universal Quantification (∀) meaning "for all" and Existential Quantification (∃) meaning "there exists".' },
+      { q: 'What is Weak AI?', opts: ['The study of mental faculties using mental models implemented on a computer', 'The embodiment of human intellectual capabilities within a computer', 'A set of computer programs that produce output that would be considered to reflect intelligence if it were generated by humans', 'All of the mentioned'], ans: 0, exp: 'Weak AI (also called Narrow AI) focuses on studying and simulating mental faculties using computational models for specific tasks.' },
+      { q: 'Which of the following are the 5 big ideas of AI?', opts: ['Perception', 'Human-AI Interaction', 'Societal Impact', 'All of the above'], ans: 3, exp: 'The 5 big ideas of AI include Perception, Representation & Reasoning, Learning, Human-AI Interaction, and Societal Impact.' },
+      { q: 'What is Machine learning?', opts: ['The autonomous acquisition of knowledge through the use of computer programs', 'The autonomous acquisition of knowledge through the use of manual programs', 'The selective acquisition of knowledge through the use of computer programs', 'The selective acquisition of knowledge through the use of manual programs'], ans: 0, exp: 'Machine Learning is the autonomous acquisition of knowledge through computer programs that learn from data without explicit programming.' },
+      { q: 'In Model based learning methods, an iterative process takes place on the ML models that are built based on various model parameters, called?', opts: ['Mini-batches', 'Optimized parameters', 'Hyperparameters', 'Superparameters'], ans: 2, exp: 'Hyperparameters are configuration settings set before training that control the learning process (e.g., learning rate, number of layers).' },
+      { q: 'What is representation in deep learning?', opts: ['It is a way to look at data to represent or encode', 'It gets closer to the expected output', 'RGB and HSV are two different examples of representations', 'All of the above'], ans: 3, exp: 'Representation in deep learning encompasses all these aspects — encoding data meaningfully, approaching expected output, and using different data formats like RGB/HSV.' },
+      { q: 'What is learning in deep learning?', opts: ['Learning, in the context of machine learning, describes an automatic search process for better representations', 'A process that is "learned" from exposure to known examples of inputs and outputs', 'Learning in school attending 5th grade', 'Answers a & b'], ans: 3, exp: 'In deep learning, learning refers to both the automatic search for better data representations and the process learned from labeled input-output examples.' },
+      { q: 'What is hypothesis space in deep learning?', opts: ['ML/DL algorithms merely searching through a predefined set of operations, called a hypothesis space', 'Searching for useful representations of some input data, within a predefined space of possibilities, using guidance from a feedback signal', 'Answers a & b', 'None of the above'], ans: 2, exp: 'The hypothesis space in deep learning encompasses both the predefined operation set and the guided search through it using feedback signals.' },
+      { q: 'What is deep in deep learning?', opts: ['The deep in deep learning is a reference to any kind of deeper understanding achieved by the approach', 'It stands for the idea of successive layers of representations in deep learning', 'Answers a & b', 'None of the above'], ans: 1, exp: '"Deep" in deep learning specifically refers to the successive layers of representation — each layer transforming data into increasingly abstract forms.' },
+      { q: 'What is shallow learning in deep learning?', opts: ['Machine learning tend to focus on learning only one or two layers of representations of the data', 'Machine learning tend to focus on learning 10 layers of representations of the data', 'Machine learning tend to focus on learning 512 layers of representations of the data', 'Machine learning tend to focus on learning 64 layers of representations of the data'], ans: 0, exp: 'Shallow learning refers to traditional ML methods that typically learn only one or two levels of data representation, unlike deep networks with many layers.' },
+      { q: 'What are deep neural networks in deep learning?', opts: ['In deep learning, layered representations are (almost always) learned via models called deep neural networks, structured in literal layers stacked on top of each other', 'These networks are the brain neurons studying in neurobiology', 'These are models of human brain', 'Neural network is a cell in brain'], ans: 0, exp: 'Deep neural networks are computational models with multiple stacked layers that learn hierarchical data representations through training.' },
+      { q: 'Machine learning is a subset of which of the following?', opts: ['Artificial intelligence', 'Deep learning', 'Data learning', 'None of the above'], ans: 0, exp: 'Machine Learning is a subset of Artificial Intelligence — it is a method by which AI systems learn from data.' },
+      { q: 'Which of the following are common classes of problems in machine learning?', opts: ['Regression', 'Classification', 'Clustering', 'All of the above'], ans: 3, exp: 'Regression, Classification, and Clustering are the three primary problem types in machine learning.' },
+      { q: 'Analysis of ML algorithm needs ________.', opts: ['Statistical learning theory', 'Computational learning theory', 'Both a and b', 'None of the above'], ans: 2, exp: 'Analyzing ML algorithms requires both Statistical Learning Theory (for generalization bounds) and Computational Learning Theory (for complexity analysis).' },
+      { q: 'A machine learning technique that helps in detecting the outliers in data.', opts: ['Clustering', 'Classification', 'Anomaly detection', 'All of the above'], ans: 2, exp: 'Anomaly detection is the ML technique specifically designed to identify unusual patterns or outliers that deviate from expected behavior.' },
+      { q: '________ algorithms enable the computers to learn from data, and even improve themselves, without being explicitly programmed.', opts: ['Deep Learning', 'Machine Learning', 'Artificial Intelligence', 'None of the above'], ans: 1, exp: 'Machine Learning algorithms allow computers to learn from data and improve automatically without being explicitly programmed for each task.' },
+      { q: 'What are the three types of Machine Learning?', opts: ['Supervised Learning', 'Unsupervised Learning', 'Reinforced Learning', 'All of the above'], ans: 3, exp: 'The three main types of ML are: Supervised Learning (labeled data), Unsupervised Learning (unlabeled data), and Reinforcement Learning (reward-based).' },
+      { q: 'What is the primary function of generative AI in contrast to traditional AI systems?', opts: ['To classify and analyze existing data patterns', 'To synthesize new, original content from learned patterns', 'To optimize hardware resources for computation', 'To automate routine data entry tasks'], ans: 1, exp: 'Generative AI creates new, original content (text, images, audio) by learning and synthesizing patterns from training data.' },
+      { q: 'How does generative AI typically internalize patterns for content creation?', opts: ['Through rule-based programming with fixed algorithms', 'By probabilistic sampling from expansive training datasets', 'Via manual annotation of every input element', 'By direct copying of human-authored samples'], ans: 1, exp: 'Generative AI uses probabilistic sampling — it learns statistical distributions from large datasets and samples from them to create new content.' },
+      { q: 'In generative AI, what role does probabilistic modeling play during output generation?', opts: ['It enforces strict replication of training data', 'It enables the creation of coherent yet novel artifacts', 'It limits outputs to binary decisions only', 'It prioritizes speed over contextual relevance'], ans: 1, exp: 'Probabilistic modeling allows generative AI to produce outputs that are coherent and contextually relevant while still being novel and creative.' },
+      { q: 'Which aspect of generative AI challenges traditional ideas of authorship?', opts: ['Its inability to produce variations on themes', 'The seamless blending of human and machine creativity', 'Its reliance on outdated symbolic logic', 'The complete elimination of user input'], ans: 1, exp: 'Generative AI blurs authorship boundaries by seamlessly combining human-provided prompts with machine-generated creative content.' },
+      { q: 'What makes transformers particularly suitable for generative AI tasks involving sequences?', opts: ['Their emphasis on sequential dependencies only', 'Their ability to process information in parallel for efficiency', 'Their focus on short-range local computations', 'Their exclusion of non-linear transformations'], ans: 1, exp: 'Transformers use self-attention to process all sequence elements in parallel, making them highly efficient for generative tasks compared to sequential models like RNNs.' },
+      { q: 'In the self-attention mechanism of transformers, what do query vectors primarily represent?', opts: ['The static content of each token in isolation', 'What the current element is seeking from other elements', 'The overall length of the input sequence', 'Fixed positional adjustments for the output'], ans: 1, exp: 'Query vectors represent what information a token is "looking for" from other tokens in the sequence during self-attention computation.' },
+      { q: 'How does the softmax function contribute to self-attention in transformers?', opts: ['It scales the input data to prevent overflow', 'It normalizes compatibility scores into weighted probabilities', 'It removes irrelevant tokens from the sequence', 'It enforces a linear progression of attention weights'], ans: 1, exp: 'Softmax converts raw attention scores (dot products of Q and K) into a probability distribution, determining how much each token attends to others.' },
+      { q: 'What benefit does multi-head attention provide over single-head self-attention?', opts: ['It reduces the model\'s overall computational depth', 'It captures diverse subspaces of relationships in parallel', 'It eliminates the need for positional encodings', 'It focuses exclusively on syntactic structures'], ans: 1, exp: 'Multi-head attention runs multiple attention operations in parallel, each focusing on different relationship types (syntax, semantics, etc.) for richer representations.' },
+      { q: 'In positional encoding for transformers, what is the purpose of using sinusoidal functions?', opts: ['To compress the entire sequence into a single vector', 'To inject explicit order information without disrupting parallelism', 'To apply non-linear activations to attention outputs', 'To merge query and key matrices dynamically'], ans: 1, exp: 'Sinusoidal positional encodings add sequence order information to token embeddings, allowing the parallel transformer to know token positions.' },
+      { q: 'How does the feed-forward neural network in transformers refine attention outputs?', opts: ['By processing all tokens sequentially with loops', 'Through position-wise non-linear transformations for abstraction', 'By discarding low-relevance elements entirely', 'Via direct mapping to predefined output classes'], ans: 1, exp: 'The feed-forward network applies non-linear transformations independently to each position, adding representational power beyond what attention alone provides.' },
+      { q: 'What is the main goal of layer normalization in transformer architectures?', opts: ['To increase the variance of activations for diversity', 'To stabilize training by normalizing features within layers', 'To remove all hidden states from the computation', 'To enforce uniform attention across all heads'], ans: 1, exp: 'Layer normalization stabilizes and speeds up training by normalizing activations within each layer, preventing gradient vanishing or exploding.' },
+      { q: 'In the encoder-decoder structure of transformers, what does the encoder primarily handle?', opts: ['Autoregressive generation of future tokens', 'Bidirectional contextual encoding of the input sequence', 'Final output projection without cross-attention', 'Masked prediction of past elements only'], ans: 1, exp: 'The encoder processes the entire input bidirectionally to create rich contextual representations used by the decoder for generation.' },
+      { q: 'How does the decoder in transformers ensure causal generation?', opts: ['By attending bidirectionally to the entire input', 'Through masked self-attention to prevent future peeking', 'Via complete isolation from encoder states', 'By processing outputs in reverse order'], ans: 1, exp: 'The decoder uses masked self-attention — it masks future positions so each token can only attend to previous tokens, ensuring autoregressive generation.' },
+      { q: 'Which type of generative AI is best suited for producing essays or dialogues?', opts: ['Image generation', 'Text generation', 'Music generation', 'Video generation'], ans: 1, exp: 'Text generation models (like GPT) are specifically designed for producing coherent written content such as essays, stories, and dialogues.' },
+      { q: 'In image generation, what process does diffusion-based generative AI use to create visuals?', opts: ['Direct pixel-by-pixel copying from datasets', 'Iterative denoising of random noise toward structured scenes', 'Sequential frame stacking without refinement', 'Harmonic waveform modulation'], ans: 1, exp: 'Diffusion models start with random noise and iteratively denoise it, guided by learned patterns, to generate high-quality images.' },
+      { q: 'What distinguishes music generation in generative AI from text generation?', opts: ['Its reliance on static token prediction', 'Modeling temporal elements like rhythm and timbre', 'Exclusive focus on visual spatial hierarchies', 'Ignoring probabilistic sampling entirely'], ans: 1, exp: 'Music generation must additionally model temporal musical elements like rhythm, melody, harmony, and timbre — dimensions absent in text generation.' },
+      { q: 'How does video generation extend principles from image generation?', opts: ['By ignoring motion and focusing solely on static frames', 'Through spatiotemporal modeling for coherent frame sequences', 'Via audio-only waveform synthesis', 'With non-sequential token autoregression'], ans: 1, exp: 'Video generation adds temporal modeling to image generation — ensuring visual consistency and coherent motion across sequential frames.' },
+      { q: 'In applications of generative AI, how does it aid in drug discovery?', opts: ['By replicating existing molecular databases verbatim', 'Exploring chemical spaces to hypothesize novel compounds', 'Automating hardware simulations only', 'Limiting outputs to binary pass/fail tests'], ans: 1, exp: 'Generative AI can explore vast chemical spaces to propose novel molecular structures with desired properties, accelerating drug discovery.' },
+      { q: 'What role does generative AI play in gaming?', opts: ['Enforcing rigid, pre-scripted narratives', 'Procedural creation of levels, characters, and stories', 'Reducing replayability through fixed assets', 'Excluding user prompts entirely'], ans: 1, exp: 'Generative AI enables procedural content generation in games — dynamically creating levels, NPCs, quests, and narratives for unique player experiences.' },
+      { q: 'How does generative AI enhance accessibility in data visualization?', opts: ['By complicating formats for expert users only', 'Translating complex info into intuitive, tailored representations', 'Ignoring user-specific needs like impairments', 'Focusing solely on textual outputs'], ans: 1, exp: 'Generative AI can transform complex datasets into clear, personalized visual formats suited to different audiences and accessibility needs.' },
+      { q: 'In self-attention, what are key vectors responsible for?', opts: ['Representing the content offered by other tokens', 'Computing the final output probabilities', 'Normalizing layer activations', 'Encoding absolute positions'], ans: 0, exp: 'Key vectors represent the content that each token "offers" or makes available to other tokens during the attention computation process.' },
+      { q: 'Why is multi-head attention considered expressive in transformers?', opts: ['It processes sequences serially for depth', 'It learns multiple relational perspectives concurrently', 'It bypasses feed-forward computations', 'It limits focus to adjacent tokens only'], ans: 1, exp: 'Multiple attention heads simultaneously learn different types of relationships (positional, semantic, syntactic) making the model highly expressive.' },
+      { q: 'What challenge does positional encoding address in transformers?', opts: ['Overly rigid sequential processing', 'Lack of inherent order awareness in parallel computation', 'Excessive non-linearity in outputs', 'Uniform weighting across all layers'], ans: 1, exp: 'Since transformers process tokens in parallel (not sequentially), positional encoding is needed to inject order information into the model.' },
+      { q: 'In the feed-forward neural network, what introduces non-linearity?', opts: ['Linear projections between heads', 'Activation functions like ReLU between dense layers', 'Masking mechanisms for causality', 'Sinusoidal positional additions'], ans: 1, exp: 'Activation functions like ReLU or GELU between dense layers in the feed-forward network introduce the non-linearity essential for learning complex patterns.' },
+      { q: 'How does layer normalization aid in deep transformer stacks?', opts: ['By amplifying gradient explosions', 'Ensuring consistent signal flow to prevent instability', 'Reducing the number of attention heads', 'Enforcing bidirectional attention only'], ans: 1, exp: 'Layer normalization keeps activation magnitudes consistent across deep stacks, preventing training instability from gradient explosions or vanishing gradients.' },
+      { q: 'What is the core strength of AI/ML in digital security?', opts: ['Manual rule enforcement for all threats', 'Pattern analysis at scales beyond human detection', 'Static firewall configurations only', 'Ignoring historical data for fresh starts'], ans: 1, exp: 'AI/ML can analyze massive volumes of network data and behavior patterns at speeds and scales impossible for human analysts, detecting threats proactively.' },
+      { q: 'How do AI-powered cyber attacks differ from traditional ones?', opts: ['They remain static and predictable', 'They adapt tactics in real-time using learned behaviors', 'They avoid automation entirely', 'They focus solely on physical hardware'], ans: 1, exp: 'AI-powered attacks are dynamic — they use machine learning to adapt their tactics in real-time based on target defenses and responses.' },
+      { q: 'What is a key tactic in adversarial AI attacks?', opts: ['Flooding systems with overt malware', 'Introducing subtle input distortions to mislead models', 'Direct network shutdowns', 'Ignoring model decision boundaries'], ans: 1, exp: 'Adversarial attacks craft subtle, often imperceptible input perturbations designed to fool AI models into making incorrect predictions.' },
+      { q: 'In evasion AI attacks, what is the primary goal?', opts: ['To openly declare malicious intent', 'Concealing payloads to bypass runtime detectors', 'Enhancing system transparency', 'Increasing data visibility for audits'], ans: 1, exp: 'Evasion attacks aim to disguise malicious code or behavior so that AI-powered security systems fail to detect it at runtime.' },
+      { q: 'How do AI poisoning attacks compromise ML models?', opts: ['By enhancing dataset diversity', 'Tainting training data to skew learning toward errors', 'Automating clean data labeling', 'Reducing model complexity'], ans: 1, exp: 'Data poisoning attacks inject malicious or mislabeled samples into training data, causing the ML model to learn incorrect patterns and make biased predictions.' },
+      { q: 'What makes multi-factor authentication effective against AI attacks?', opts: ['Relying on single passwords alone', 'Requiring multiple verification layers for access', 'Disabling biometric options', 'Limiting to one-time use only'], ans: 1, exp: 'MFA requires multiple independent proof factors (something you know, have, and are), making it exponentially harder for AI-driven attacks to gain unauthorized access.' },
+      { q: 'Why are super strong passwords crucial in AI-driven threats?', opts: ['To simplify brute-force attempts', 'Their high entropy resists parallelized cracking', 'To encourage credential reuse', 'For compatibility with weak hashing'], ans: 1, exp: 'High-entropy passwords with diverse character sets resist AI-powered brute-force and dictionary attacks that can test billions of combinations per second.' },
+      { q: 'What is the benefit of regular updates in protecting against AI attacks?', opts: ['Preserving known vulnerabilities', 'Sealing exploitable gaps before automated probing', 'Slowing down system performance', 'Ignoring patch prioritization'], ans: 1, exp: 'Regular updates patch known vulnerabilities before AI-powered scanners and attack tools can exploit them, reducing the attack surface.' },
+      { q: 'How does network segmentation enhance security against AI incursions?', opts: ['By creating a single, unified access point', 'Isolating breaches to contain lateral spread', 'Exposing all traffic to public scrutiny', 'Reducing encryption usage'], ans: 1, exp: 'Network segmentation divides infrastructure into isolated zones, so if an AI-powered attack breaches one segment, it cannot automatically spread throughout the network.' },
+      { q: 'What proactive step secures mobile devices from AI threats?', opts: ['Granting all app permissions by default', 'Vetting apps and enforcing biometric locks', 'Disabling runtime behavior monitoring', 'Ignoring geo-fencing capabilities'], ans: 1, exp: 'Carefully vetting app permissions and using biometric authentication creates multiple security layers protecting mobile devices from AI-driven exploitation.' },
+      { q: 'In AI-powered cyber attacks, what enables real-time adaptation?', opts: ['Fixed scripts without feedback', 'Machine learning to evolve tactics mid-operation', 'Manual human overrides only', 'Predefined endpoint lists'], ans: 1, exp: 'Machine learning allows attack tools to analyze defensive responses and dynamically adjust their strategies during an ongoing operation.' },
+      { q: 'What vulnerability do adversarial AI attacks exploit in models?', opts: ['Over-reliance on robust, diverse training', 'Sensitivity to crafted perturbations in inputs', 'Complete immunity to noise', 'Static feature extraction'], ans: 1, exp: 'Adversarial attacks exploit the fact that ML models can be highly sensitive to carefully crafted input perturbations that appear normal to humans.' },
+      { q: 'How can evasion AI attacks mimic legitimate activity?', opts: ['By using overt, signature-heavy code', 'Morphing artifacts to blend with normal traffic', 'Broadcasting alerts to defenders', 'Halting all network flows'], ans: 1, exp: 'Evasion attacks use polymorphism and traffic blending — continuously changing their signatures to look like legitimate network activity and avoid detection.' },
+      { q: 'What long-term effect does AI poisoning have on defenses?', opts: ['Immediate model strengthening', 'Gradual bias leading to flawed predictions', 'Reduced data requirements', 'Enhanced extrapolation to new threats'], ans: 1, exp: 'Data poisoning causes models to gradually develop biases, leading to systematically flawed predictions that degrade security defenses over time.' },
+      { q: 'Why integrate adaptive AI with multi-factor authentication?', opts: ['To flag routine logins as suspicious', 'To escalate checks for unusual patterns', 'To eliminate all verification steps', 'To rely on passwords exclusively'], ans: 1, exp: 'Adaptive AI monitors login behavior and escalates authentication requirements when anomalies are detected, adding dynamic security beyond static MFA.' },
+      { q: 'In super strong passwords, what element boosts resistance to AI crackers?', opts: ['Short, memorable phrases', 'Blends of diverse characters for entropy', 'Common dictionary words', 'Sequential number patterns'], ans: 1, exp: 'Combining uppercase, lowercase, numbers, and special characters creates high entropy, making passwords exponentially harder for AI crackers to break.' },
+      { q: 'How do automated updates counter zero-day exploits?', opts: ['By delaying patches indefinitely', 'Triaging fixes by threat severity proactively', 'Focusing only on minor bugs', 'Requiring full system reboots weekly'], ans: 1, exp: 'Automated update systems prioritize and deploy critical patches based on threat severity, closing zero-day vulnerabilities before wide exploitation occurs.' },
+      { q: 'What is a zero-trust architecture\'s role in network security?', opts: ['Granting perpetual access based on origin', 'Scrutinizing every request regardless of source', 'Minimizing encryption layers', 'Expanding open ports freely'], ans: 1, exp: 'Zero-trust architecture operates on "never trust, always verify" — every access request is authenticated and authorized regardless of network location.' },
+      { q: 'For mobile security, why enforce app permission restrictions?', opts: ['To allow unrestricted data access', 'To contain threats by limiting unnecessary exposures', 'To disable all biometric features', 'To encourage side loading unvetted apps'], ans: 1, exp: 'Restricting app permissions to only what\'s necessary limits the data and system access an attacker can gain if an app is compromised.' },
+      { q: 'What distinguishes AI-powered cyber attacks from manual ones?', opts: ['Their lack of scalability', 'Orchestration of adaptive, self-improving intrusions', 'Exclusive use of physical tools', 'Avoidance of data scraping'], ans: 1, exp: 'AI-powered attacks can autonomously orchestrate large-scale, adaptive intrusions that learn and improve from each interaction — unlike limited manual attacks.' },
+      { q: 'In adversarial attacks, what is an example of input corruption?', opts: ['Deleting entire datasets', 'Adding noise to images for misclassification', 'Enhancing model transparency', 'Increasing training epochs'], ans: 1, exp: 'Adding imperceptible noise (perturbations) to images is a classic adversarial example — the image looks normal to humans but fools the AI classifier.' },
+      { q: 'How do evasion attacks challenge behavioral heuristics?', opts: ['By making payloads overly conspicuous', 'Dynamically altering forms to evade patterns', 'Broadcasting evasion logs', 'Halting execution upon detection'], ans: 1, exp: 'Evasion attacks use polymorphic techniques to continuously change their behavioral signatures, staying ahead of heuristic detection patterns.' },
+      { q: 'What is a common vector for AI poisoning attacks?', opts: ['Clean, verified data pipelines', 'Compromised feedback loops in training', 'Over-sanitized datasets', 'Reduced model parameters'], ans: 1, exp: 'Compromised feedback loops — such as user-provided data or third-party datasets — are common entry points for injecting poisoned samples into training.' },
+      { q: 'How does MFA thwart credential-stuffing in AI campaigns?', opts: ['By enabling mass logins without checks', 'Demanding compounded proofs beyond stolen credentials', 'Simplifying token generation', 'Ignoring session anomalies'], ans: 1, exp: 'Even if AI-powered credential stuffing obtains valid usernames and passwords, MFA blocks access by requiring additional verification that attackers cannot easily provide.' },
+      { q: 'Why use password managers alongside strong passwords?', opts: ['To promote sharing across sites', 'Generating and securing unique credentials per service', 'Reducing overall entropy needs', 'Automating weak password reuse'], ans: 1, exp: 'Password managers generate and store unique, high-entropy passwords for every service, eliminating credential reuse — a major vulnerability exploited in AI attacks.' }   ];
+
+    // --- Shuffle helper ---
+    function shuffle(arr) {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    // Randomize question order; also randomize each question's option order
+    // and track where the correct answer ended up.
+    const shuffledQuestions = shuffle(quizData).map(item => {
+        const correctText = item.opts[item.ans];
+        const shuffledOpts = shuffle(item.opts);
+        const newAnsIndex = shuffledOpts.indexOf(correctText);
+        return { ...item, opts: shuffledOpts, ans: newAnsIndex, correctText };
+    });
+
+    const qList = document.getElementById('questions-list');
+
+    // Build quiz
+    shuffledQuestions.forEach((item, i) => {
+        const div = document.createElement('div');
+        div.className = 'q-block';
+        div.innerHTML = `
+            <div class="q-number">Question ${i + 1} of ${shuffledQuestions.length}</div>
+            <span class="q-text">${item.q}</span>
+            ${item.opts.map((o, oi) => `
+                <input type="radio" name="q${i}" id="q${i}o${oi}" value="${oi}">
+                <label class="opt-label" for="q${i}o${oi}">
+                    <span class="radio-dot"></span>${o}
+                </label>
+            `).join('')}
+        `;
+        qList.appendChild(div);
+    });
+
+    // Progress bar
+    shuffledQuestions.forEach((_, i) => {
+        qList.querySelectorAll(`input[name="q${i}"]`).forEach(radio => {
+            radio.addEventListener('change', updateProgress);
+        });
+    });
+
+    function updateProgress() {
+        const answered = shuffledQuestions.filter((_, i) =>
+            document.querySelector(`input[name="q${i}"]:checked`)
+        ).length;
+        document.getElementById('progress').style.width = `${(answered / shuffledQuestions.length) * 100}%`;
+    }
+
+    function processQuiz() {
+        let score = 0;
+        const expList = document.getElementById('explanations-list');
+        expList.innerHTML = '';
+
+        // Results shown in the same shuffled order as the quiz
+        shuffledQuestions.forEach((item, i) => {
+            const selected = document.querySelector(`input[name="q${i}"]:checked`);
+            const userVal = selected ? parseInt(selected.value) : null;
+            const isCorrect = userVal === item.ans;
+            if (isCorrect) score++;
+
+            const card = document.createElement('div');
+            card.className = 'review-card';
+            card.style.animationDelay = `${i * 0.07}s`;
+
+            let userRow = '';
+            if (userVal !== null && !isCorrect) {
+                userRow = `
+                    <div class="answer-row wrong">
+                        <div class="answer-meta">Your Answer</div>
+                        <div class="answer-text">${item.opts[userVal]}</div>
+                    </div>
+                `;
+            }
+
+            card.innerHTML = `
+                <span class="q-text">${i + 1}. ${item.q}</span>
+                ${userRow}
+                <div class="answer-row correct">
+                    <div class="answer-meta">Correct Answer</div>
+                    <div class="answer-text">${item.correctText}</div>
+                </div>
+                <div class="explanation">${item.exp}</div>
+            `;
+            expList.appendChild(card);
+        });
+
+        document.getElementById('quiz-ui').style.display = 'none';
+        document.getElementById('review-section').style.display = 'block';
+
+        const pct = Math.round((score / shuffledQuestions.length) * 100);
+        document.getElementById('final-score').innerHTML = `
+            <span class="score-val">${score} / ${shuffledQuestions.length}</span> correct &nbsp;·&nbsp; ${pct}%
+        `;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 3 - Blockchain Technology</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0b0e;
+            --surface: #111318;
+            --surface-2: #181b22;
+            --border: #22262f;
+            --border-hover: #3a3f52;
+            --text-primary: #eef0f6;
+            --text-secondary: #9098b0;
+            --text-muted: #4a5068;
+            --accent: #00d4e8;
+            --accent-dim: rgba(0, 212, 232, 0.11);
+            --accent-glow: rgba(0, 212, 232, 0.3);
+            --correct: #00e07a;
+            --correct-dim: rgba(0, 224, 122, 0.1);
+            --wrong: #ff4d5a;
+            --wrong-dim: rgba(255, 77, 90, 0.1);
+            --radius: 10px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Sora', sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        body::before { display: none; }
+
+        .container {
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 48px 20px 80px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header { margin-bottom: 36px; }
+
+        .header-eyebrow {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent-glow);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(0.85); }
+        }
+
+        .eyebrow-text {
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+
+        h1 {
+            font-size: 1.55rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+            line-height: 1.3;
+        }
+
+        .subtitle {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+
+        .divider { display: none; }
+
+        .progress-bar {
+            height: 2px;
+            background: var(--border);
+            border-radius: 99px;
+            margin-bottom: 36px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #7c3aed);
+            border-radius: 99px;
+            transition: width 0.4s ease;
+        }
+
+        .q-block {
+            margin-bottom: 28px;
+            animation: fadeUp 0.35s ease both;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .q-block:nth-child(1) { animation-delay: 0.05s; }
+        .q-block:nth-child(2) { animation-delay: 0.1s; }
+        .q-block:nth-child(3) { animation-delay: 0.15s; }
+        .q-block:nth-child(4) { animation-delay: 0.2s; }
+        .q-block:nth-child(5) { animation-delay: 0.25s; }
+
+        .q-number {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .q-text {
+            font-size: 0.97rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 14px;
+            display: block;
+            line-height: 1.55;
+        }
+
+        /* Hide native radio */
+        input[type="radio"] { display: none; }
+
+        .opt-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 7px;
+            cursor: pointer;
+            transition: border-color 0.18s, background 0.18s, color 0.18s;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            background: var(--surface);
+        }
+
+        .opt-label:hover {
+            border-color: var(--border-hover);
+            background: var(--surface-2);
+            color: var(--text-primary);
+        }
+
+        .radio-dot { display: none; }
+
+        /* Checked — highlight the row only */
+        input[type="radio"]:checked + .opt-label {
+            border-color: var(--accent);
+            background: var(--accent-dim);
+            color: var(--text-primary);
+
+        }
+
+        /* Submit Button */
+        .btn-submit {
+            width: 100%;
+            padding: 13px;
+            background: var(--accent);
+            color: var(--bg);
+            border: none;
+            border-radius: var(--radius);
+            font-family: 'Sora', sans-serif;
+            font-size: 0.92rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.18s, transform 0.18s, box-shadow 0.18s;
+            margin-top: 8px;
+            letter-spacing: 0.01em;
+            box-shadow: 0 0 18px var(--accent-glow);
+        }
+
+        .btn-submit:hover {
+            opacity: 0.88;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 28px var(--accent-glow);
+        }
+
+        .btn-submit:active { transform: translateY(0); }
+
+        .score-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            padding: 6px 14px;
+            border-radius: 99px;
+            font-size: 0.83rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-top: 12px;
+        }
+
+        .score-val {
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .review-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 10px;
+            animation: fadeUp 0.3s ease both;
+        }
+
+        .review-card .q-text {
+            font-size: 0.93rem;
+            margin-bottom: 14px;
+        }
+
+        .answer-row {
+            padding: 8px 12px;
+            border-radius: 7px;
+            margin-bottom: 7px;
+        }
+
+        .answer-row.correct { background: var(--correct-dim); border: 1px solid rgba(0,224,122,0.18); }
+        .answer-row.wrong { background: var(--wrong-dim); border: 1px solid rgba(255,77,90,0.13); }
+
+        .answer-icon { display: none; }
+
+        .answer-meta {
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+        .answer-row.correct .answer-meta { color: var(--correct); }
+        .answer-row.wrong .answer-meta { color: var(--wrong); }
+
+        .answer-text { font-size: 0.86rem; color: var(--text-primary); font-weight: 500; }
+
+        .explanation {
+            font-size: 0.84rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+            margin-top: 4px;
+        }
+
+        .btn-retry {
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-family: 'Sora', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.18s;
+            margin-top: 20px;
+        }
+        .btn-retry:hover { border-color: var(--border-hover); color: var(--text-primary); background: var(--surface); }
+
+        #review-section { display: none; }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div id="quiz-ui">
+        <header>
+            <div class="header-eyebrow">
+                <span class="dot"></span>
+                <span class="eyebrow-text">Assessment</span>
+            </div>
+            <h1>Unit 3 - Blockchain Technology</h1>
+            <p class="subtitle">Select one answer for each question below.</p>
+        </header>
+        <div class="divider"></div>
+        <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+        <div id="questions-list"></div>
+        <button class="btn-submit" onclick="processQuiz()">Submit Assessment</button>
+    </div>
+
+    <div id="review-section">
+        <header>
+            <div class="header-eyebrow">
+                <span class="dot" style="background:#00e07a; box-shadow: 0 0 8px rgba(0,224,122,0.4);"></span>
+                <span class="eyebrow-text" style="color:#00e07a;">Results</span>
+            </div>
+            <h1>Assessment Complete</h1>
+            <div id="final-score" class="score-pill"></div>
+        </header>
+        <div class="divider"></div>
+        <div id="explanations-list"></div>
+        <button class="btn-retry" onclick="location.reload()">↺ &nbsp;Retake Assessment</button>
+    </div>
+
+</div>
+
+<script>
+    const quizData = [
+   { q: 'Blockchain is a:', opts: ['Centralized database', 'Distributed ledger technology', 'Cloud storage system', 'Programming language'], ans: 1, exp: 'Blockchain is a distributed ledger technology where data is shared and synchronized across multiple nodes without a central authority.' },
+  { q: 'Blockchain stores data in the form of:', opts: ['Tables', 'Files', 'Blocks', 'Arrays'], ans: 2, exp: 'Blockchain stores data in blocks that are chained together in chronological order, forming an immutable chain of records.' },
+  { q: 'Each block in blockchain contains:', opts: ['Only transactions', 'Hash of previous block', 'Timestamp', 'All of the above'], ans: 3, exp: 'Each block contains the hash of the previous block, a timestamp, and transaction data — all together.' },
+  { q: 'Blockchain works on the principle of:', opts: ['Central authority', 'Peer-to-peer network', 'Client-server model', 'Standalone system'], ans: 1, exp: 'Blockchain operates on a peer-to-peer network where all participants share equal responsibility in maintaining the ledger.' },
+  { q: 'Blockchain ensures data integrity using:', opts: ['Encryption only', 'Hashing', 'Compression', 'Encoding'], ans: 1, exp: 'Hashing creates a unique fixed-length fingerprint of each block\'s data. Any change produces a completely different hash, revealing tampering.' },
+  { q: 'Decentralization means:', opts: ['Single authority control', 'No central authority', 'Offline control', 'Limited access'], ans: 1, exp: 'Decentralization means there is no single controlling authority — power is distributed among all participants in the network.' },
+  { q: 'In blockchain, control is distributed among:', opts: ['Servers', 'Nodes', 'Clients', 'Databases'], ans: 1, exp: 'Nodes are the computers in the blockchain network. Each node maintains a copy of the ledger and participates in validation.' },
+  { q: 'Decentralization improves:', opts: ['Cost', 'Security', 'Central control', 'Manual processing'], ans: 1, exp: 'Decentralization improves security by eliminating single points of failure — there is no central target for attackers to compromise.' },
+  { q: 'Transparency in blockchain means:', opts: ['Data is hidden', 'Data is visible to all participants', 'Data is encrypted only', 'Data is private'], ans: 1, exp: 'In public blockchains, all transactions are visible to every participant, ensuring openness and accountability.' },
+  { q: 'Public blockchains are:', opts: ['Private', 'Transparent', 'Centralized', 'Restricted'], ans: 1, exp: 'Public blockchains are transparent — anyone can view all transactions recorded on the ledger.' },
+  { q: 'Immutability means:', opts: ['Data can be edited easily', 'Data cannot be changed once recorded', 'Data is deleted automatically', 'Data is temporary'], ans: 1, exp: 'Immutability ensures that once data is written to the blockchain, it cannot be altered or deleted — creating a permanent record.' },
+  { q: 'Immutability is ensured using:', opts: ['Databases', 'Hash functions', 'Servers', 'Caching'], ans: 1, exp: 'Hash functions link each block to the previous one. Altering any block changes its hash, breaking the chain and revealing tampering.' },
+  { q: 'Changing a block requires:', opts: ['Permission only', 'Changing all previous blocks', 'Changing all subsequent blocks', 'No change needed'], ans: 2, exp: 'Because each block contains the hash of the previous one, modifying a block invalidates all blocks that come after it.' },
+  { q: 'Traditional systems are:', opts: ['Decentralized', 'Distributed', 'Centralized', 'Transparent'], ans: 2, exp: 'Traditional database systems rely on a central authority or administrator to manage, control, and validate all data.' },
+  { q: 'Blockchain systems are:', opts: ['Centralized', 'Decentralized', 'Offline', 'Standalone'], ans: 1, exp: 'Blockchain is decentralized — no single entity controls the network, and all nodes collectively maintain the ledger.' },
+  { q: 'Traditional databases allow:', opts: ['Easy data modification', 'Immutable data', 'Distributed control', 'Consensus'], ans: 0, exp: 'Traditional databases permit authorized users to insert, update, and delete records freely, unlike blockchain\'s immutable design.' },
+  { q: 'Blockchain requires:', opts: ['Central administrator', 'Third-party intermediary', 'Consensus mechanism', 'Manual approval'], ans: 2, exp: 'A consensus mechanism allows all nodes to agree on the validity of transactions without needing a central administrator.' },
+  { q: 'Trust in blockchain is established through:', opts: ['Organization', 'Authority', 'Cryptography', 'Contracts'], ans: 2, exp: 'Blockchain uses cryptographic proofs — hashing and digital signatures — to establish trust between parties without a middleman.' },
+  { q: 'Blockchain architecture consists of:', opts: ['Nodes only', 'Blocks only', 'Network, consensus, and data layers', 'Applications only'], ans: 2, exp: 'Blockchain architecture is layered: the network layer handles communication, the consensus layer handles agreement, and the data layer stores records.' },
+  { q: 'Nodes in blockchain are:', opts: ['End users', 'Servers', 'Participants maintaining the ledger', 'Hackers'], ans: 2, exp: 'Nodes are computers that participate in the blockchain network, each holding a full or partial copy of the distributed ledger.' },
+  { q: 'Each block contains:', opts: ['Block header and block body', 'Only data', 'Only hash', 'Only timestamp'], ans: 0, exp: 'A block is divided into a header (metadata like hash, timestamp, nonce) and a body (the actual transaction data).' },
+  { q: 'Block header includes:', opts: ['Transaction list', 'Previous block hash', 'User data', 'Files'], ans: 1, exp: 'The block header stores metadata including the hash of the previous block, Merkle root, timestamp, and nonce.' },
+  { q: 'Merkle tree is used to:', opts: ['Store files', 'Secure transactions', 'Compress data', 'Control users'], ans: 1, exp: 'A Merkle tree efficiently and securely summarizes all transactions in a block, allowing quick verification of any single transaction.' },
+  { q: 'Genesis block is:', opts: ['Last block', 'First block', 'Largest block', 'Empty block'], ans: 1, exp: 'The genesis block is the very first block in a blockchain. It has no previous block hash, making it the anchor of the entire chain.' },
+  { q: 'Consensus mechanism ensures:', opts: ['Data duplication', 'Agreement among nodes', 'Data deletion', 'Central control'], ans: 1, exp: 'Consensus mechanisms like Proof of Work and Proof of Stake allow all distributed nodes to agree on a single valid version of the ledger.' },
+  { q: 'Which is a consensus algorithm?', opts: ['SHA-256', 'Proof of Work', 'AES', 'RSA'], ans: 1, exp: 'Proof of Work is a consensus algorithm where nodes compete to solve a cryptographic puzzle to earn the right to add a new block.' },
+  { q: 'Blockchain uses cryptography mainly for:', opts: ['Data storage', 'Data compression', 'Security', 'Performance'], ans: 2, exp: 'Cryptography secures blockchain through hashing (data integrity), digital signatures (authentication), and public-key encryption (privacy).' },
+  { q: 'Peer-to-peer network in blockchain ensures:', opts: ['Central authority', 'Data redundancy', 'Single point of failure', 'Offline access'], ans: 1, exp: 'A P2P network replicates data across all nodes, ensuring no single point of failure and high availability of the ledger.' },
+  { q: 'Smart contracts run on:', opts: ['Nodes', 'Blockchain platforms', 'Databases', 'Servers'], ans: 1, exp: 'Smart contracts are deployed and executed directly on blockchain platforms like Ethereum, running automatically when conditions are met.' },
+  { q: 'Transaction validation is done by:', opts: ['Central server', 'Miners/validators', 'End users', 'Application servers'], ans: 1, exp: 'Miners (in PoW) or validators (in PoS) verify that transactions are legitimate before adding them to the blockchain.' },
+  { q: 'Public blockchain is:', opts: ['Restricted', 'Permissioned', 'Permissionless', 'Private'], ans: 2, exp: 'Public blockchains are permissionless — anyone can join the network, read the ledger, and participate in consensus without approval.' },
+  { q: 'Anyone can join a public blockchain because it is:', opts: ['Centralized', 'Closed', 'Open', 'Restricted'], ans: 2, exp: 'Public blockchains are open networks with no gatekeepers. Any device can connect, sync the ledger, and participate freely.' },
+  { q: 'Bitcoin uses:', opts: ['Private blockchain', 'Public blockchain', 'Consortium blockchain', 'Hybrid blockchain'], ans: 1, exp: 'Bitcoin operates on a fully public blockchain where any participant can mine blocks, send transactions, and verify the ledger.' },
+  { q: 'Private blockchain is controlled by:', opts: ['Anyone', 'Single organization', 'Government only', 'Public users'], ans: 1, exp: 'Private blockchains are owned and operated by a single organization that controls access, permissions, and governance.' },
+  { q: 'Private blockchains are:', opts: ['Permissionless', 'Permissioned', 'Open', 'Public'], ans: 1, exp: 'Private blockchains require explicit permission to join. The controlling organization decides who can read, write, or validate.' },
+  { q: 'Private blockchain provides:', opts: ['High transparency', 'Limited access', 'No control', 'Public participation'], ans: 1, exp: 'Private blockchains restrict access to authorized participants only, providing confidentiality suitable for enterprise use cases.' },
+  { q: 'Consortium blockchain is managed by:', opts: ['Single authority', 'Public users', 'Group of organizations', 'Government only'], ans: 2, exp: 'Consortium (federated) blockchains are governed collectively by a group of organizations, sharing control and responsibility.' },
+  { q: 'Consortium blockchain is:', opts: ['Fully decentralized', 'Semi-decentralized', 'Centralized', 'Offline'], ans: 1, exp: 'Consortium blockchains are semi-decentralized — control is distributed among a fixed group rather than fully open or fully central.' },
+  { q: 'Banking networks commonly use:', opts: ['Public blockchain', 'Private blockchain', 'Consortium blockchain', 'Hybrid blockchain'], ans: 2, exp: 'Banks often use consortium blockchains like R3 Corda or Hyperledger, where multiple institutions share governance and validation.' },
+  { q: 'Hybrid blockchain combines:', opts: ['Public and private blockchain', 'Public and consortium blockchain', 'Private and consortium blockchain', 'All types'], ans: 0, exp: 'Hybrid blockchain merges public and private elements — some data is open to all while sensitive records remain restricted.' },
+  { q: 'Hybrid blockchain provides:', opts: ['No transparency', 'Partial transparency', 'Full transparency', 'No control'], ans: 1, exp: 'Hybrid blockchains offer selective transparency — organizations choose what to make public and what to keep private.' },
+  { q: 'Hybrid blockchains are useful for:', opts: ['Gaming only', 'Enterprises', 'Social media', 'Education only'], ans: 1, exp: 'Enterprises use hybrid blockchains to balance regulatory compliance, data privacy, and the benefits of decentralization.' },
+  { q: 'Blockchain in finance is used for:', opts: ['Faster transactions', 'Reduced fraud', 'Lower costs', 'All of the above'], ans: 3, exp: 'Blockchain transforms finance by enabling near-instant settlements, preventing fraud through immutability, and cutting intermediary costs.' },
+  { q: 'Cryptocurrency transactions are:', opts: ['Manual', 'Paper-based', 'Blockchain-based', 'Offline'], ans: 2, exp: 'All cryptocurrency transactions are recorded on a blockchain, providing transparency, security, and decentralization.' },
+  { q: 'Blockchain helps healthcare by:', opts: ['Securing medical records', 'Increasing paperwork', 'Manual storage', 'Delaying access'], ans: 0, exp: 'Blockchain secures electronic health records by ensuring only authorized parties can access patient data while maintaining an audit trail.' },
+  { q: 'Blockchain ensures healthcare data:', opts: ['Can be modified easily', 'Is immutable', 'Is offline', 'Is centralized'], ans: 1, exp: 'Once medical records are written to a blockchain, they cannot be altered, preventing fraud and ensuring data integrity.' },
+  { q: 'Blockchain improves supply chain by:', opts: ['Increasing fraud', 'Enhancing traceability', 'Reducing transparency', 'Manual tracking'], ans: 1, exp: 'Blockchain provides end-to-end visibility across supply chains, allowing every party to track products from origin to destination.' },
+  { q: 'Supply chain blockchain enables:', opts: ['Product tracking', 'Data tampering', 'Manual verification', 'Offline updates'], ans: 0, exp: 'Blockchain allows real-time tracking of goods across the supply chain, verifying authenticity and reducing counterfeiting.' },
+  { q: 'Blockchain gaming enables:', opts: ['Centralized control', 'Digital ownership', 'Offline play only', 'Manual transactions'], ans: 1, exp: 'Blockchain gives players true ownership of in-game assets as NFTs — items can be traded, sold, or transferred outside the game.' },
+  { q: 'NFTs are mainly used in:', opts: ['Healthcare', 'Finance', 'Gaming', 'Education'], ans: 2, exp: 'NFTs (Non-Fungible Tokens) are widely used in gaming to represent unique digital assets like characters, skins, and collectibles.' },
+  { q: 'Smart contracts are:', opts: ['Paper contracts', 'Manual agreements', 'Self-executing programs', 'Offline contracts'], ans: 2, exp: 'Smart contracts are programs stored on a blockchain that automatically execute predefined actions when specific conditions are satisfied.' },
+  { q: 'Smart contracts run on:', opts: ['Servers', 'Blockchain', 'Databases', 'Operating systems'], ans: 1, exp: 'Smart contracts are deployed on blockchain platforms and executed by every node in the network, ensuring decentralized execution.' },
+  { q: 'Key feature of smart contracts is:', opts: ['Manual execution', 'Automation', 'Central control', 'Offline processing'], ans: 1, exp: 'Automation is the defining feature of smart contracts — they execute automatically without human intervention when conditions are met.' },
+  { q: 'Smart contracts reduce:', opts: ['Trust', 'Intermediaries', 'Automation', 'Speed'], ans: 1, exp: 'By automating agreements on-chain, smart contracts eliminate the need for lawyers, banks, and other intermediaries, cutting costs.' },
+  { q: 'Smart contracts are written in:', opts: ['C only', 'Solidity', 'Java only', 'Python only'], ans: 1, exp: 'Solidity is the primary programming language for writing smart contracts on Ethereum and compatible blockchains.' },
+  { q: 'Cryptocurrency is:', opts: ['Physical currency', 'Digital currency', 'Paper money', 'Centralized money'], ans: 1, exp: 'Cryptocurrency is a digital or virtual currency secured by cryptography and operating on decentralized blockchain networks.' },
+  { q: 'Bitcoin is:', opts: ['Centralized', 'Government-controlled', 'Decentralized', 'Offline'], ans: 2, exp: 'Bitcoin is fully decentralized — no government, bank, or company controls it. It runs on a global peer-to-peer network.' },
+  { q: 'Ethereum supports:', opts: ['Only currency', 'Smart contracts', 'Banking only', 'Offline trading'], ans: 1, exp: 'Ethereum extends beyond currency by providing a programmable blockchain platform for deploying and running smart contracts and dApps.' },
+  { q: 'Cryptocurrencies use:', opts: ['Blockchain', 'Central banks', 'Paper ledger', 'Manual records'], ans: 0, exp: 'All cryptocurrencies rely on blockchain technology to record transactions transparently and securely without a central authority.' },
+  { q: 'Which is a popular cryptocurrency?', opts: ['Dollar', 'Euro', 'Bitcoin', 'Rupee'], ans: 2, exp: 'Bitcoin, created in 2009 by Satoshi Nakamoto, is the first and most widely recognized cryptocurrency in the world.' },
+  { q: 'Scalability is a challenge because:', opts: ['Too many users', 'Limited transaction speed', 'High transparency', 'Decentralization'], ans: 1, exp: 'Blockchains like Bitcoin can only process a limited number of transactions per second, causing bottlenecks as usage grows.' },
+  { q: 'High energy consumption is mainly due to:', opts: ['Proof of Stake', 'Proof of Work', 'Cloud computing', 'Encryption'], ans: 1, exp: 'Proof of Work requires miners to perform massive computational work, consuming enormous amounts of electricity globally.' },
+  { q: 'Blockchain faces legal challenges due to:', opts: ['Lack of regulation', 'Central authority', 'Transparency', 'Encryption'], ans: 0, exp: 'Most countries lack clear regulatory frameworks for blockchain and cryptocurrency, creating legal uncertainty for businesses and users.' },
+  { q: 'Storage issue arises because:', opts: ['Data is deleted', 'Blockchain grows continuously', 'Data is compressed', 'Nodes store nothing'], ans: 1, exp: 'Every transaction ever made is permanently stored in the blockchain. As it grows continuously, storage requirements for full nodes become very large.' },
+  { q: 'Privacy is a concern because:', opts: ['Data is invisible', 'Public access to data', 'Central storage', 'Offline access'], ans: 1, exp: 'On public blockchains, all transactions are visible to everyone. While addresses are pseudonymous, transaction patterns can reveal identities.' },
+  { q: 'Blockchain improves trust by:', opts: ['Central authority', 'Cryptographic proof', 'Manual validation', 'Contracts only'], ans: 1, exp: 'Blockchain replaces institutional trust with mathematical trust — cryptographic proofs make it verifiable without relying on any authority.' },
+  { q: 'Double spending problem is solved by:', opts: ['Databases', 'Blockchain', 'Servers', 'Banks'], ans: 1, exp: 'Blockchain prevents double spending by recording every transaction on a public ledger, making it impossible to spend the same coin twice.' },
+  { q: 'Which blockchain is best for enterprises?', opts: ['Public', 'Private', 'Hybrid', 'Both b and c'], ans: 3, exp: 'Enterprises use private blockchains for internal operations and hybrid blockchains for scenarios requiring both privacy and transparency.' },
+  { q: 'Nodes validate transactions using:', opts: ['Consensus', 'Encryption', 'Compression', 'Storage'], ans: 0, exp: 'Nodes reach consensus on valid transactions using algorithms like PoW or PoS before permanently adding them to the blockchain.' },
+  { q: 'Blockchain data is:', opts: ['Mutable', 'Editable', 'Immutable', 'Temporary'], ans: 2, exp: 'Once data is confirmed and written to the blockchain, it is immutable — it cannot be changed, deleted, or tampered with.' },
+  { q: 'Which block contains no previous hash?', opts: ['First block', 'Last block', 'Random block', 'Any block'], ans: 0, exp: 'The genesis (first) block has no predecessor, so its previous hash field is set to zero or null.' },
+  { q: 'Hash function output is:', opts: ['Variable length', 'Fixed length', 'Random length', 'Infinite'], ans: 1, exp: 'Hash functions always produce a fixed-length output regardless of input size. SHA-256 always produces a 256-bit (64 hex character) digest.' },
+  { q: 'Blockchain is resistant to:', opts: ['Data tampering', 'Automation', 'Transparency', 'Distribution'], ans: 0, exp: 'Blockchain\'s cryptographic linking and consensus mechanisms make it highly resistant to unauthorized data tampering.' },
+  { q: 'Which consensus is energy-efficient?', opts: ['Proof of Work', 'Proof of Stake', 'Proof of Authority', 'Both B and C'], ans: 3, exp: 'Proof of Stake and Proof of Authority are energy-efficient alternatives to PoW — they do not require intensive computational mining.' },
+  { q: 'Miners are responsible for:', opts: ['Writing smart contracts', 'Validating transactions', 'User registration', 'Application hosting'], ans: 1, exp: 'Miners collect pending transactions, verify their validity, bundle them into blocks, and compete to add those blocks to the chain.' },
+  { q: 'Which blockchain supports NFTs?', opts: ['Bitcoin', 'Ethereum', 'Ripple', 'Litecoin'], ans: 1, exp: 'Ethereum is the primary blockchain for NFTs, supporting the ERC-721 and ERC-1155 token standards used by most NFT marketplaces.' },
+  { q: 'Blockchain ledger is:', opts: ['Single copy', 'Multiple copies', 'Hidden', 'Centralized'], ans: 1, exp: 'Every node in the network holds an identical copy of the blockchain ledger, ensuring no single point of control or failure.' },
+  { q: 'Transaction fees are paid in:', opts: ['Fiat currency', 'Cryptocurrency', 'Tokens', 'Both b and c'], ans: 3, exp: 'Transaction fees on blockchain networks are paid in the network\'s native cryptocurrency or tokens, rewarding miners/validators.' },
+  { q: 'Blockchain gaming assets are:', opts: ['Centralized', 'Tradable', 'Non-transferable', 'Temporary'], ans: 1, exp: 'Blockchain gaming assets stored as NFTs are tradable — players can freely buy, sell, or exchange them on open marketplaces.' },
+  { q: 'Smart contracts execute when:', opts: ['User commands', 'Conditions are met', 'Central approval', 'Manual trigger'], ans: 1, exp: 'Smart contracts execute automatically and autonomously when their predefined conditions (coded logic) are satisfied on-chain.' },
+  { q: 'Blockchain provides auditability due to:', opts: ['Central logs', 'Transparent ledger', 'Offline records', 'Manual verification'], ans: 1, exp: 'The transparent, immutable ledger provides a complete and permanent audit trail of every transaction ever recorded on the blockchain.' },
+  { q: 'Permissioned blockchains include:', opts: ['Public blockchain', 'Private blockchain', 'Bitcoin', 'Ethereum'], ans: 1, exp: 'Private blockchains are permissioned — participants must be granted explicit access by the controlling organization to join.' },
+  { q: 'Blockchain reduces fraud by:', opts: ['Manual checks', 'Immutability', 'Centralization', 'Offline storage'], ans: 1, exp: 'Immutability makes it impossible to alter past records undetected, drastically reducing opportunities for fraudulent manipulation.' },
+  { q: 'Blockchain is suitable for:', opts: ['Low trust environments', 'High trust environments only', 'Offline systems', 'Manual systems'], ans: 0, exp: 'Blockchain is most valuable in low-trust environments where parties do not know or fully trust each other but need to transact reliably.' },
+  { q: 'Which is NOT a blockchain challenge?', opts: ['Scalability', 'Security', 'Energy consumption', 'Data immutability'], ans: 3, exp: 'Data immutability is a feature, not a challenge — it is one of blockchain\'s core strengths. Scalability, security, and energy are real challenges.' },
+  { q: 'Smart contracts remove:', opts: ['Automation', 'Intermediaries', 'Blockchain', 'Security'], ans: 1, exp: 'By encoding agreement logic directly on-chain, smart contracts eliminate the need for intermediaries like lawyers or brokers.' },
+  { q: 'Which cryptocurrency was first?', opts: ['Ethereum', 'Bitcoin', 'Litecoin', 'Ripple'], ans: 1, exp: 'Bitcoin was the first cryptocurrency, launched in January 2009 by the pseudonymous Satoshi Nakamoto.' },
+  { q: 'Blockchain timestamp ensures:', opts: ['Order of transactions', 'Deletion', 'Offline access', 'Encryption'], ans: 0, exp: 'Timestamps on each block establish the exact chronological order of transactions, preventing manipulation of the sequence of events.' },
+  { q: 'Blockchain networks are:', opts: ['Closed', 'Centralized', 'Distributed', 'Standalone'], ans: 2, exp: 'Blockchain networks are distributed — the ledger and processing are spread across many nodes rather than housed in one place.' },
+  { q: 'Blockchain supports which economy?', opts: ['Trust-based', 'Trustless', 'Centralized', 'Manual'], ans: 1, exp: 'Blockchain enables a trustless economy where parties can transact securely using cryptographic verification rather than trusting institutions.' },
+  { q: 'Which blockchain is fully open?', opts: ['Private', 'Public', 'Consortium', 'Hybrid'], ans: 1, exp: 'Public blockchains are fully open — anyone in the world can read the ledger, submit transactions, and participate in consensus.' },
+  { q: 'Smart contracts are transparent because:', opts: ['Code is hidden', 'Code is on blockchain', 'Code is private', 'Code is offline'], ans: 1, exp: 'Smart contract code is deployed on the blockchain where anyone can read and verify it, ensuring full transparency of logic.' },
+  { q: 'Blockchain transactions are:', opts: ['Reversible', 'Irreversible', 'Temporary', 'Editable'], ans: 1, exp: 'Once a transaction is confirmed and added to the blockchain, it is irreversible — it cannot be undone or deleted.' },
+  { q: 'Which feature prevents unauthorized changes?', opts: ['Transparency', 'Decentralization', 'Immutability', 'Accessibility'], ans: 2, exp: 'Immutability, enforced through cryptographic hashing and consensus, prevents any unauthorized modification of recorded data.' },
+  { q: 'Blockchain reduces costs by eliminating:', opts: ['Encryption', 'Nodes', 'Intermediaries', 'Networks'], ans: 2, exp: 'By enabling direct peer-to-peer transactions with automated smart contracts, blockchain removes costly intermediaries from processes.' },
+  { q: 'Which blockchain is used in supply chain?', opts: ['Public', 'Private', 'Consortium', 'All of the above'], ans: 3, exp: 'Supply chain implementations use all blockchain types depending on the use case — public for transparency, private for confidentiality, consortium for multi-company collaboration.' },
+  { q: 'Digital wallets store:', opts: ['Physical coins', 'Private keys', 'Public keys only', 'Blocks'], ans: 1, exp: 'Digital wallets store private keys — the cryptographic credentials used to sign transactions and prove ownership of blockchain assets.' },
+  { q: 'Blockchain ensures availability through:', opts: ['Central servers', 'Distributed nodes', 'Manual backups', 'Cloud only'], ans: 1, exp: 'Because every node holds a copy of the ledger, the blockchain remains available even if many nodes go offline simultaneously.' },
+  { q: 'Which is a major drawback of public blockchain?', opts: ['Transparency', 'Low scalability', 'Decentralization', 'Security'], ans: 1, exp: 'Public blockchains like Bitcoin process only a few transactions per second, making low scalability one of their biggest drawbacks.' },
+  { q: 'Blockchain technology is best described as:', opts: ['Centralized database', 'Distributed, secure ledger', 'Offline system', 'Manual record system'], ans: 1, exp: 'Blockchain is best described as a distributed, secure ledger — data is shared across nodes, protected by cryptography, and immutably recorded.' },
+
+];
+
+    // --- Shuffle helper ---
+    function shuffle(arr) {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    // Randomize question order; also randomize each question's option order
+    // and track where the correct answer ended up.
+    const shuffledQuestions = shuffle(quizData).map(item => {
+        const correctText = item.opts[item.ans];
+        const shuffledOpts = shuffle(item.opts);
+        const newAnsIndex = shuffledOpts.indexOf(correctText);
+        return { ...item, opts: shuffledOpts, ans: newAnsIndex, correctText };
+    });
+
+    const qList = document.getElementById('questions-list');
+
+    // Build quiz
+    shuffledQuestions.forEach((item, i) => {
+        const div = document.createElement('div');
+        div.className = 'q-block';
+        div.innerHTML = `
+            <div class="q-number">Question ${i + 1} of ${shuffledQuestions.length}</div>
+            <span class="q-text">${item.q}</span>
+            ${item.opts.map((o, oi) => `
+                <input type="radio" name="q${i}" id="q${i}o${oi}" value="${oi}">
+                <label class="opt-label" for="q${i}o${oi}">
+                    <span class="radio-dot"></span>${o}
+                </label>
+            `).join('')}
+        `;
+        qList.appendChild(div);
+    });
+
+    // Progress bar
+    shuffledQuestions.forEach((_, i) => {
+        qList.querySelectorAll(`input[name="q${i}"]`).forEach(radio => {
+            radio.addEventListener('change', updateProgress);
+        });
+    });
+
+    function updateProgress() {
+        const answered = shuffledQuestions.filter((_, i) =>
+            document.querySelector(`input[name="q${i}"]:checked`)
+        ).length;
+        document.getElementById('progress').style.width = `${(answered / shuffledQuestions.length) * 100}%`;
+    }
+
+    function processQuiz() {
+        let score = 0;
+        const expList = document.getElementById('explanations-list');
+        expList.innerHTML = '';
+
+        // Results shown in the same shuffled order as the quiz
+        shuffledQuestions.forEach((item, i) => {
+            const selected = document.querySelector(`input[name="q${i}"]:checked`);
+            const userVal = selected ? parseInt(selected.value) : null;
+            const isCorrect = userVal === item.ans;
+            if (isCorrect) score++;
+
+            const card = document.createElement('div');
+            card.className = 'review-card';
+            card.style.animationDelay = `${i * 0.07}s`;
+
+            let userRow = '';
+            if (userVal !== null && !isCorrect) {
+                userRow = `
+                    <div class="answer-row wrong">
+                        <div class="answer-meta">Your Answer</div>
+                        <div class="answer-text">${item.opts[userVal]}</div>
+                    </div>
+                `;
+            }
+
+            card.innerHTML = `
+                <span class="q-text">${i + 1}. ${item.q}</span>
+                ${userRow}
+                <div class="answer-row correct">
+                    <div class="answer-meta">Correct Answer</div>
+                    <div class="answer-text">${item.correctText}</div>
+                </div>
+                <div class="explanation">${item.exp}</div>
+            `;
+            expList.appendChild(card);
+        });
+
+        document.getElementById('quiz-ui').style.display = 'none';
+        document.getElementById('review-section').style.display = 'block';
+
+        const pct = Math.round((score / shuffledQuestions.length) * 100);
+        document.getElementById('final-score').innerHTML = `
+            <span class="score-val">${score} / ${shuffledQuestions.length}</span> correct &nbsp;·&nbsp; ${pct}%
+        `;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+</body>
+</html>

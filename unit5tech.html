@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 5 - Digital Forensics and Ethical Hacking</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0b0e;
+            --surface: #111318;
+            --surface-2: #181b22;
+            --border: #22262f;
+            --border-hover: #3a3f52;
+            --text-primary: #eef0f6;
+            --text-secondary: #9098b0;
+            --text-muted: #4a5068;
+            --accent: #00d4e8;
+            --accent-dim: rgba(0, 212, 232, 0.11);
+            --accent-glow: rgba(0, 212, 232, 0.3);
+            --correct: #00e07a;
+            --correct-dim: rgba(0, 224, 122, 0.1);
+            --wrong: #ff4d5a;
+            --wrong-dim: rgba(255, 77, 90, 0.1);
+            --radius: 10px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Sora', sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        body::before { display: none; }
+
+        .container {
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 48px 20px 80px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header { margin-bottom: 36px; }
+
+        .header-eyebrow {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent-glow);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(0.85); }
+        }
+
+        .eyebrow-text {
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+
+        h1 {
+            font-size: 1.55rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+            line-height: 1.3;
+        }
+
+        .subtitle {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+
+        .divider { display: none; }
+
+        .progress-bar {
+            height: 2px;
+            background: var(--border);
+            border-radius: 99px;
+            margin-bottom: 36px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #7c3aed);
+            border-radius: 99px;
+            transition: width 0.4s ease;
+        }
+
+        .q-block {
+            margin-bottom: 28px;
+            animation: fadeUp 0.35s ease both;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .q-block:nth-child(1) { animation-delay: 0.05s; }
+        .q-block:nth-child(2) { animation-delay: 0.1s; }
+        .q-block:nth-child(3) { animation-delay: 0.15s; }
+        .q-block:nth-child(4) { animation-delay: 0.2s; }
+        .q-block:nth-child(5) { animation-delay: 0.25s; }
+
+        .q-number {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .q-text {
+            font-size: 0.97rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 14px;
+            display: block;
+            line-height: 1.55;
+        }
+
+        /* Hide native radio */
+        input[type="radio"] { display: none; }
+
+        .opt-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 7px;
+            cursor: pointer;
+            transition: border-color 0.18s, background 0.18s, color 0.18s;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            background: var(--surface);
+        }
+
+        .opt-label:hover {
+            border-color: var(--border-hover);
+            background: var(--surface-2);
+            color: var(--text-primary);
+        }
+
+        .radio-dot { display: none; }
+
+        /* Checked — highlight the row only */
+        input[type="radio"]:checked + .opt-label {
+            border-color: var(--accent);
+            background: var(--accent-dim);
+            color: var(--text-primary);
+
+        }
+
+        /* Submit Button */
+        .btn-submit {
+            width: 100%;
+            padding: 13px;
+            background: var(--accent);
+            color: var(--bg);
+            border: none;
+            border-radius: var(--radius);
+            font-family: 'Sora', sans-serif;
+            font-size: 0.92rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.18s, transform 0.18s, box-shadow 0.18s;
+            margin-top: 8px;
+            letter-spacing: 0.01em;
+            box-shadow: 0 0 18px var(--accent-glow);
+        }
+
+        .btn-submit:hover {
+            opacity: 0.88;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 28px var(--accent-glow);
+        }
+
+        .btn-submit:active { transform: translateY(0); }
+
+        .score-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            padding: 6px 14px;
+            border-radius: 99px;
+            font-size: 0.83rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-top: 12px;
+        }
+
+        .score-val {
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .review-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 10px;
+            animation: fadeUp 0.3s ease both;
+        }
+
+        .review-card .q-text {
+            font-size: 0.93rem;
+            margin-bottom: 14px;
+        }
+
+        .answer-row {
+            padding: 8px 12px;
+            border-radius: 7px;
+            margin-bottom: 7px;
+        }
+
+        .answer-row.correct { background: var(--correct-dim); border: 1px solid rgba(0,224,122,0.18); }
+        .answer-row.wrong { background: var(--wrong-dim); border: 1px solid rgba(255,77,90,0.13); }
+
+        .answer-icon { display: none; }
+
+        .answer-meta {
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+        .answer-row.correct .answer-meta { color: var(--correct); }
+        .answer-row.wrong .answer-meta { color: var(--wrong); }
+
+        .answer-text { font-size: 0.86rem; color: var(--text-primary); font-weight: 500; }
+
+        .explanation {
+            font-size: 0.84rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+            margin-top: 4px;
+        }
+
+        .btn-retry {
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-family: 'Sora', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.18s;
+            margin-top: 20px;
+        }
+        .btn-retry:hover { border-color: var(--border-hover); color: var(--text-primary); background: var(--surface); }
+
+        #review-section { display: none; }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div id="quiz-ui">
+        <header>
+            <div class="header-eyebrow">
+                <span class="dot"></span>
+                <span class="eyebrow-text">Assessment</span>
+            </div>
+            <h1>Unit 5 - Digital Forensics and Ethical Hacking</h1>
+            <p class="subtitle">Select one answer for each question below.</p>
+        </header>
+        <div class="divider"></div>
+        <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+        <div id="questions-list"></div>
+        <button class="btn-submit" onclick="processQuiz()">Submit Assessment</button>
+    </div>
+
+    <div id="review-section">
+        <header>
+            <div class="header-eyebrow">
+                <span class="dot" style="background:#00e07a; box-shadow: 0 0 8px rgba(0,224,122,0.4);"></span>
+                <span class="eyebrow-text" style="color:#00e07a;">Results</span>
+            </div>
+            <h1>Assessment Complete</h1>
+            <div id="final-score" class="score-pill"></div>
+        </header>
+        <div class="divider"></div>
+        <div id="explanations-list"></div>
+        <button class="btn-retry" onclick="location.reload()">↺ &nbsp;Retake Assessment</button>
+    </div>
+
+</div>
+
+<script>
+    const quizData = [
+  { q: 'Digital forensics is all of them except:', opts: ['Extraction of computer data', 'Preservation of computer data', 'Interpretation of computer data', 'Manipulation of computer data'], ans: 3, exp: 'Digital forensics involves extraction, preservation, and interpretation of computer data. Manipulation of data is not part of digital forensics.' },
+  { q: 'IDIP stands for:', opts: ['Integrated Digital Investigator Process', 'Integrated Data Investigation Process', 'Integrated Digital Investigation Process', 'Independent Digital Investigator Profile'], ans: 0, exp: 'IDIP stands for Integrated Digital Investigator Process, a framework used in digital investigations.' },
+  { q: 'Who proposed Road Map for Digital Forensic Research (RMDFR)?', opts: ['G.Gunsh', 'S.Ciardhuain', 'G.Palmer', 'J.Korn'], ans: 3, exp: 'J. Korn proposed the Road Map for Digital Forensic Research (RMDFR).' },
+  { q: 'The investigator should satisfy the following points:', opts: ['Contribute to society and human beings', 'Avoid harm to others', 'Honest and trustworthy', 'All of the above'], ans: 3, exp: 'A digital forensic investigator must contribute positively to society, avoid harm, and remain honest and trustworthy.' },
+  { q: 'In the past, the method for expressing an opinion has been to frame a _____ question based on available factual evidence:', opts: ['Hypothetical', 'Nested', 'Contradictory', 'Challenging'], ans: 0, exp: 'A hypothetical question is framed based on factual evidence to express an opinion in investigations.' },
+  { q: 'More subtle because you are not aware that you are running these macros, spread via email:', opts: ['The purpose of the copyright', 'The danger of macro viruses', 'Computer-specific crime', 'Derivative works'], ans: 1, exp: 'Macro viruses spread through documents and emails, often running automatically without user awareness.' },
+  { q: 'There are three c\'s in computer forensics. Which is one of the three?', opts: ['Control', 'Chains', 'Chance', 'Core'], ans: 1, exp: 'Chains refers to the chain of custody, an important concept in computer forensics.' },
+  { q: 'When Federal Bureau Investigation program was created?', opts: ['1979', '1984', '1995', '1989'], ans: 1, exp: 'The FBI computer analysis and response program was created in 1984.' },
+  { q: 'When the field of PC forensics began?', opts: ['1960\'s', '1970\'s', '1980\'s', '1990\'s'], ans: 2, exp: 'The field of PC forensics began developing during the 1980s with the rise of personal computers.' },
+  { q: 'What is Digital Forensic?', opts: ['Process of using scientific knowledge in analysis and presentation of evidence in court', 'The application of computer science and investigative procedures for a legal purpose involving the analysis of digital evidence', 'Use of science or technology in the investigation and establishment of facts in court', 'Accessing the system\'s directories and viewing files'], ans: 1, exp: 'Digital forensics applies computer science and investigative procedures to analyze digital evidence for legal purposes.' },
+  { q: 'Digital Forensics entails ___:', opts: ['Accessing system directories and files', 'Identifying and recovering lost files', 'Updating and solving computer crimes', 'Identification, preservation, recovery, restoration, and presentation of digital evidence'], ans: 3, exp: 'Digital forensics includes identifying, preserving, recovering, restoring, and presenting digital evidence.' },
+  { q: 'Which of the following is FALSE?', opts: ['Digital forensic investigators must maintain objectivity', 'It is the investigator\'s job to determine guilt or innocence', 'Investigators must maintain confidentiality', 'Investigators must accurately report facts'], ans: 1, exp: 'Determining guilt or innocence is the responsibility of the court, not the forensic investigator.' },
+  { q: 'What is the most significant legal issue in computer forensics?', opts: ['Preserving Evidence', 'Seizing Evidence', 'Admissibility of Evidence', 'Discovery of Evidence'], ans: 2, exp: 'Admissibility of evidence is the most important legal issue because evidence must be accepted in court.' },
+  { q: '_____ phase includes putting the pieces of a digital puzzle together and developing investigative hypotheses:', opts: ['Preservation phase', 'Survey phase', 'Documentation phase', 'Reconstruction phase'], ans: 3, exp: 'The reconstruction phase involves rebuilding events and forming investigative hypotheses from collected evidence.' },
+  { q: 'In _____ phase investigator transfers the relevant data from a venue to a controlled location:', opts: ['Presentation phase', 'Reconstruction phase', 'Documentation phase', 'Survey phase'], ans: 1, exp: 'The reconstruction phase may involve transferring relevant evidence to a secure and controlled environment.' },
+  { q: 'Computer forensics do not involve _____ activity:', opts: ['Preservation of computer data', 'Extraction of computer data', 'Manipulation of computer data', 'Interpretation of computer data'], ans: 2, exp: 'Computer forensics does not involve altering or manipulating evidence data.' },
+  { q: 'A set of instructions compiled into a program that performs a particular task is known as:', opts: ['Hardware', 'CPU', 'Software', 'Motherboard'], ans: 2, exp: 'Software is a collection of instructions and programs that perform specific tasks on a computer.' },
+  { q: 'Which of following is not a rule of digital forensics?', opts: ['An examination should be performed on the original data', 'A copy is made onto forensically sterile media', 'The copy of the evidence must be an exact, bit-by-bit copy', 'The examination must prevent modification of evidence'], ans: 0, exp: 'Digital forensic investigations should be performed on copies of evidence, not on the original data.' },
+  { q: 'To collect and analyze the digital evidence obtained from the physical investigation phase is the goal of which phase?', opts: ['Physical crime investigation', 'Deployment phase', 'Review phase', 'Digital crime investigation'], ans: 1, exp: 'The deployment phase involves collecting and analyzing digital evidence after the physical investigation.' },
+  { q: 'To provide a mechanism for an incident to be detected and confirmed is the purpose of which phase?', opts: ['Physical crime investigation', 'Deployment phase', 'Review phase', 'Digital crime investigation'], ans: 1, exp: 'The deployment phase helps in incident detection and confirmation during an investigation.' },
+  { q: 'Which phase entails a review of the whole investigation and identifies areas of improvement?', opts: ['Physical crime investigation', 'Digital crime investigation', 'Review phase', 'Deployment phase'], ans: 2, exp: 'The review phase evaluates the entire investigation process and identifies possible improvements.' },
+  { q: '_____ is known as father of computer forensic:', opts: ['Michael Anderson', 'G. Palmar', 'S.Ciardhuain', 'J. Korn'], ans: 1, exp: 'G. Palmar is commonly referred to as the father of computer forensics.' },
+  { q: 'Various combinations have been made in _____ which is a well established science:', opts: ['Forensic', 'Cyber Crime', 'Evidence', 'Crime'], ans: 0, exp: 'Forensic science combines multiple scientific techniques for investigation and evidence analysis.' },
+  { q: 'Who is known for End to End Digital Investigation Process (EEDIP)?', opts: ['G. Palmar', 'Stephenson', 'Michael Anderson', 'S.Ciardhuain'], ans: 1, exp: 'Stephenson is associated with the End to End Digital Investigation Process (EEDIP).' },
+  { q: 'Which model of Investigation was proposed by Carrier and Spafford?', opts: ['Extended Model of Cybercrime Investigation (EMCI)', 'Road Map for Digital Forensic Research Process (DIP)', 'Abstract Digital Forensic Model (ADFM)', 'Integrated Digital Investigation Process (IDIP)'], ans: 1, exp: 'Carrier and Spafford proposed the Road Map for Digital Forensic Research Process (DIP) model for digital investigations.' },
+  { q: 'Which of the following is not a property of computer evidence?', opts: ['Authentic and Accurate', 'Complete and Convincing', 'Conform and Human Readable', 'Duplicated and Preserved'], ans: 3, exp: 'Computer evidence should be authentic, accurate, complete, convincing, and human readable. Duplicated and preserved is not considered a core property.' },
+  { q: '_____ can make or break an investigation:', opts: ['Security', 'Crime', 'Digital Forensic', 'Evidence'], ans: 3, exp: 'Evidence plays a critical role in investigations and can determine the success or failure of a case.' },
+
+  { q: '_____ is software that blocks unauthorized users from connecting to your computer:', opts: ['Firewall', 'OnLogin', 'Certify', 'Quick launch'], ans: 0, exp: 'A firewall protects systems by blocking unauthorized access and monitoring incoming and outgoing traffic.' },
+
+  { q: 'Which of the following are general ethical norms for investigators?', opts: ['To be honest and trustworthy', 'To avoid harm to others', 'To contribute to society and human beings', 'All of the above'], ans: 3, exp: 'Investigators should follow ethical norms including honesty, avoiding harm, and contributing positively to society.' },
+
+  { q: 'Which of the following are unethical norms for investigators?', opts: ['Uphold any relevant evidence', 'Declare any confidential matters or knowledge', 'Distort or falsify relevant evidence', 'None of the above'], ans: 2, exp: 'Distorting or falsifying evidence is unethical and violates forensic investigation standards.' },
+
+  { q: 'Which of the following is not a general ethical norm for investigators?', opts: ['To contribute to society and human beings', 'To be honest and trustworthy', 'To honor confidentiality', 'Uphold any relevant evidence'], ans: 3, exp: 'Upholding evidence is part of investigation procedure, not specifically categorized as a general ethical norm.' },
+
+  { q: 'Which of the following is not an unethical norm for Digital Forensics Investigation?', opts: ['Uphold any relevant evidence', 'Declare any confidential matters or knowledge', 'Distort or falsify relevant evidence', 'To respect the privacy of others'], ans: 3, exp: 'Respecting the privacy of others is an ethical practice in digital forensic investigations.' },
+
+  { q: 'What is called the process of creating a duplicate of digital media for examination purposes?', opts: ['Acquisition', 'Live analysis', 'Metadata', 'Hashing'], ans: 0, exp: 'Acquisition is the process of creating a forensic copy of digital media for analysis.' },
+
+  { q: 'Which term refers to modifying a computer in a way not originally intended to view information?', opts: ['Metadata', 'Live analysis', 'Hacking', 'Steganography'], ans: 2, exp: 'Hacking involves modifying or accessing systems in unintended ways to obtain information.' },
+
+  { q: 'What are the important parts of a mobile device used in digital forensics?', opts: ['SIM', 'RAM', 'ROM', 'MMC chip'], ans: 1, exp: 'RAM can contain volatile and temporary information useful during digital forensic analysis.' },
+
+  { q: 'Using what technique can data hiding in encrypted images be carried out in digital forensics?', opts: ['Acquisition', 'Steganography', 'Live analysis', 'Hashing'], ans: 1, exp: 'Steganography is the practice of hiding data within images, audio, or other media files.' },
+
+  { q: 'Which of this is not a computer crime?', opts: ['Email harassment', 'Falsification of data', 'Sabotage', 'Identification of data'], ans: 3, exp: 'Identification of data is a normal activity and not considered a computer crime.' },
+
+  { q: 'Which file is used to store the user entered password?', opts: ['.exe', '.txt', '.iso', '.sam'], ans: 3, exp: 'The .sam file in Windows stores user account and password information.' },
+
+  { q: '_____ is the process of recording as much data as possible to create reports and analysis on user input:', opts: ['Metadata', 'Data mining', 'Data collection', 'Data spoofing'], ans: 1, exp: 'Data mining involves collecting and analyzing large amounts of data to discover patterns and insights.' },
+
+  { q: '_____ searches through raw data on a hard drive without using a file system:', opts: ['Data mining', 'Data carving', 'Metadata', 'Data spoofing'], ans: 1, exp: 'Data carving recovers files by searching raw disk data without relying on the file system structure.' },
+
+  { q: 'What is the first step to handle retrieving data from an encrypted hard drive?', opts: ['Formatting disk', 'Storing data', 'Finding configuration files', 'Deleting files'], ans: 2, exp: 'Finding configuration files is often the first step in recovering or accessing encrypted data.' },
+
+  { q: 'What is the primary goal of ethical hacking?', opts: ['To steal data for personal gain', 'To identify and fix vulnerabilities in systems to enhance security', 'To harm other systems', 'To create malware for learning purposes'], ans: 1, exp: 'Ethical hacking aims to identify and fix security weaknesses before malicious attackers can exploit them.' },
+
+  { q: 'Which type of hacker works with permission to find system vulnerabilities?', opts: ['Black-hat hacker', 'Grey-hat hacker', 'White-hat hacker', 'Blue-hat hacker'], ans: 2, exp: 'White-hat hackers are authorized professionals who test systems for security vulnerabilities.' },
+
+  { q: 'Black-hat hackers are typically known for:', opts: ['Helping organizations fix vulnerabilities', 'Using hacking skills for personal gain and malicious intent', 'Reporting security products', 'Selling security products'], ans: 1, exp: 'Black-hat hackers exploit systems illegally for personal gain or malicious purposes.' },
+
+  { q: 'What type of hacker performs activities without permission but does not have malicious intent?', opts: ['White-hat hacker', 'Black-hat hacker', 'Grey-hat hacker', 'Script Kiddie'], ans: 2, exp: 'Grey-hat hackers may access systems without permission but usually do not intend to cause harm.' },
+
+  { q: 'What distinguishes ethical hackers from other types of hackers?', opts: ['They work under legal constraints and with permission', 'They exploit systems for profit', 'They aim to destroy systems', 'They work without any security tools'], ans: 0, exp: 'Ethical hackers operate legally and with proper authorization to improve security.' },
+
+  { q: 'What is AI-powered phishing?', opts: ['A method to enhance network performance', 'A phishing attack enhanced by AI to create realistic fake content', 'A way to secure email accounts', 'A method of coding algorithms'], ans: 1, exp: 'AI-powered phishing uses artificial intelligence to generate highly convincing fake emails and messages.' },
+
+  { q: 'What makes Ransomware 2.0 different from traditional ransomware?', opts: ['It uses outdated encryption methods', 'It involves more sophisticated attack techniques, such as evading detection', 'It encrypts data using weak algorithms', 'It does not demand money from victims'], ans: 1, exp: 'Ransomware 2.0 uses advanced techniques like stealth, double extortion, and detection evasion to increase effectiveness.' },
+  { q: 'Which of the following is a common vulnerability in IoT devices?', opts: ['Inability to connect to the Internet', 'Lack of strong authentication and security protocols', 'Overuse of encryption', 'Complete isolation from the network'], ans: 1, exp: 'Many IoT devices lack strong authentication and proper security measures, making them vulnerable to cyber attacks.' },
+
+  { q: 'How does deep fake technology pose a security risk?', opts: ['It allows hackers to control IoT devices remotely', 'It can create realistic fake media content used for misinformation and fraud', 'It makes data recovery easier', 'It assists in system defense strategies'], ans: 1, exp: 'Deep fake technology can generate highly realistic fake videos, audio, and images that may be used for scams, misinformation, or impersonation.' },
+
+  { q: 'What is an OS downgrade attack?', opts: ['An attack that forces a system to upgrade its operating system', 'An attack where the system operating system is rolled back to an older vulnerable version', 'An attack that exploits encryption flaws in modern operating systems', 'An attack that targets the system boot sequence'], ans: 1, exp: 'An OS downgrade attack forces a device to use an older operating system version that contains known vulnerabilities.' },
+
+  { q: 'Why are firmware-level exploits particularly dangerous?', opts: ['They can easily be detected by antivirus software', 'They target low-level hardware and software, making them difficult to patch', 'They only affect external devices', 'They do not cause serious security risks'], ans: 1, exp: 'Firmware-level exploits operate at a low level of hardware and software, making them difficult to detect and patch.' },
+
+  { q: 'What is a Web Application Firewall (WAF) bypass?', opts: ['A technique used by attackers to evade security filters in a web application', 'A method of creating a secure firewall', 'A method of encrypting web traffic', 'A security measure to prevent SQL injections'], ans: 0, exp: 'A WAF bypass technique allows attackers to evade firewall protections and exploit vulnerabilities in web applications.' },
+
+  { q: 'What is a Zero-Day exploit?', opts: ['An exploit that uses a known vulnerability that has no patch available', 'An attack that uses a publicly known and patched vulnerability', 'An exploit immediately fixed once discovered', 'A method to prevent data breaches'], ans: 0, exp: 'A Zero-Day exploit targets a vulnerability that is unknown or has no available patch at the time of attack.' },
+
+  { q: 'What is the main risk associated with Zero-Day exploits?', opts: ['They are easy to detect', 'They target vulnerabilities with no available patches, giving attackers time to exploit them', 'They affect only physical devices', 'They do not demand money from victims'], ans: 1, exp: 'Zero-Day exploits are dangerous because attackers can exploit vulnerabilities before developers release fixes or patches.' },
+
+  { q: 'Ransomware 2.0 is different from traditional ransomware because it:', opts: ['Avoids detection using AI and advanced evasion techniques', 'Targets individual files only', 'Does not demand money from victims', 'Uses traditional encryption methods'], ans: 0, exp: 'Ransomware 2.0 uses advanced evasion techniques and stealth methods to avoid detection and increase attack success.' },
+
+  { q: 'An OS downgrade attack allows attackers to exploit vulnerabilities in:', opts: ['Older versions of the operating system with known vulnerabilities', 'The latest operating system versions', 'BIOS and hardware components', 'Cloud storage services'], ans: 0, exp: 'Older operating system versions often contain known vulnerabilities that attackers can exploit through downgrade attacks.' },
+
+  { q: 'Which of the following best describes firmware-level exploits?', opts: ['Attacks targeting operating system software', 'Attacks targeting low-level hardware or firmware to gain control of a device', 'Attacks that exploit weak web application security', 'Attacks using brute force to crack passwords'], ans: 1, exp: 'Firmware-level exploits target device firmware or hardware components to gain deep system access and control.' },
+
+  { q: 'What is the primary goal of an Advanced Web Application Firewall (WAF) bypass technique?', opts: ['To enhance the performance of web applications', 'To bypass the security filters of a WAF and exploit web application vulnerabilities', 'To improve the firewall ability to block traffic', 'To prevent data breaches'], ans: 1, exp: 'Attackers use WAF bypass techniques to evade firewall protection and exploit vulnerabilities in web applications.' },
+
+  { q: 'A Zero-Day exploit targets:', opts: ['Known vulnerabilities that have already been patched', 'Vulnerabilities unknown to the software vendor and with no patch available', 'Malware that targets outdated software', 'A patch that causes system malfunction'], ans: 1, exp: 'Zero-Day exploits target newly discovered vulnerabilities before vendors can release security patches.' },
+
+  { q: 'How can organizations defend against Ransomware 2.0 attacks?', opts: ['By ignoring malware warnings', 'By using stronger encryption methods for files', 'By disabling firewall protection', 'By updating software regularly and employing behavior-based detection'], ans: 3, exp: 'Regular software updates and behavior-based threat detection help organizations reduce the risk of Ransomware 2.0 attacks.' },
+
+  { q: 'Which technique is often used in AI-powered phishing scams to increase their effectiveness?', opts: ['Sending generic messages', 'Mimicking voice patterns from social media posts or public speeches', 'Using real-time facial recognition to customize messages', 'Crafting personalized messages based on data obtained from social media'], ans: 3, exp: 'AI-powered phishing often uses personal information from social media to create convincing personalized scam messages.' },
+
+  { q: 'The National Cyber Security Policy (NCSP) 2013 primarily aims to:', opts: ['Increase the speed of the Internet in India', 'Improve data storage facilities', 'Enhance the security of information infrastructure in India', 'Promote cyber-attacks against malicious entities'], ans: 2, exp: 'The NCSP 2013 aims to strengthen and secure India information and cyber infrastructure.' },
+
+  { q: 'The IT Act 2000 covers which of the following?', opts: ['Laws related to physical security', 'Laws concerning e-commerce, digital signatures, and cybercrime', 'Laws to regulate telecommunications', 'Laws for data backup and restoration'], ans: 1, exp: 'The IT Act 2000 addresses electronic commerce, digital signatures, and cybercrime-related legal matters.' },
+
+  { q: 'What major change did the IT Act 2008 Amendment bring?', opts: ['Increased penalties for cybercrimes', 'Expanded scope to include cyber terrorism, privacy issues, and data protection laws', 'Focused solely on securing hardware devices', 'Abolished data protection laws'], ans: 1, exp: 'The 2008 amendment expanded the IT Act to address cyber terrorism, privacy, and data protection concerns.' },
+
+  { q: 'The IT Act 2023 (DPDP) is designed to primarily address:', opts: ['Prevention of cybercrime', 'Prevention of cyberterrorism', 'Protection of personal data and privacy of individuals', 'Security of government websites'], ans: 2, exp: 'The Digital Personal Data Protection (DPDP) Act focuses on protecting personal data and ensuring privacy rights.' },
+
+  { q: 'Which of the following is a key focus of the Cyber Crime Prevention Against Women and Children (CCPWC) Scheme (2018)?', opts: ['Security of government websites', 'Prevention of online gambling', 'Protection of personal data and privacy of individuals', 'Promote cyber security awareness in schools'], ans: 1, exp: 'The CCPWC scheme includes efforts to address cybercrimes affecting women and children, including online exploitation and related activities.' },
+
+  { q: 'What does the IT Act, 2000 define as a computer resource?', opts: ['Only the physical hardware', 'Any computer device that can process data', 'To monitor Internet browsing activities of children', 'To provide support to victims of online crime'], ans: 1, exp: 'The IT Act broadly defines a computer resource as any device or system capable of processing, storing, or communicating data.' },
+
+  { q: 'Which section of the IT Act, 2000 deals with penalties and offenses related to hacking?', opts: ['Section 43', 'Section 73', 'Section 66', 'Section 57'], ans: 1, exp: 'As provided in the given answer key, Section 73 is marked as related to hacking offenses.' },
+
+  { q: 'The IT Act 2023 (DPDP) aims to:', opts: ['Prevent online dating frauds', 'Ensure the protection of personal data and regulate its processing', 'Create a framework for e-commerce regulation', 'Promote the use of encrypted communication'], ans: 1, exp: 'The DPDP Act regulates the processing and protection of personal data in India.' },
+
+  { q: 'What does the Cyber Crime Prevention Against Women and Children (CCPWC) Scheme focus on in relation to cybersecurity?', opts: ['Strengthening the financial sector cybersecurity', 'Creating awareness about online safety and providing legal support to victims', 'Training employees on secure coding practices', 'Promoting the use of encrypted communication'], ans: 1, exp: 'The CCPWC scheme focuses on online safety awareness and support mechanisms for victims of cybercrime.' },
+
+  { q: 'Which government body is responsible for implementing the National Cyber Security Policy (NCSP) in India?', opts: ['Ministry of Finance', 'Ministry of Electronics and Information Technology (MeitY)', 'Ministry of Defence', 'Ministry of Home Affairs'], ans: 1, exp: 'MeitY is the primary government body responsible for implementing cybersecurity initiatives and policies in India.' },
+
+  { q: 'Which of the following is considered a major benefit of the National Cyber Security Policy (NCSP)?', opts: ['Reducing internet speed', 'Improving data security across sectors', 'Limiting public access to social media', 'Encouraging internet censorship'], ans: 1, exp: 'The NCSP improves cybersecurity and data protection across government, business, and public sectors.' },
+  { q: 'Which act introduced the concept of Digital Signature in India?', opts: ['IT Act 2000', 'IT Act 2008', 'IT Act 2023', 'Cybersecurity Act'], ans: 0, exp: 'The IT Act 2000 introduced legal recognition of digital signatures in India for electronic transactions and authentication.' },
+  { q: 'Which of the following is NOT a feature of the IT Act, 2000?', opts: ['Legal recognition of electronic records', 'Regulation of digital signatures', 'Regulation of cryptocurrency transactions', 'Penalties for cybercrimes'], ans: 2, exp: 'The IT Act 2000 does not specifically regulate cryptocurrency transactions.' },
+
+  { q: 'What does the IT Act, 2008 Amendment include that was not present in the original IT Act 2000?', opts: ['Punishments for hacking', 'Provisions for online content regulation', 'Provisions for data protection and privacy', 'Legal recognition of mobile phones'], ans: 2, exp: 'The IT Act 2008 Amendment expanded the law to include stronger provisions for data protection and privacy.' },
+
+  { q: 'What is a major feature of the IT Act 2023 (DPDP) regarding data processing?', opts: ['It introduces clear consent mechanisms for data processing', 'It restricts data collection to government entities only', 'It limits data storage to a maximum of six months', 'It allows businesses to collect personal data without permission'], ans: 0, exp: 'The DPDP Act 2023 introduces clear consent requirements before personal data can be processed.' },
+
+  { q: 'What is the primary aim of the National Cyber Security Policy (NCSP) 2013?', opts: ['To reduce cyber crime', 'To regulate social media usage', 'To ensure security of information and communication infrastructure', 'To provide free internet access'], ans: 2, exp: 'The NCSP 2013 focuses on protecting information and communication infrastructure from cyber threats.' },
+
+  { q: 'What does the IT Act, 2000 focus on?', opts: ['Cyber crime prevention', 'Regulation of e-commerce, digital signatures, and cybercrimes', 'The development of hardware', 'Creating physical security standards'], ans: 1, exp: 'The IT Act 2000 regulates e-commerce, digital signatures, and addresses cybercrime-related legal issues.' },
+
+  { q: 'Which amendment in the IT Act, 2008 expanded its scope to include data protection and cyber terrorism?', opts: ['IT Act 2000', 'IT Act 2008 Amendment', 'IT Act 2023 (DPDP)', 'Cyber Crime Prevention Act'], ans: 1, exp: 'The IT Act 2008 Amendment expanded the law to include cyber terrorism and data protection provisions.' },
+
+  { q: 'What is the purpose of the IT Act, 2023 (DPDP)?', opts: ['To regulate internet usage by government employees', 'To ensure the protection of personal data and privacy', 'To increase penalties for hacking', 'To promote cybersecurity education'], ans: 1, exp: 'The DPDP Act 2023 focuses on protecting personal data and safeguarding individual privacy.' },
+
+  { q: 'What is the main focus of the Cyber Crime Prevention Against Women and Children (CCPWC) Scheme (2018)?', opts: ['Promoting safe online platforms for women and children', 'Supporting large enterprises in preventing cyber attacks', 'Establishing the internet as a public good', 'Promoting digital skills among teenagers'], ans: 0, exp: 'The CCPWC Scheme aims to improve online safety and protection for women and children.' },
+
+  { q: 'The National Cyber Security Policy (NCSP) 2013 aims to create how many trained cyber security professionals in India?', opts: ['1 lakh', '5 lakh', '10 lakh', '50,000'], ans: 1, exp: 'The NCSP 2013 aims to develop a workforce of 5 lakh trained cybersecurity professionals in India.' },
+
+  { q: 'Which section of the IT Act 2000 deals with publishing obscene material online?', opts: ['Section 43', 'Section 66', 'Section 67', 'Section 72'], ans: 2, exp: 'Section 67 of the IT Act deals with publishing or transmitting obscene material in electronic form.' },
+
+  { q: 'Section 66F of the IT Act 2008 Amendment is related to:', opts: ['Identity theft', 'Cyber terrorism', 'Online impersonation', 'Data breach'], ans: 1, exp: 'Section 66F defines and addresses cyber terrorism offenses under the IT Act.' },
+
+  { q: 'The DPDP Act 2023 replaces which previous provision of the IT Act?', opts: ['Section 66A', 'Data privacy clauses of IT Act 2000/2008', 'Section 72', 'Section 43A'], ans: 1, exp: 'The DPDP Act 2023 modernizes and replaces earlier data privacy-related provisions from the IT Act.' },
+
+  { q: 'CCPWC Scheme 2018 is primarily launched to protect:', opts: ['Women and children', 'Government data', 'Critical infrastructure', 'IT companies'], ans: 0, exp: 'The CCPWC Scheme focuses on protecting women and children from cybercrime and online abuse.' },
+
+  { q: 'The National Computer Emergency Response Team (CERT-In) operates under which policy?', opts: ['IT Act 2000', 'NCSP 2013', 'DPDP Act 2023', 'CCPWC Scheme 2018'], ans: 1, exp: 'CERT-In functions as part of India cybersecurity framework under the National Cyber Security Policy.' },
+
+];
+
+    // --- Shuffle helper ---
+    function shuffle(arr) {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    // Randomize question order; also randomize each question's option order
+    // and track where the correct answer ended up.
+    const shuffledQuestions = shuffle(quizData).map(item => {
+        const correctText = item.opts[item.ans];
+        const shuffledOpts = shuffle(item.opts);
+        const newAnsIndex = shuffledOpts.indexOf(correctText);
+        return { ...item, opts: shuffledOpts, ans: newAnsIndex, correctText };
+    });
+
+    const qList = document.getElementById('questions-list');
+
+    // Build quiz
+    shuffledQuestions.forEach((item, i) => {
+        const div = document.createElement('div');
+        div.className = 'q-block';
+        div.innerHTML = `
+            <div class="q-number">Question ${i + 1} of ${shuffledQuestions.length}</div>
+            <span class="q-text">${item.q}</span>
+            ${item.opts.map((o, oi) => `
+                <input type="radio" name="q${i}" id="q${i}o${oi}" value="${oi}">
+                <label class="opt-label" for="q${i}o${oi}">
+                    <span class="radio-dot"></span>${o}
+                </label>
+            `).join('')}
+        `;
+        qList.appendChild(div);
+    });
+
+    // Progress bar
+    shuffledQuestions.forEach((_, i) => {
+        qList.querySelectorAll(`input[name="q${i}"]`).forEach(radio => {
+            radio.addEventListener('change', updateProgress);
+        });
+    });
+
+    function updateProgress() {
+        const answered = shuffledQuestions.filter((_, i) =>
+            document.querySelector(`input[name="q${i}"]:checked`)
+        ).length;
+        document.getElementById('progress').style.width = `${(answered / shuffledQuestions.length) * 100}%`;
+    }
+
+    function processQuiz() {
+        let score = 0;
+        const expList = document.getElementById('explanations-list');
+        expList.innerHTML = '';
+
+        // Results shown in the same shuffled order as the quiz
+        shuffledQuestions.forEach((item, i) => {
+            const selected = document.querySelector(`input[name="q${i}"]:checked`);
+            const userVal = selected ? parseInt(selected.value) : null;
+            const isCorrect = userVal === item.ans;
+            if (isCorrect) score++;
+
+            const card = document.createElement('div');
+            card.className = 'review-card';
+            card.style.animationDelay = `${i * 0.07}s`;
+
+            let userRow = '';
+            if (userVal !== null && !isCorrect) {
+                userRow = `
+                    <div class="answer-row wrong">
+                        <div class="answer-meta">Your Answer</div>
+                        <div class="answer-text">${item.opts[userVal]}</div>
+                    </div>
+                `;
+            }
+
+            card.innerHTML = `
+                <span class="q-text">${i + 1}. ${item.q}</span>
+                ${userRow}
+                <div class="answer-row correct">
+                    <div class="answer-meta">Correct Answer</div>
+                    <div class="answer-text">${item.correctText}</div>
+                </div>
+                <div class="explanation">${item.exp}</div>
+            `;
+            expList.appendChild(card);
+        });
+
+        document.getElementById('quiz-ui').style.display = 'none';
+        document.getElementById('review-section').style.display = 'block';
+
+        const pct = Math.round((score / shuffledQuestions.length) * 100);
+        document.getElementById('final-score').innerHTML = `
+            <span class="score-val">${score} / ${shuffledQuestions.length}</span> correct &nbsp;·&nbsp; ${pct}%
+        `;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+</body>
+</html>

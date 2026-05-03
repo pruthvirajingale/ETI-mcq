@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 5 - Digital Forensics and Ethical Hacking</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0b0e;
+            --surface: #111318;
+            --surface-2: #181b22;
+            --border: #22262f;
+            --border-hover: #3a3f52;
+            --text-primary: #eef0f6;
+            --text-secondary: #9098b0;
+            --text-muted: #4a5068;
+            --accent: #00d4e8;
+            --accent-dim: rgba(0, 212, 232, 0.11);
+            --accent-glow: rgba(0, 212, 232, 0.3);
+            --correct: #00e07a;
+            --correct-dim: rgba(0, 224, 122, 0.1);
+            --wrong: #ff4d5a;
+            --wrong-dim: rgba(255, 77, 90, 0.1);
+            --radius: 10px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Sora', sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        body::before { display: none; }
+
+        .container {
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 48px 20px 80px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header { margin-bottom: 36px; }
+
+        .header-eyebrow {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent-glow);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(0.85); }
+        }
+
+        .eyebrow-text {
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+
+        h1 {
+            font-size: 1.55rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+            line-height: 1.3;
+        }
+
+        .subtitle {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+
+        .divider { display: none; }
+
+        .progress-bar {
+            height: 2px;
+            background: var(--border);
+            border-radius: 99px;
+            margin-bottom: 36px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #7c3aed);
+            border-radius: 99px;
+            transition: width 0.4s ease;
+        }
+
+        .q-block {
+            margin-bottom: 28px;
+            animation: fadeUp 0.35s ease both;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .q-block:nth-child(1) { animation-delay: 0.05s; }
+        .q-block:nth-child(2) { animation-delay: 0.1s; }
+        .q-block:nth-child(3) { animation-delay: 0.15s; }
+        .q-block:nth-child(4) { animation-delay: 0.2s; }
+        .q-block:nth-child(5) { animation-delay: 0.25s; }
+
+        .q-number {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .q-text {
+            font-size: 0.97rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 14px;
+            display: block;
+            line-height: 1.55;
+        }
+
+        /* Hide native radio */
+        input[type="radio"] { display: none; }
+
+        .opt-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 7px;
+            cursor: pointer;
+            transition: border-color 0.18s, background 0.18s, color 0.18s;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            background: var(--surface);
+        }
+
+        .opt-label:hover {
+            border-color: var(--border-hover);
+            background: var(--surface-2);
+            color: var(--text-primary);
+        }
+
+        .radio-dot { display: none; }
+
+        /* Checked — highlight the row only */
+        input[type="radio"]:checked + .opt-label {
+            border-color: var(--accent);
+            background: var(--accent-dim);
+            color: var(--text-primary);
+
+        }
+
+        /* Submit Button */
+        .btn-submit {
+            width: 100%;
+            padding: 13px;
+            background: var(--accent);
+            color: var(--bg);
+            border: none;
+            border-radius: var(--radius);
+            font-family: 'Sora', sans-serif;
+            font-size: 0.92rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.18s, transform 0.18s, box-shadow 0.18s;
+            margin-top: 8px;
+            letter-spacing: 0.01em;
+            box-shadow: 0 0 18px var(--accent-glow);
+        }
+
+        .btn-submit:hover {
+            opacity: 0.88;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 28px var(--accent-glow);
+        }
+
+        .btn-submit:active { transform: translateY(0); }
+
+        .score-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            padding: 6px 14px;
+            border-radius: 99px;
+            font-size: 0.83rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-top: 12px;
+        }
+
+        .score-val {
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .review-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 10px;
+            animation: fadeUp 0.3s ease both;
+        }
+
+        .review-card .q-text {
+            font-size: 0.93rem;
+            margin-bottom: 14px;
+        }
+
+        .answer-row {
+            padding: 8px 12px;
+            border-radius: 7px;
+            margin-bottom: 7px;
+        }
+
+        .answer-row.correct { background: var(--correct-dim); border: 1px solid rgba(0,224,122,0.18); }
+        .answer-row.wrong { background: var(--wrong-dim); border: 1px solid rgba(255,77,90,0.13); }
+
+        .answer-icon { display: none; }
+
+        .answer-meta {
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+        .answer-row.correct .answer-meta { color: var(--correct); }
+        .answer-row.wrong .answer-meta { color: var(--wrong); }
+
+        .answer-text { font-size: 0.86rem; color: var(--text-primary); font-weight: 500; }
+
+        .explanation {
+            font-size: 0.84rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+            margin-top: 4px;
+        }
+
+        .btn-retry {
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-family: 'Sora', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.18s;
+            margin-top: 20px;
+        }
+        .btn-retry:hover { border-color: var(--border-hover); color: var(--text-primary); background: var(--surface); }
+
+        #review-section { display: none; }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div id="quiz-ui">
+        <header>
+            <div class="header-eyebrow">
+                <span class="dot"></span>
+                <span class="eyebrow-text">Assessment</span>
+            </div>
+            <h1>Unit 5 - Digital Forensics and Ethical Hacking</h1>
+            <p class="subtitle">Select one answer for each question below.</p>
+        </header>
+        <div class="divider"></div>
+        <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+        <div id="questions-list"></div>
+        <button class="btn-submit" onclick="processQuiz()">Submit Assessment</button>
+    </div>
+
+    <div id="review-section">
+        <header>
+            <div class="header-eyebrow">
+                <span class="dot" style="background:#00e07a; box-shadow: 0 0 8px rgba(0,224,122,0.4);"></span>
+                <span class="eyebrow-text" style="color:#00e07a;">Results</span>
+            </div>
+            <h1>Assessment Complete</h1>
+            <div id="final-score" class="score-pill"></div>
+        </header>
+        <div class="divider"></div>
+        <div id="explanations-list"></div>
+        <button class="btn-retry" onclick="location.reload()">↺ &nbsp;Retake Assessment</button>
+    </div>
+
+</div>
+
+<script>
+    const quizData = [
+     { q: 'Digital Forensics is primarily concerned with', opts: ['Building computer systems.', 'Preservation, identification, extraction, and documentation of computer evidence.', 'Software development.', 'Network installation.'], ans: 1, exp: 'Digital forensics focuses on the preservation, identification, extraction, and documentation of digital evidence for legal proceedings.' },
+  { q: 'Which of the following is an objective of digital forensics?', opts: ['Design UI for software.', 'Recover, analyze, and preserve computer materials for legal proceedings.', 'Develop malware.', 'Install operating systems.'], ans: 1, exp: 'The core objective of digital forensics is to recover, analyze, and preserve digital evidence for use in legal proceedings.' },
+  { q: 'Digital forensics helps in ...', opts: ['Breaking software licenses.', 'Estimating potential impact of malicious activity.', 'Upgrading hardware.', 'Designing new programming languages.'], ans: 1, exp: 'Digital forensics helps investigators assess and estimate the potential impact of malicious activity on systems.' },
+  { q: 'Which of the following is a core rule of digital forensics?', opts: ['Work directly on the original evidence.', 'Maintain integrity and create a forensically sound copy.', 'Ignore documentation.', 'Skip chain of custody.'], ans: 1, exp: 'A fundamental rule is to never alter original evidence — always work on a forensically sound copy.' },
+  { q: 'What is the first stage in digital forensics investigation?', opts: ['Analysis', 'Preservation / Extraction', 'Identification', 'Presentation'], ans: 2, exp: 'Identification is the first stage — recognizing potential sources of digital evidence.' },
+  { q: 'During evidence handling, why is a chain of custody important?', opts: ['To reduce paperwork.', 'To prove evidence integrity and control.', 'To speed up the investigation.', 'To delete irrelevant files.'], ans: 1, exp: 'Chain of custody documents who handled evidence and when, proving its integrity and admissibility in court.' },
+  { q: 'Which stage involves creating a forensic image of the digital evidence?', opts: ['Identification', 'Preservation / Extraction', 'Documentation', 'Presentation'], ans: 1, exp: 'The preservation/extraction stage involves creating a bit-by-bit forensic image of the original evidence.' },
+  { q: 'Volatile data in digital forensics refers to', opts: ['Hard disk data.', 'Data in RAM that may be lost if not captured properly.', 'Data stored in external drives.', 'Encrypted data only.'], ans: 1, exp: 'Volatile data exists in RAM and is lost when the system is powered off, so it must be captured immediately.' },
+  { q: 'The DFRWS model was proposed in ......', opts: ['1999', '2001', '2005', '2010'], ans: 1, exp: 'The Digital Forensic Research Workshop (DFRWS) model was proposed in 2001.' },
+  { q: 'Which model adds Preparation and Return of Evidence phases?', opts: ['DFRWS Model', 'ADFM', 'IDIP', 'EEDIP'], ans: 1, exp: 'The ADFM (Abstract Digital Forensic Model) added Preparation and Return of Evidence phases to extend the DFRWS model.' },
+  { q: 'The IDIP model integrates', opts: ['Only digital evidence.', 'Both digital and physical crime scene investigations.', 'Only network attacks.', 'Only legal documentation.'], ans: 1, exp: 'The Integrated Digital Investigation Process (IDIP) model integrates both digital and physical crime scene investigation.' },
+  { q: 'Which model focuses on end-to-end traceability and automated documentation?', opts: ['DFRWS', 'EEDIP', 'UMDFPM', 'ADFM'], ans: 1, exp: 'EEDIP (Enhanced and Extended Digital Investigation Process) focuses on end-to-end traceability and automated documentation.' },
+  { q: 'UMDFPM stands for .....', opts: ['Unified Model of Digital Forensic Process.', 'UML Modeling of Digital Forensic Process Model.', 'Universal Method for Digital Police.', 'Unified Module for Digital Protection.'], ans: 1, exp: 'UMDFPM stands for UML Modeling of Digital Forensic Process Model.' },
+  { q: 'Which model is suitable for multi-agency cybercrime cases requiring structured communication?', opts: ['DFRWS', 'Extended Model for Cybercrime Investigation', 'ADFM', 'IDIP'], ans: 1, exp: 'The Extended Model for Cybercrime Investigation is designed for multi-agency cases needing structured communication.' },
+  { q: 'Ethical hacking is', opts: ['Illegal hacking for personal gain.', 'Authorized testing of systems to identify vulnerabilities.', 'Installing malware.', 'Ignoring security measures.'], ans: 1, exp: 'Ethical hacking involves authorized, legal testing of systems to find and fix security vulnerabilities.' },
+  { q: 'Which hacker type acts legally to help organizations secure systems?', opts: ['Black Hat', 'White Hat', 'Grey Hat', 'Blue Hat'], ans: 1, exp: 'White Hat hackers are authorized cybersecurity professionals who legally test and secure systems.' },
+  { q: 'Which hacker type may access systems without permission but without malicious intent?', opts: ['White Hat', 'Grey Hat', 'Red Hat', 'Green Hat'], ans: 1, exp: 'Grey Hat hackers operate in a middle ground — accessing systems without permission but not causing harm.' },
+  { q: 'A Red Hat Hacker is known for', opts: ['Creating malware for profit.', 'Aggressively stopping black hat hackers.', 'Learning hacking as a beginner.', 'Ethical penetration testing.'], ans: 1, exp: 'Red Hat hackers aggressively fight back against Black Hat hackers, often using offensive countermeasures.' },
+  { q: 'Phases of Ethical Hacking do NOT include', opts: ['Reconnaissance', 'Scanning', 'System destruction', 'Reporting and analysis'], ans: 2, exp: 'System destruction is not a phase of ethical hacking — the goal is to identify vulnerabilities, not cause damage.' },
+  { q: 'Which of the following is an AI-powered attack?', opts: ['Ransomware 2.0', 'Deepfake phishing', 'OS downgrade attack', 'Firmware exploit'], ans: 1, exp: 'Deepfake phishing uses AI to generate convincing fake audio or video to deceive targets.' },
+  { q: 'Ransomware 2.0 is known for', opts: ['Encrypting files only.', 'Encrypting and exfiltrating data for double/triple extortion.', 'Exploiting network devices.', 'Downgrading OS.'], ans: 1, exp: 'Ransomware 2.0 not only encrypts data but also steals it, enabling double or triple extortion tactics.' },
+  { q: 'IoT Exploits typically involve', opts: ['Social engineering only.', 'Insecure devices used for attacks or botnets.', 'Application layer bypass.', 'Red Hat hacking.'], ans: 1, exp: 'IoT exploits target insecure connected devices and often recruit them into botnets for larger attacks.' },
+  { q: 'Zero-day exploits are', opts: ['Known vulnerabilities with patches.', 'Unknown vulnerabilities with no patches available.', 'OS downgrade techniques.', 'Only web application issues.'], ans: 1, exp: 'Zero-day exploits target previously unknown vulnerabilities for which no patch exists yet.' },
+  { q: 'Advanced WAF bypass attacks target ......', opts: ['Operating System.', 'Web applications.', 'IoT devices.', 'Firmware only.'], ans: 1, exp: 'WAF (Web Application Firewall) bypass attacks specifically target web applications by evading firewall rules.' },
+  { q: 'National Cyber Security Policy (NCSP) 2013 aims to', opts: ['Increase internet speed in India.', 'Protect public and private infrastructure from cyber attacks.', 'Ban all social media.', 'Create malware.'], ans: 1, exp: 'NCSP 2013 was formulated to protect India\'s public and private digital infrastructure from cyber threats.' },
+  { q: 'IT Act 2000 primarily deals with', opts: ['Hardware design.', 'Electronic records, digital signatures, and cybercrime.', 'Building networks.', 'Installing OS updates.'], ans: 1, exp: 'The IT Act 2000 provides a legal framework for electronic records, digital signatures, and cybercrime in India.' },
+  { q: 'The Digital Personal Data Protection Act (DPDP) 2023 ensures', opts: ['Free access to all data.', 'Lawful processing of personal data with consent.', 'Deletion of all user data automatically.', 'Encourages phishing attacks.'], ans: 1, exp: 'The DPDP Act 2023 mandates that personal data must be processed lawfully with the individual\'s consent.' },
+  { q: 'CCPWC Scheme (2018) focuses on ......', opts: ['Cybercrime prevention against women and children.', 'Reducing malware attacks.', 'Ethical hacking training only.', 'IoT security.'], ans: 0, exp: 'The CCPWC (Cyber Crime Prevention against Women and Children) scheme addresses online crimes targeting women and children.' },
+  { q: 'Which section of IT Act 2000 deals with hacking and computer offenses?', opts: ['Section 43', 'Section 66', 'Section 72A', 'Section 69'], ans: 1, exp: 'Section 66 of the IT Act 2000 deals with computer-related offenses including hacking.' },
+  { q: 'Forensic duplication is necessary because', opts: ['To save storage space.', 'To preserve the original evidence while performing analysis.', 'To format drives.', 'To speed-up software installation.'], ans: 1, exp: 'Forensic duplication creates an exact copy so analysis is done on the copy, keeping original evidence intact.' },
+  { q: 'Which tool is widely used for forensic imaging?', opts: ['Wireshark', 'EnCase', 'MS-Excel', 'Notepad'], ans: 1, exp: 'EnCase is a widely used professional tool for forensic imaging and digital evidence analysis.' },
+  { q: 'Forensic triage is performed to ......', opts: ['Repair broken hardware.', 'Quickly assess and prioritize evidence.', 'Install antivirus software.', 'Encrypt files.'], ans: 1, exp: 'Forensic triage rapidly assesses a scene or device to prioritize which evidence needs immediate attention.' },
+  { q: 'Metadata in digital evidence includes ......', opts: ['Data about data (creation time, author, last modified).', 'File content only.', 'File size only.', 'IP addresses only.'], ans: 0, exp: 'Metadata is data about data — it includes file creation time, author, last modified date, and other attributes.' },
+  { q: 'Imaging a storage device ensures ......', opts: ['Deletion of all files.', 'An exact bit-by-bit copy of data.', 'Faster internet speed.', 'Encryption of files.'], ans: 1, exp: 'Forensic imaging creates a bit-by-bit replica of a storage device, capturing all data including deleted files.' },
+  { q: 'Hashing in digital forensics is used to', opts: ['Compress data.', 'Verify integrity of digital evidence.', 'Encrypt emails.', 'Convert files to PDFs.'], ans: 1, exp: 'Hashing generates a unique fingerprint of data to verify that evidence has not been altered.' },
+  { q: 'Which model emphasizes legal admissibility of evidence from start to end?', opts: ['DFRWS', 'Live Forensic Model', 'IDIP', 'EEDIP'], ans: 3, exp: 'EEDIP emphasizes maintaining legal admissibility throughout the entire forensic investigation process.' },
+  { q: 'The "Preservation" phase in any forensic model involves ......', opts: ['Collecting evidence and maintaining chain of custody.', 'Writing reports only.', 'Installing software patches.', 'Monitoring network traffic.'], ans: 0, exp: 'Preservation involves securing and maintaining evidence with a documented chain of custody.' },
+  { q: 'Which model is used for real-time or live forensic analysis?', opts: ['DFRWS', 'Live Forensic Model', 'IDIP', 'ADFM'], ans: 1, exp: 'The Live Forensic Model is specifically designed for real-time analysis of active, running systems.' },
+  { q: 'Foot printing in ethical hacking is done to', opts: ['Plant malware.', 'Gather preliminary information about the target.', 'Delete user accounts.', 'Crack passwords only.'], ans: 1, exp: 'Footprinting is the reconnaissance phase where an ethical hacker gathers information about the target system.' },
+  { q: 'Scanning in hacking helps to', opts: ['Exploit vulnerabilities.', 'Identify open ports, services, and weak points.', 'Encrypt the network.', 'Create a backup.'], ans: 1, exp: 'Scanning identifies open ports, running services, and potential vulnerabilities in the target system.' },
+  { q: 'Enumeration phase involves', opts: ['Listing potential targets and system details.', 'Installing antivirus.', 'Performing backups.', 'Writing reports only.'], ans: 0, exp: 'Enumeration extracts detailed information about system users, groups, shares, and services.' },
+  { q: 'Post-exploitation phase is for', opts: ['Restoring system data.', 'Maintaining access, covering tracks, and extracting data.', 'Scanning the system.', 'Running antivirus.'], ans: 1, exp: 'Post-exploitation involves maintaining access, extracting valuable data, and covering evidence of the intrusion.' },
+  { q: 'Black Hat hackers are ......', opts: ['Legal testers of systems.', 'Malicious hackers exploiting vulnerabilities for personal gain.', 'Students learning hacking.', 'Cybersecurity officers.'], ans: 1, exp: 'Black Hat hackers illegally break into systems for personal gain, causing damage or stealing data.' },
+  { q: 'Blue Hat hackers are usually', opts: ['Internal corporate testers before software release.', 'Malicious hackers.', 'Government hackers.', 'Script kiddies.'], ans: 0, exp: 'Blue Hat hackers are typically external security professionals hired to test software before its release.' },
+  { q: 'Script Kiddies are ......', opts: ['Experienced hackers.', 'Unskilled attackers using pre-made tools.', 'Government cybersecurity professionals.', 'AI-based attack tools.'], ans: 1, exp: 'Script Kiddies are unskilled individuals who use existing hacking tools without understanding how they work.' },
+  { q: 'Hacktivists are motivated by', opts: ['Money.', 'Political or social causes.', 'Corporate espionage.', 'Virus creation.'], ans: 1, exp: 'Hacktivists use hacking as a form of activism to promote political or social agendas.' },
+  { q: 'State-sponsored hackers are ......', opts: ['Ethical testers.', 'Government-backed attackers for espionage or cyberwarfare.', 'Students learning hacking.', 'Penetration testers.'], ans: 1, exp: 'State-sponsored hackers are funded by governments to conduct espionage, sabotage, or cyberwarfare.' },
+  { q: 'Phishing attacks aim to', opts: ['Send spam.', 'Trick users into revealing sensitive information.', 'Encrypt files.', 'Scan networks.'], ans: 1, exp: 'Phishing uses deceptive messages to trick users into revealing passwords, credentials, or personal data.' },
+  { q: 'Ransomware attacks primarily involve', opts: ['Stealing identities.', 'Encrypting user data and demanding ransom.', 'Crashing websites.', 'Spamming emails.'], ans: 1, exp: 'Ransomware encrypts a victim\'s data and demands payment for the decryption key.' },
+  { q: 'IoT Botnets are used to', opts: ['Launch DDoS attacks.', 'Encrypt files.', 'Test network speed.', 'Clean devices.'], ans: 0, exp: 'IoT botnets recruit compromised IoT devices to launch large-scale Distributed Denial of Service attacks.' },
+  { q: 'Malware is ......', opts: ['Authorized software.', 'Malicious software designed to disrupt or damage systems.', 'Antivirus software.', 'Operating system upgrade.'], ans: 1, exp: 'Malware is any malicious software designed to harm, disrupt, or gain unauthorized access to computer systems.' },
+  { q: 'Zero-day attacks are dangerous because', opts: ['They use old vulnerabilities.', 'There is no patch available yet.', 'They are easy to prevent.', 'They target only students.'], ans: 1, exp: 'Zero-day attacks exploit unknown vulnerabilities before developers have a chance to create and release a fix.' },
+  { q: 'The IT (Amendment) Act 2008 introduced', opts: ['Only digital signatures.', 'Cybercrime provisions including identity theft, phishing, and cyber terrorism.', 'Internet connectivity rules.', 'Hardware standards.'], ans: 1, exp: 'The IT Amendment Act 2008 expanded the original IT Act to cover identity theft, phishing, and cyber terrorism.' },
+  { q: 'Digital Personal Data Protection Act (DPDP) 2023 replaced ......', opts: ['IT Act 2000 completely.', 'Some provisions related to personal data protection under IT Act.', 'Only copyright laws.', 'Cybercrime sections.'], ans: 1, exp: 'DPDP 2023 replaced specific personal data protection provisions in the IT Act rather than replacing it entirely.' },
+  { q: 'Cybercrime against women and children is covered under ......', opts: ['IT Act Section 43.', 'IT Act Section 66A/66B & CCPWC Scheme.', 'DPDP Act only.', 'NCSP only.'], ans: 1, exp: 'Cybercrimes targeting women and children are addressed under IT Act Section 66A/66B and the CCPWC Scheme.' },
+  { q: 'Which law mandates consent for collecting personal data?', opts: ['IT Act 2000', 'DPDP Act 2023', 'CCPWC Scheme', 'NCSP 2013'], ans: 1, exp: 'The DPDP Act 2023 specifically requires informed consent before collecting and processing personal data.' },
+  { q: 'NCSP 2013 was formulated by ......', opts: ['UNESCO.', 'Government of India.', 'Private companies.', 'Ethical hackers.'], ans: 1, exp: 'The National Cyber Security Policy 2013 was formulated and released by the Government of India.' },
+
+];
+
+    // --- Shuffle helper ---
+    function shuffle(arr) {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    // Randomize question order; also randomize each question's option order
+    // and track where the correct answer ended up.
+    const shuffledQuestions = shuffle(quizData).map(item => {
+        const correctText = item.opts[item.ans];
+        const shuffledOpts = shuffle(item.opts);
+        const newAnsIndex = shuffledOpts.indexOf(correctText);
+        return { ...item, opts: shuffledOpts, ans: newAnsIndex, correctText };
+    });
+
+    const qList = document.getElementById('questions-list');
+
+    // Build quiz
+    shuffledQuestions.forEach((item, i) => {
+        const div = document.createElement('div');
+        div.className = 'q-block';
+        div.innerHTML = `
+            <div class="q-number">Question ${i + 1} of ${shuffledQuestions.length}</div>
+            <span class="q-text">${item.q}</span>
+            ${item.opts.map((o, oi) => `
+                <input type="radio" name="q${i}" id="q${i}o${oi}" value="${oi}">
+                <label class="opt-label" for="q${i}o${oi}">
+                    <span class="radio-dot"></span>${o}
+                </label>
+            `).join('')}
+        `;
+        qList.appendChild(div);
+    });
+
+    // Progress bar
+    shuffledQuestions.forEach((_, i) => {
+        qList.querySelectorAll(`input[name="q${i}"]`).forEach(radio => {
+            radio.addEventListener('change', updateProgress);
+        });
+    });
+
+    function updateProgress() {
+        const answered = shuffledQuestions.filter((_, i) =>
+            document.querySelector(`input[name="q${i}"]:checked`)
+        ).length;
+        document.getElementById('progress').style.width = `${(answered / shuffledQuestions.length) * 100}%`;
+    }
+
+    function processQuiz() {
+        let score = 0;
+        const expList = document.getElementById('explanations-list');
+        expList.innerHTML = '';
+
+        // Results shown in the same shuffled order as the quiz
+        shuffledQuestions.forEach((item, i) => {
+            const selected = document.querySelector(`input[name="q${i}"]:checked`);
+            const userVal = selected ? parseInt(selected.value) : null;
+            const isCorrect = userVal === item.ans;
+            if (isCorrect) score++;
+
+            const card = document.createElement('div');
+            card.className = 'review-card';
+            card.style.animationDelay = `${i * 0.07}s`;
+
+            let userRow = '';
+            if (userVal !== null && !isCorrect) {
+                userRow = `
+                    <div class="answer-row wrong">
+                        <div class="answer-meta">Your Answer</div>
+                        <div class="answer-text">${item.opts[userVal]}</div>
+                    </div>
+                `;
+            }
+
+            card.innerHTML = `
+                <span class="q-text">${i + 1}. ${item.q}</span>
+                ${userRow}
+                <div class="answer-row correct">
+                    <div class="answer-meta">Correct Answer</div>
+                    <div class="answer-text">${item.correctText}</div>
+                </div>
+                <div class="explanation">${item.exp}</div>
+            `;
+            expList.appendChild(card);
+        });
+
+        document.getElementById('quiz-ui').style.display = 'none';
+        document.getElementById('review-section').style.display = 'block';
+
+        const pct = Math.round((score / shuffledQuestions.length) * 100);
+        document.getElementById('final-score').innerHTML = `
+            <span class="score-val">${score} / ${shuffledQuestions.length}</span> correct &nbsp;·&nbsp; ${pct}%
+        `;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+</body>
+</html>

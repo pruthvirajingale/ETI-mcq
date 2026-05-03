@@ -1,0 +1,1530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 2 - Internet of Things</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0b0e;
+            --surface: #111318;
+            --surface-2: #181b22;
+            --border: #22262f;
+            --border-hover: #3a3f52;
+            --text-primary: #eef0f6;
+            --text-secondary: #9098b0;
+            --text-muted: #4a5068;
+            --accent: #00d4e8;
+            --accent-dim: rgba(0, 212, 232, 0.11);
+            --accent-glow: rgba(0, 212, 232, 0.3);
+            --correct: #00e07a;
+            --correct-dim: rgba(0, 224, 122, 0.1);
+            --wrong: #ff4d5a;
+            --wrong-dim: rgba(255, 77, 90, 0.1);
+            --radius: 10px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Sora', sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        body::before { display: none; }
+
+        .container {
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 48px 20px 80px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header { margin-bottom: 36px; }
+
+        .header-eyebrow {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent-glow);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(0.85); }
+        }
+
+        .eyebrow-text {
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+
+        h1 {
+            font-size: 1.55rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+            line-height: 1.3;
+        }
+
+        .subtitle {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+
+        .divider { display: none; }
+
+        .progress-bar {
+            height: 2px;
+            background: var(--border);
+            border-radius: 99px;
+            margin-bottom: 36px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #7c3aed);
+            border-radius: 99px;
+            transition: width 0.4s ease;
+        }
+
+        .q-block {
+            margin-bottom: 28px;
+            animation: fadeUp 0.35s ease both;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .q-block:nth-child(1) { animation-delay: 0.05s; }
+        .q-block:nth-child(2) { animation-delay: 0.1s; }
+        .q-block:nth-child(3) { animation-delay: 0.15s; }
+        .q-block:nth-child(4) { animation-delay: 0.2s; }
+        .q-block:nth-child(5) { animation-delay: 0.25s; }
+
+        .q-number {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .q-text {
+            font-size: 0.97rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 14px;
+            display: block;
+            line-height: 1.55;
+        }
+
+        /* Hide native radio */
+        input[type="radio"] { display: none; }
+
+        .opt-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 7px;
+            cursor: pointer;
+            transition: border-color 0.18s, background 0.18s, color 0.18s;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            background: var(--surface);
+        }
+
+        .opt-label:hover {
+            border-color: var(--border-hover);
+            background: var(--surface-2);
+            color: var(--text-primary);
+        }
+
+        .radio-dot { display: none; }
+
+        /* Checked — highlight the row only */
+        input[type="radio"]:checked + .opt-label {
+            border-color: var(--accent);
+            background: var(--accent-dim);
+            color: var(--text-primary);
+
+        }
+
+        /* Submit Button */
+        .btn-submit {
+            width: 100%;
+            padding: 13px;
+            background: var(--accent);
+            color: var(--bg);
+            border: none;
+            border-radius: var(--radius);
+            font-family: 'Sora', sans-serif;
+            font-size: 0.92rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.18s, transform 0.18s, box-shadow 0.18s;
+            margin-top: 8px;
+            letter-spacing: 0.01em;
+            box-shadow: 0 0 18px var(--accent-glow);
+        }
+
+        .btn-submit:hover {
+            opacity: 0.88;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 28px var(--accent-glow);
+        }
+
+        .btn-submit:active { transform: translateY(0); }
+
+        .score-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            padding: 6px 14px;
+            border-radius: 99px;
+            font-size: 0.83rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-top: 12px;
+        }
+
+        .score-val {
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .review-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 10px;
+            animation: fadeUp 0.3s ease both;
+        }
+
+        .review-card .q-text {
+            font-size: 0.93rem;
+            margin-bottom: 14px;
+        }
+
+        .answer-row {
+            padding: 8px 12px;
+            border-radius: 7px;
+            margin-bottom: 7px;
+        }
+
+        .answer-row.correct { background: var(--correct-dim); border: 1px solid rgba(0,224,122,0.18); }
+        .answer-row.wrong { background: var(--wrong-dim); border: 1px solid rgba(255,77,90,0.13); }
+
+        .answer-icon { display: none; }
+
+        .answer-meta {
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+        .answer-row.correct .answer-meta { color: var(--correct); }
+        .answer-row.wrong .answer-meta { color: var(--wrong); }
+
+        .answer-text { font-size: 0.86rem; color: var(--text-primary); font-weight: 500; }
+
+        .explanation {
+            font-size: 0.84rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+            margin-top: 4px;
+        }
+
+        .btn-retry {
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-family: 'Sora', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.18s;
+            margin-top: 20px;
+        }
+        .btn-retry:hover { border-color: var(--border-hover); color: var(--text-primary); background: var(--surface); }
+
+        #review-section { display: none; }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div id="quiz-ui">
+        <header>
+            <div class="header-eyebrow">
+                <span class="dot"></span>
+                <span class="eyebrow-text">Assessment</span>
+            </div>
+            <h1>Unit 2 - Internet of Things</h1>
+            <p class="subtitle">Select one answer for each question below.</p>
+        </header>
+        <div class="divider"></div>
+        <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+        <div id="questions-list"></div>
+        <button class="btn-submit" onclick="processQuiz()">Submit Assessment</button>
+    </div>
+
+    <div id="review-section">
+        <header>
+            <div class="header-eyebrow">
+                <span class="dot" style="background:#00e07a; box-shadow: 0 0 8px rgba(0,224,122,0.4);"></span>
+                <span class="eyebrow-text" style="color:#00e07a;">Results</span>
+            </div>
+            <h1>Assessment Complete</h1>
+            <div id="final-score" class="score-pill"></div>
+        </header>
+        <div class="divider"></div>
+        <div id="explanations-list"></div>
+        <button class="btn-retry" onclick="location.reload()">↺ &nbsp;Retake Assessment</button>
+    </div>
+
+</div>
+
+<script>
+    const quizData = [
+   {
+    q: "Internet of Things (IoT) refers to:",
+    opts: [
+      "Network of computers only",
+      "Network of interconnected physical devices",
+      "Network of mobile phones",
+      "Network of servers"
+    ],
+    ans: 1,
+    exp: "IoT refers to a network of interconnected physical devices."
+  },
+  {
+    q: "IoT mainly enables:",
+    opts: [
+      "Manual data processing",
+      "Machine-to-machine communication",
+      "Offline data storage",
+      "Software development"
+    ],
+    ans: 1,
+    exp: "IoT mainly enables machine-to-machine communication."
+  },
+  {
+    q: "The term \"Internet of Things\" was coined by:",
+    opts: [
+      "Bill Gates",
+      "Kevin Ashton",
+      "Tim Berners-Lee",
+      "Mark Zuckerberg"
+    ],
+    ans: 1,
+    exp: "Kevin Ashton coined the term Internet of Things."
+  },
+  {
+    q: "IoT devices communicate using:",
+    opts: [
+      "Only wired networks",
+      "Only wireless networks",
+      "Internet protocols",
+      "Optical fibers only"
+    ],
+    ans: 2,
+    exp: "IoT devices communicate using internet protocols."
+  },
+  {
+    q: "IoT focuses on:",
+    opts: [
+      "Human-to-human communication",
+      "Human-to-machine communication",
+      "Machine-to-machine communication",
+      "Human-to-human interaction"
+    ],
+    ans: 2,
+    exp: "IoT mainly focuses on machine-to-machine communication."
+  },
+  {
+    q: "Which of the following is a key characteristic of IoT?",
+    opts: [
+      "Scalability",
+      "Isolation",
+      "Manual control",
+      "Standalone operation"
+    ],
+    ans: 0,
+    exp: "Scalability is a key characteristic of IoT."
+  },
+  {
+    q: "IoT systems are generally:",
+    opts: [
+      "Centralized",
+      "Distributed",
+      "Offline",
+      "Isolated"
+    ],
+    ans: 1,
+    exp: "IoT systems are generally distributed."
+  },
+  {
+    q: "Which characteristic allows IoT devices to adapt to changes?",
+    opts: [
+      "Intelligence",
+      "Interoperability",
+      "Automation",
+      "Heterogeneity"
+    ],
+    ans: 0,
+    exp: "Intelligence allows IoT devices to adapt to changes."
+  },
+  {
+    q: "Heterogeneity in IoT refers to:",
+    opts: [
+      "Same hardware devices",
+      "Different types of devices",
+      "Same communication protocol",
+      "Same operating system"
+    ],
+    ans: 1,
+    exp: "Heterogeneity refers to different types of devices."
+  },
+  {
+    q: "Interoperability means:",
+    opts: [
+      "Devices work independently",
+      "Devices communicate with different systems",
+      "Devices operate offline",
+      "Devices store data locally"
+    ],
+    ans: 1,
+    exp: "Interoperability means devices communicate with different systems."
+  },
+  {
+    q: "Which is NOT a feature of IoT?",
+    opts: [
+      "Connectivity",
+      "Sensing",
+      "Manual data entry",
+      "Automation"
+    ],
+    ans: 2,
+    exp: "Manual data entry is not a feature of IoT."
+  },
+  {
+    q: "Smart home is an application of:",
+    opts: [
+      "Cloud computing",
+      "Artificial Intelligence",
+      "Internet of Things",
+      "Big Data"
+    ],
+    ans: 2,
+    exp: "Smart home is an application of IoT."
+  },
+  {
+    q: "IoT in healthcare is used for:",
+    opts: [
+      "Online gaming",
+      "Remote patient monitoring",
+      "Social networking",
+      "File sharing"
+    ],
+    ans: 1,
+    exp: "IoT in healthcare is used for remote patient monitoring."
+  },
+  {
+    q: "Smart cities use IoT for:",
+    opts: [
+      "Traffic management",
+      "Online education only",
+      "Gaming",
+      "Word processing"
+    ],
+    ans: 0,
+    exp: "Smart cities use IoT for traffic management."
+  },
+  {
+    q: "Industrial IoT (IIoT) is mainly used in:",
+    opts: [
+      "Agriculture",
+      "Manufacturing",
+      "Education",
+      "Entertainment"
+    ],
+    ans: 1,
+    exp: "IIoT is mainly used in manufacturing."
+  },
+  {
+    q: "One major advantage of IoT is:",
+    opts: [
+      "Increased manual work",
+      "Improved efficiency",
+      "Reduced connectivity",
+      "Higher complexity only"
+    ],
+    ans: 1,
+    exp: "IoT improves efficiency."
+  },
+  {
+    q: "IoT helps in:",
+    opts: [
+      "Real-time monitoring",
+      "Offline processing",
+      "Manual reporting",
+      "Reducing automation"
+    ],
+    ans: 0,
+    exp: "IoT helps in real-time monitoring."
+  },
+  {
+    q: "A major limitation of IoT is:",
+    opts: [
+      "High accuracy",
+      "Security issues",
+      "Automation",
+      "Connectivity"
+    ],
+    ans: 1,
+    exp: "Security issues are a major limitation of IoT."
+  },
+  {
+    q: "IoT devices are vulnerable mainly due to:",
+    opts: [
+      "Large storage",
+      "Low processing power",
+      "High cost",
+      "Offline usage"
+    ],
+    ans: 1,
+    exp: "Low processing power makes IoT devices vulnerable."
+  },
+  {
+    q: "Which is a limitation of IoT?",
+    opts: [
+      "Scalability",
+      "Interoperability",
+      "Privacy concerns",
+      "Automation"
+    ],
+    ans: 2,
+    exp: "Privacy concerns are a limitation of IoT."
+  },
+  {
+    q: "Physical design of IoT includes:",
+    opts: [
+      "Data analytics",
+      "Sensors and actuators",
+      "Cloud services",
+      "Software models"
+    ],
+    ans: 1,
+    exp: "Physical design includes sensors and actuators."
+  },
+  {
+    q: "Sensors in IoT are used to:",
+    opts: [
+      "Control devices",
+      "Process data",
+      "Sense physical parameters",
+      "Store data"
+    ],
+    ans: 2,
+    exp: "Sensors are used to sense physical parameters."
+  },
+  {
+    q: "Actuators are responsible for:",
+    opts: [
+      "Data sensing",
+      "Data storage",
+      "Physical action",
+      "Data analysis"
+    ],
+    ans: 2,
+    exp: "Actuators perform physical actions."
+  },
+  {
+    q: "Which is an example of a sensor?",
+    opts: [
+      "Motor",
+      "LED",
+      "Temperature sensor",
+      "Relay"
+    ],
+    ans: 2,
+    exp: "Temperature sensor is an example of a sensor."
+  },
+  {
+    q: "Which device converts electrical signals into physical action?",
+    opts: [
+      "Sensor",
+      "Actuator",
+      "Router",
+      "Gateway"
+    ],
+    ans: 1,
+    exp: "Actuators convert electrical signals into physical action."
+  },
+  {
+    q: "Logical design focuses on:",
+    opts: [
+      "Hardware components",
+      "Communication models",
+      "Power supply",
+      "Wiring"
+    ],
+    ans: 1,
+    exp: "Logical design focuses on communication models."
+  },
+  {
+    q: "Which is a communication model in IoT?",
+    opts: [
+      "Client-server",
+      "Request-response",
+      "Publish-subscribe",
+      "All of the above"
+    ],
+    ans: 3,
+    exp: "All are communication models used in IoT."
+  },
+  {
+    q: "REST architecture is based on:",
+    opts: [
+      "SOAP",
+      "HTTP",
+      "FTP",
+      "SMTP"
+    ],
+    ans: 1,
+    exp: "REST architecture is based on HTTP."
+  },
+  {
+    q: "Logical design includes:",
+    opts: [
+      "Sensors",
+      "Actuators",
+      "IoT functional blocks",
+      "Batteries"
+    ],
+    ans: 2,
+    exp: "Logical design includes IoT functional blocks."
+  },
+  {
+    q: "Which protocol is commonly used in IoT?",
+    opts: [
+      "HTTP",
+      "MQTT",
+      "CoAP",
+      "All of the above"
+    ],
+    ans: 3,
+    exp: "HTTP, MQTT, and CoAP are commonly used IoT protocols."
+  },
+
+  {
+  q: "Basic IoT architecture consists of:",
+  opts: [
+    "One layer",
+    "Two layers",
+    "Three layers",
+    "Four layers"
+  ],
+  ans: 2,
+  exp: "Basic IoT architecture consists of three layers."
+},
+{
+  q: "The perception layer is responsible for:",
+  opts: [
+    "Data processing",
+    "Data sensing",
+    "Data storage",
+    "Data visualization"
+  ],
+  ans: 1,
+  exp: "The perception layer is responsible for data sensing."
+},
+{
+  q: "Network layer handles:",
+  opts: [
+    "Sensing",
+    "Data transmission",
+    "Data storage",
+    "Data visualization"
+  ],
+  ans: 1,
+  exp: "The network layer handles data transmission."
+},
+{
+  q: "Application layer provides:",
+  opts: [
+    "Sensors",
+    "Communication",
+    "User services",
+    "Networking"
+  ],
+  ans: 2,
+  exp: "The application layer provides user services."
+},
+{
+  q: "Middleware is used for:",
+  opts: [
+    "Hardware control",
+    "Data abstraction",
+    "Power management",
+    "Signal amplification"
+  ],
+  ans: 1,
+  exp: "Middleware is used for data abstraction."
+},
+{
+  q: "Temperature sensor measures:",
+  opts: [
+    "Pressure",
+    "Light",
+    "Heat",
+    "Motion"
+  ],
+  ans: 2,
+  exp: "Temperature sensors measure heat."
+},
+{
+  q: "Which sensor is used to detect motion?",
+  opts: [
+    "PIR sensor",
+    "LDR",
+    "Gas sensor",
+    "Humidity sensor"
+  ],
+  ans: 0,
+  exp: "PIR sensor is used to detect motion."
+},
+{
+  q: "LDR sensor detects:",
+  opts: [
+    "Light",
+    "Sound",
+    "Gas",
+    "Pressure"
+  ],
+  ans: 0,
+  exp: "LDR sensor detects light."
+},
+{
+  q: "Humidity sensor measures:",
+  opts: [
+    "Air pressure",
+    "Moisture",
+    "Temperature",
+    "Light"
+  ],
+  ans: 1,
+  exp: "Humidity sensor measures moisture."
+},
+{
+  q: "Gas sensors are used to detect:",
+  opts: [
+    "Temperature",
+    "Toxic gases",
+    "Motion",
+    "Pressure"
+  ],
+  ans: 1,
+  exp: "Gas sensors are used to detect toxic gases."
+},
+{
+  q: "An actuator example is:",
+  opts: [
+    "Sensor",
+    "Motor",
+    "Microcontroller",
+    "Router"
+  ],
+  ans: 1,
+  exp: "Motor is an example of an actuator."
+},
+{
+  q: "Servo motors are used for:",
+  opts: [
+    "Sensing",
+    "Precise control of movement",
+    "Data storage",
+    "Communication"
+  ],
+  ans: 1,
+  exp: "Servo motors are used for precise control of movement."
+},
+{
+  q: "Relays are used to:",
+  opts: [
+    "Sense voltage",
+    "Control high-power devices",
+    "Store data",
+    "Process data"
+  ],
+  ans: 1,
+  exp: "Relays are used to control high-power devices."
+},
+{
+  q: "Which is NOT an actuator?",
+  opts: [
+    "Motor",
+    "Relay",
+    "LED",
+    "Temperature sensor"
+  ],
+  ans: 3,
+  exp: "Temperature sensor is not an actuator."
+},
+{
+  q: "Actuators receive signals from:",
+  opts: [
+    "Sensors",
+    "Microcontrollers",
+    "Routers",
+    "Gateways"
+  ],
+  ans: 1,
+  exp: "Actuators receive signals from microcontrollers."
+},
+{
+  q: "5G stands for:",
+  opts: [
+    "Fifth Generation Network",
+    "Five Gigabit Network",
+    "Global Generation",
+    "General Gateway"
+  ],
+  ans: 0,
+  exp: "5G stands for Fifth Generation Network."
+},
+{
+  q: "5G provides:",
+  opts: [
+    "Low latency",
+    "High latency",
+    "Low speed",
+    "Limited devices"
+  ],
+  ans: 0,
+  exp: "5G provides low latency."
+},
+{
+  q: "5G supports:",
+  opts: [
+    "Few devices",
+    "Massive IoT connectivity",
+    "Offline communication",
+    "Wired networks only"
+  ],
+  ans: 1,
+  exp: "5G supports massive IoT connectivity."
+},
+{
+  q: "One application of 5G in IoT is:",
+  opts: [
+    "Smart factories",
+    "Manual billing",
+    "Offline storage",
+    "Desktop computing"
+  ],
+  ans: 0,
+  exp: "Smart factories are an application of 5G in IoT."
+},
+{
+  q: "5G is ideal for:",
+  opts: [
+    "High latency applications",
+    "Real-time applications",
+    "Low bandwidth services",
+    "Offline systems"
+  ],
+  ans: 1,
+  exp: "5G is ideal for real-time applications."
+},
+
+{
+  q: "NGN stands for:",
+  opts: [
+    "New Generation Network",
+    "Next Generation Network",
+    "Network Gateway Node",
+    "National Grid Network"
+  ],
+  ans: 1,
+  exp: "NGN stands for Next Generation Network."
+},
+{
+  q: "NGN is based on:",
+  opts: [
+    "Circuit switching",
+    "Packet switching",
+    "Manual switching",
+    "Optical switching only"
+  ],
+  ans: 1,
+  exp: "NGN is based on packet switching."
+},
+{
+  q: "NGN separates:",
+  opts: [
+    "Hardware and software",
+    "Service and transport layers",
+    "Data and control",
+    "User and device"
+  ],
+  ans: 1,
+  exp: "NGN separates service and transport layers."
+},
+{
+  q: "Main feature of NGN is:",
+  opts: [
+    "Convergence",
+    "Isolation",
+    "Manual operation",
+    "Offline mode"
+  ],
+  ans: 0,
+  exp: "Convergence is the main feature of NGN."
+},
+{
+  q: "NGN supports:",
+  opts: [
+    "Voice only",
+    "Data only",
+    "Multimedia services",
+    "Fax only"
+  ],
+  ans: 2,
+  exp: "NGN supports multimedia services."
+},
+{
+  q: "Media Gateway converts:",
+  opts: [
+    "Digital to analog signals",
+    "Packet to circuit switched traffic",
+    "Data to voice",
+    "Video to audio"
+  ],
+  ans: 1,
+  exp: "Media Gateway converts packet to circuit switched traffic."
+},
+{
+  q: "Media Gateway Controller controls:",
+  opts: [
+    "Media Gateway",
+    "Application Server",
+    "Routers",
+    "Switches"
+  ],
+  ans: 0,
+  exp: "Media Gateway Controller controls the Media Gateway."
+},
+{
+  q: "Application Server provides:",
+  opts: [
+    "Transport services",
+    "Control services",
+    "End-user services",
+    "Switching services"
+  ],
+  ans: 2,
+  exp: "Application Server provides end-user services."
+},
+{
+  q: "MG stands for:",
+  opts: [
+    "Media Gateway",
+    "Mobile Gateway",
+    "Message Gateway",
+    "Main Gateway"
+  ],
+  ans: 0,
+  exp: "MG stands for Media Gateway."
+},
+{
+  q: "MGC stands for:",
+  opts: [
+    "Media Gateway Controller",
+    "Mobile Gateway Controller",
+    "Main Gateway Controller",
+    "Message Gateway Controller"
+  ],
+  ans: 0,
+  exp: "MGC stands for Media Gateway Controller."
+},
+{
+  q: "Cloud computing provides:",
+  opts: [
+    "Local storage",
+    "On-demand resources",
+    "Manual services",
+    "Offline processing"
+  ],
+  ans: 1,
+  exp: "Cloud computing provides on-demand resources."
+},
+{
+  q: "Cloud-based IoT architecture consists of:",
+  opts: [
+    "Sensors only",
+    "Cloud only",
+    "IoT devices and cloud",
+    "Users only"
+  ],
+  ans: 2,
+  exp: "Cloud-based IoT architecture consists of IoT devices and cloud."
+},
+{
+  q: "Cloud helps IoT by providing:",
+  opts: [
+    "Storage and processing",
+    "Sensors",
+    "Actuators",
+    "Power supply"
+  ],
+  ans: 0,
+  exp: "Cloud helps IoT by providing storage and processing."
+},
+{
+  q: "Which cloud service model is used for IoT platforms?",
+  opts: [
+    "SaaS",
+    "PaaS",
+    "IaaS",
+    "All of the above"
+  ],
+  ans: 3,
+  exp: "All cloud service models can be used for IoT platforms."
+},
+{
+  q: "Cloud enables IoT for:",
+  opts: [
+    "Scalability",
+    "Data analytics",
+    "Remote access",
+    "All of the above"
+  ],
+  ans: 3,
+  exp: "Cloud enables scalability, analytics, and remote access."
+},
+{
+  q: "In cloud-based IoT, devices send data to:",
+  opts: [
+    "Local PC",
+    "Cloud server",
+    "Mobile phone",
+    "Router only"
+  ],
+  ans: 1,
+  exp: "Devices send data to cloud servers."
+},
+{
+  q: "Cloud acts as:",
+  opts: [
+    "Sensor",
+    "Actuator",
+    "Data processing unit",
+    "Power source"
+  ],
+  ans: 2,
+  exp: "Cloud acts as a data processing unit."
+},
+{
+  q: "Which is an advantage of cloud-based IoT?",
+  opts: [
+    "Limited storage",
+    "High cost",
+    "Elastic resources",
+    "Manual processing"
+  ],
+  ans: 2,
+  exp: "Elastic resources are an advantage of cloud-based IoT."
+},
+{
+  q: "Cloud enables:",
+  opts: [
+    "Centralized management",
+    "Offline access",
+    "Manual updates",
+    "Hardware dependency"
+  ],
+  ans: 0,
+  exp: "Cloud enables centralized management."
+},
+{
+  q: "Which is a challenge in cloud-based IoT?",
+  opts: [
+    "Scalability",
+    "Security",
+    "Accessibility",
+    "Storage"
+  ],
+  ans: 1,
+  exp: "Security is a challenge in cloud-based IoT."
+},
+
+{
+  q: "IoT mainly relies on:",
+  opts: [
+    "Sensors and connectivity",
+    "Printers",
+    "Scanners",
+    "Cameras only"
+  ],
+  ans: 0,
+  exp: "IoT mainly relies on sensors and connectivity."
+},
+{
+  q: "Which protocol is lightweight for IoT?",
+  opts: [
+    "FTP",
+    "SMTP",
+    "MQTT",
+    "SNMP"
+  ],
+  ans: 2,
+  exp: "MQTT is a lightweight protocol designed for IoT."
+},
+{
+  q: "Edge computing reduces:",
+  opts: [
+    "Security",
+    "Latency",
+    "Storage",
+    "Accuracy"
+  ],
+  ans: 1,
+  exp: "Edge computing reduces latency."
+},
+{
+  q: "Gateway in IoT is used for:",
+  opts: [
+    "Data sensing",
+    "Protocol conversion",
+    "Data storage",
+    "Power supply"
+  ],
+  ans: 1,
+  exp: "Gateway is used for protocol conversion."
+},
+{
+  q: "Smart agriculture uses IoT for:",
+  opts: [
+    "Soil monitoring",
+    "Online shopping",
+    "Gaming",
+    "Education"
+  ],
+  ans: 0,
+  exp: "Smart agriculture uses IoT for soil monitoring."
+},
+{
+  q: "IoT data is usually:",
+  opts: [
+    "Structured only",
+    "Unstructured only",
+    "Semi-structured",
+    "Mixed"
+  ],
+  ans: 3,
+  exp: "IoT data is usually mixed."
+},
+{
+  q: "Big data analytics is important in IoT because:",
+  opts: [
+    "Large data volume",
+    "Small data size",
+    "Offline data",
+    "Manual data"
+  ],
+  ans: 0,
+  exp: "Big data analytics is important because IoT generates large data volumes."
+},
+{
+  q: "Which layer ensures security in IoT?",
+  opts: [
+    "Perception layer",
+    "Network layer",
+    "Application layer",
+    "All layers"
+  ],
+  ans: 3,
+  exp: "All layers help ensure security in IoT."
+},
+{
+  q: "Device management in IoT includes:",
+  opts: [
+    "Monitoring",
+    "Firmware updates",
+    "Configuration",
+    "All of the above"
+  ],
+  ans: 3,
+  exp: "Device management includes monitoring, updates, and configuration."
+},
+{
+  q: "IoT security includes:",
+  opts: [
+    "Authentication",
+    "Authorization",
+    "Encryption",
+    "All of the above"
+  ],
+  ans: 3,
+  exp: "IoT security includes authentication, authorization, and encryption."
+},
+{
+  q: "IoT devices are usually:",
+  opts: [
+    "High power devices",
+    "Low power devices",
+    "Offline devices",
+    "Standalone systems"
+  ],
+  ans: 1,
+  exp: "IoT devices are usually low power devices."
+},
+{
+  q: "Which wireless technology is used in IoT?",
+  opts: [
+    "Bluetooth",
+    "ZigBee",
+    "Wi-Fi",
+    "All of the above"
+  ],
+  ans: 3,
+  exp: "Bluetooth, ZigBee, and Wi-Fi are all used in IoT."
+},
+{
+  q: "Smart wearables are examples of:",
+  opts: [
+    "IIoT",
+    "Consumer IoT",
+    "Military IoT",
+    "Space IoT"
+  ],
+  ans: 1,
+  exp: "Smart wearables are examples of Consumer IoT."
+},
+{
+  q: "Data from sensors is first sent to:",
+  opts: [
+    "Actuators",
+    "Gateway",
+    "Application layer",
+    "Cloud only"
+  ],
+  ans: 1,
+  exp: "Sensor data is first sent to the gateway."
+},
+{
+  q: "Fog computing is closer to:",
+  opts: [
+    "Cloud",
+    "End devices",
+    "Data centers",
+    "Internet backbone"
+  ],
+  ans: 1,
+  exp: "Fog computing is closer to end devices."
+},
+{
+  q: "IoT enables predictive maintenance by:",
+  opts: [
+    "Manual inspection",
+    "Real-time monitoring",
+    "Offline analysis",
+    "Human intervention"
+  ],
+  ans: 1,
+  exp: "IoT enables predictive maintenance through real-time monitoring."
+},
+{
+  q: "Which factor is critical in IoT device selection?",
+  opts: [
+    "Cost",
+    "Power consumption",
+    "Connectivity",
+    "All of the above"
+  ],
+  ans: 3,
+  exp: "Cost, power consumption, and connectivity are all critical factors."
+},
+{
+  q: "IPv6 is important for IoT because:",
+  opts: [
+    "Larger address space",
+    "Faster speed",
+    "Less security",
+    "Manual configuration"
+  ],
+  ans: 0,
+  exp: "IPv6 provides a larger address space for IoT devices."
+},
+{
+  q: "Which is NOT an IoT application area?",
+  opts: [
+    "Smart healthcare",
+    "Smart transportation",
+    "Smart gaming console",
+    "Smart energy"
+  ],
+  ans: 2,
+  exp: "Smart gaming console is not a major IoT application area."
+},
+{
+  q: "Real-time data is crucial for:",
+  opts: [
+    "Static systems",
+    "Dynamic IoT systems",
+    "Offline systems",
+    "Manual systems"
+  ],
+  ans: 1,
+  exp: "Real-time data is crucial for dynamic IoT systems."
+},
+{
+  q: "Which layer handles user interaction?",
+  opts: [
+    "Perception",
+    "Network",
+    "Application",
+    "Middleware"
+  ],
+  ans: 2,
+  exp: "Application layer handles user interaction."
+},
+{
+  q: "IoT scalability means:",
+  opts: [
+    "Limited growth",
+    "Ability to handle more devices",
+    "Fixed size",
+    "Manual expansion"
+  ],
+  ans: 1,
+  exp: "IoT scalability means the ability to handle more devices."
+},
+{
+  q: "Which is a cloud provider?",
+  opts: [
+    "AWS",
+    "Azure",
+    "Google Cloud",
+    "All of the above"
+  ],
+  ans: 3,
+  exp: "AWS, Azure, and Google Cloud are cloud providers."
+},
+{
+  q: "Security threats in IoT include:",
+  opts: [
+    "Data breach",
+    "Device hacking",
+    "Privacy loss",
+    "All of the above"
+  ],
+  ans: 3,
+  exp: "IoT security threats include data breach, device hacking, and privacy loss."
+},
+{
+  q: "Which sensor is used in fire detection?",
+  opts: [
+    "Gas sensor",
+    "Smoke sensor",
+    "Temperature sensor",
+    "All of the above"
+  ],
+  ans: 3,
+  exp: "Gas, smoke, and temperature sensors are used in fire detection."
+},
+{
+  q: "IoT improves decision making by:",
+  opts: [
+    "Manual reports",
+    "Real-time analytics",
+    "Offline processing",
+    "Delayed response"
+  ],
+  ans: 1,
+  exp: "IoT improves decision making through real-time analytics."
+},
+{
+  q: "Which is NOT a benefit of 5G for IoT?",
+  opts: [
+    "Ultra-low latency",
+    "High device density",
+    "Limited bandwidth",
+    "High reliability"
+  ],
+  ans: 2,
+  exp: "Limited bandwidth is not a benefit of 5G for IoT."
+},
+{
+  q: "NGN supports which type of traffic?",
+  opts: [
+    "Voice",
+    "Data",
+    "Video",
+    "All of the above"
+  ],
+  ans: 3,
+  exp: "NGN supports voice, data, and video traffic."
+},
+{
+  q: "Cloud-based IoT reduces:",
+  opts: [
+    "Flexibility",
+    "Maintenance effort",
+    "Scalability",
+    "Accessibility"
+  ],
+  ans: 1,
+  exp: "Cloud-based IoT reduces maintenance effort."
+},
+{
+  q: "IoT is a combination of:",
+  opts: [
+    "Hardware only",
+    "Software only",
+    "Hardware, software, and connectivity",
+    "Networking only"
+  ],
+  ans: 2,
+  exp: "IoT is a combination of hardware, software, and connectivity."
+}
+];
+
+    // --- Shuffle helper ---
+    function shuffle(arr) {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    // Randomize question order; also randomize each question's option order
+    // and track where the correct answer ended up.
+    const shuffledQuestions = shuffle(quizData).map(item => {
+        const correctText = item.opts[item.ans];
+        const shuffledOpts = shuffle(item.opts);
+        const newAnsIndex = shuffledOpts.indexOf(correctText);
+        return { ...item, opts: shuffledOpts, ans: newAnsIndex, correctText };
+    });
+
+    const qList = document.getElementById('questions-list');
+
+    // Build quiz
+    shuffledQuestions.forEach((item, i) => {
+        const div = document.createElement('div');
+        div.className = 'q-block';
+        div.innerHTML = `
+            <div class="q-number">Question ${i + 1} of ${shuffledQuestions.length}</div>
+            <span class="q-text">${item.q}</span>
+            ${item.opts.map((o, oi) => `
+                <input type="radio" name="q${i}" id="q${i}o${oi}" value="${oi}">
+                <label class="opt-label" for="q${i}o${oi}">
+                    <span class="radio-dot"></span>${o}
+                </label>
+            `).join('')}
+        `;
+        qList.appendChild(div);
+    });
+
+    // Progress bar
+    shuffledQuestions.forEach((_, i) => {
+        qList.querySelectorAll(`input[name="q${i}"]`).forEach(radio => {
+            radio.addEventListener('change', updateProgress);
+        });
+    });
+
+    function updateProgress() {
+        const answered = shuffledQuestions.filter((_, i) =>
+            document.querySelector(`input[name="q${i}"]:checked`)
+        ).length;
+        document.getElementById('progress').style.width = `${(answered / shuffledQuestions.length) * 100}%`;
+    }
+
+    function processQuiz() {
+        let score = 0;
+        const expList = document.getElementById('explanations-list');
+        expList.innerHTML = '';
+
+        // Results shown in the same shuffled order as the quiz
+        shuffledQuestions.forEach((item, i) => {
+            const selected = document.querySelector(`input[name="q${i}"]:checked`);
+            const userVal = selected ? parseInt(selected.value) : null;
+            const isCorrect = userVal === item.ans;
+            if (isCorrect) score++;
+
+            const card = document.createElement('div');
+            card.className = 'review-card';
+            card.style.animationDelay = `${i * 0.07}s`;
+
+            let userRow = '';
+            if (userVal !== null && !isCorrect) {
+                userRow = `
+                    <div class="answer-row wrong">
+                        <div class="answer-meta">Your Answer</div>
+                        <div class="answer-text">${item.opts[userVal]}</div>
+                    </div>
+                `;
+            }
+
+            card.innerHTML = `
+                <span class="q-text">${i + 1}. ${item.q}</span>
+                ${userRow}
+                <div class="answer-row correct">
+                    <div class="answer-meta">Correct Answer</div>
+                    <div class="answer-text">${item.correctText}</div>
+                </div>
+                <div class="explanation">${item.exp}</div>
+            `;
+            expList.appendChild(card);
+        });
+
+        document.getElementById('quiz-ui').style.display = 'none';
+        document.getElementById('review-section').style.display = 'block';
+
+        const pct = Math.round((score / shuffledQuestions.length) * 100);
+        document.getElementById('final-score').innerHTML = `
+            <span class="score-val">${score} / ${shuffledQuestions.length}</span> correct &nbsp;·&nbsp; ${pct}%
+        `;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+</body>
+</html>

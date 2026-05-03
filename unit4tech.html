@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 4 - Immersive Technology and Sustainable Computing</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0b0e;
+            --surface: #111318;
+            --surface-2: #181b22;
+            --border: #22262f;
+            --border-hover: #3a3f52;
+            --text-primary: #eef0f6;
+            --text-secondary: #9098b0;
+            --text-muted: #4a5068;
+            --accent: #00d4e8;
+            --accent-dim: rgba(0, 212, 232, 0.11);
+            --accent-glow: rgba(0, 212, 232, 0.3);
+            --correct: #00e07a;
+            --correct-dim: rgba(0, 224, 122, 0.1);
+            --wrong: #ff4d5a;
+            --wrong-dim: rgba(255, 77, 90, 0.1);
+            --radius: 10px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Sora', sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        body::before { display: none; }
+
+        .container {
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 48px 20px 80px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header { margin-bottom: 36px; }
+
+        .header-eyebrow {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent-glow);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(0.85); }
+        }
+
+        .eyebrow-text {
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+
+        h1 {
+            font-size: 1.55rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+            line-height: 1.3;
+        }
+
+        .subtitle {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+
+        .divider { display: none; }
+
+        .progress-bar {
+            height: 2px;
+            background: var(--border);
+            border-radius: 99px;
+            margin-bottom: 36px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #7c3aed);
+            border-radius: 99px;
+            transition: width 0.4s ease;
+        }
+
+        .q-block {
+            margin-bottom: 28px;
+            animation: fadeUp 0.35s ease both;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .q-block:nth-child(1) { animation-delay: 0.05s; }
+        .q-block:nth-child(2) { animation-delay: 0.1s; }
+        .q-block:nth-child(3) { animation-delay: 0.15s; }
+        .q-block:nth-child(4) { animation-delay: 0.2s; }
+        .q-block:nth-child(5) { animation-delay: 0.25s; }
+
+        .q-number {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .q-text {
+            font-size: 0.97rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 14px;
+            display: block;
+            line-height: 1.55;
+        }
+
+        /* Hide native radio */
+        input[type="radio"] { display: none; }
+
+        .opt-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 7px;
+            cursor: pointer;
+            transition: border-color 0.18s, background 0.18s, color 0.18s;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            background: var(--surface);
+        }
+
+        .opt-label:hover {
+            border-color: var(--border-hover);
+            background: var(--surface-2);
+            color: var(--text-primary);
+        }
+
+        .radio-dot { display: none; }
+
+        /* Checked — highlight the row only */
+        input[type="radio"]:checked + .opt-label {
+            border-color: var(--accent);
+            background: var(--accent-dim);
+            color: var(--text-primary);
+
+        }
+
+        /* Submit Button */
+        .btn-submit {
+            width: 100%;
+            padding: 13px;
+            background: var(--accent);
+            color: var(--bg);
+            border: none;
+            border-radius: var(--radius);
+            font-family: 'Sora', sans-serif;
+            font-size: 0.92rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.18s, transform 0.18s, box-shadow 0.18s;
+            margin-top: 8px;
+            letter-spacing: 0.01em;
+            box-shadow: 0 0 18px var(--accent-glow);
+        }
+
+        .btn-submit:hover {
+            opacity: 0.88;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 28px var(--accent-glow);
+        }
+
+        .btn-submit:active { transform: translateY(0); }
+
+        .score-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            padding: 6px 14px;
+            border-radius: 99px;
+            font-size: 0.83rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-top: 12px;
+        }
+
+        .score-val {
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .review-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 10px;
+            animation: fadeUp 0.3s ease both;
+        }
+
+        .review-card .q-text {
+            font-size: 0.93rem;
+            margin-bottom: 14px;
+        }
+
+        .answer-row {
+            padding: 8px 12px;
+            border-radius: 7px;
+            margin-bottom: 7px;
+        }
+
+        .answer-row.correct { background: var(--correct-dim); border: 1px solid rgba(0,224,122,0.18); }
+        .answer-row.wrong { background: var(--wrong-dim); border: 1px solid rgba(255,77,90,0.13); }
+
+        .answer-icon { display: none; }
+
+        .answer-meta {
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+        .answer-row.correct .answer-meta { color: var(--correct); }
+        .answer-row.wrong .answer-meta { color: var(--wrong); }
+
+        .answer-text { font-size: 0.86rem; color: var(--text-primary); font-weight: 500; }
+
+        .explanation {
+            font-size: 0.84rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+            margin-top: 4px;
+        }
+
+        .btn-retry {
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-family: 'Sora', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.18s;
+            margin-top: 20px;
+        }
+        .btn-retry:hover { border-color: var(--border-hover); color: var(--text-primary); background: var(--surface); }
+
+        #review-section { display: none; }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div id="quiz-ui">
+        <header>
+            <div class="header-eyebrow">
+                <span class="dot"></span>
+                <span class="eyebrow-text">Assessment</span>
+            </div>
+            <h1>Unit 4 - Immersive Technology and Sustainable Computing</h1>
+            <p class="subtitle">Select one answer for each question below.</p>
+        </header>
+        <div class="divider"></div>
+        <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+        <div id="questions-list"></div>
+        <button class="btn-submit" onclick="processQuiz()">Submit Assessment</button>
+    </div>
+
+    <div id="review-section">
+        <header>
+            <div class="header-eyebrow">
+                <span class="dot" style="background:#00e07a; box-shadow: 0 0 8px rgba(0,224,122,0.4);"></span>
+                <span class="eyebrow-text" style="color:#00e07a;">Results</span>
+            </div>
+            <h1>Assessment Complete</h1>
+            <div id="final-score" class="score-pill"></div>
+        </header>
+        <div class="divider"></div>
+        <div id="explanations-list"></div>
+        <button class="btn-retry" onclick="location.reload()">↺ &nbsp;Retake Assessment</button>
+    </div>
+
+</div>
+
+<script>
+    const quizData = [
+   { q: 'Immersive technology refers to:', opts: ['Traditional computing', 'Technologies that create interactive digital experiences', 'Manual simulation', 'Offline applications'], ans: 1, exp: 'Immersive technology encompasses technologies that create interactive digital experiences, blending the physical and virtual worlds.' },
+  { q: 'Immersive technologies aim to:', opts: ['Reduce user interaction', 'Enhance real-world experience', 'Create engaging virtual environments', 'Replace computers'], ans: 2, exp: 'Immersive technologies are designed to create engaging virtual environments that draw users into compelling digital experiences.' },
+  { q: 'Which is NOT an immersive technology?', opts: ['AR', 'VR', 'MR', 'ERP'], ans: 3, exp: 'ERP (Enterprise Resource Planning) is a business management software system, not an immersive technology. AR, VR, and MR are all immersive technologies.' },
+  { q: 'Immersive experiences mainly involve:', opts: ['Text only', 'Audio only', 'Visual and sensory interaction', 'Paper-based content'], ans: 2, exp: 'Immersive experiences engage users through visual and sensory interaction — combining sight, sound, and touch for a compelling experience.' },
+  { q: 'Immersive technology is widely used in:', opts: ['Gaming', 'Healthcare', 'Education', 'All of the above'], ans: 3, exp: 'Immersive technology has broad applications across gaming, healthcare, education, military training, architecture, and many other sectors.' },
+  { q: 'Augmented Reality overlays:', opts: ['Virtual world on virtual world', 'Digital content on real world', 'Real world on digital world', 'Only text'], ans: 1, exp: 'AR overlays digital content — images, animations, or data — on top of the real physical world, enhancing what users see.' },
+  { q: 'AR requires:', opts: ['Head-mounted display only', 'Smartphone or smart glasses', 'Supercomputer', 'Printer'], ans: 1, exp: 'AR is accessible through everyday devices like smartphones or dedicated smart glasses that can display digital overlays on the real world.' },
+  { q: 'Example of AR application:', opts: ['Google Maps live view', 'Virtual museum', 'Online banking', 'Video conferencing'], ans: 0, exp: 'Google Maps Live View uses AR to overlay navigation arrows and directions onto the real-world camera view on your phone.' },
+  { q: 'AR enhances:', opts: ['Fully virtual environment', 'Physical environment', 'Offline environment', 'Database'], ans: 1, exp: 'AR enhances the physical environment by adding a layer of digital information or visuals without replacing the real world.' },
+  { q: 'Pokemon Go is an example of:', opts: ['VR', 'MR', 'AR', 'XR'], ans: 2, exp: 'Pokemon Go is a classic AR application — it uses the phone camera to overlay virtual Pokemon characters onto real-world surroundings.' },
+  { q: 'Virtual Reality creates:', opts: ['Real environment', 'Augmented environment', 'Fully immersive digital environment', 'Mixed environment'], ans: 2, exp: 'VR creates a fully immersive digital environment that completely replaces the user\'s view of the real world with a simulated one.' },
+  { q: 'VR typically uses:', opts: ['Keyboard and mouse', 'Printer', 'Scanner', 'VR headset'], ans: 3, exp: 'A VR headset is the primary device for virtual reality — it covers the user\'s eyes to display a fully immersive 3D digital world.' },
+  { q: 'VR blocks out:', opts: ['Digital world', 'Internet', 'Gaming', 'Physical world'], ans: 3, exp: 'VR headsets physically block the user\'s view of the real world and replace it entirely with a computer-generated virtual environment.' },
+  { q: 'VR is widely used in:', opts: ['Gaming', 'Medical therapy', 'Training simulations', 'All of the above'], ans: 3, exp: 'VR has widespread use across gaming entertainment, medical therapy and pain management, and high-stakes training simulations.' },
+  { q: 'Example of VR device:', opts: ['Google Cardboard', 'Webcam', 'Joystick', 'Monitor'], ans: 0, exp: 'Google Cardboard is a simple, low-cost VR headset that uses a smartphone to deliver virtual reality experiences.' },
+  { q: 'Mixed Reality combines:', opts: ['AR and VR', 'Hardware and software', 'Internet and cloud', 'Sensors and actuators'], ans: 0, exp: 'Mixed Reality combines elements of both AR and VR, allowing real and virtual objects to coexist and interact in the same space.' },
+  { q: 'MR allows:', opts: ['Only virtual interaction', 'Only real interaction', 'Real and virtual objects to interact', 'No interaction'], ans: 2, exp: 'The defining feature of MR is that real and virtual objects can interact with each other in real time within the same environment.' },
+  { q: 'Microsoft HoloLens is an example of:', opts: ['VR', 'MR', 'AR', 'XR'], ans: 1, exp: 'Microsoft HoloLens is a leading MR headset that projects holographic digital objects into the user\'s real-world environment.' },
+  { q: 'MR is more advanced than:', opts: ['AR only', 'VR only', 'Both AR and VR', 'XR'], ans: 2, exp: 'MR is considered more advanced than both AR and VR because it enables real-time interaction between physical and virtual objects.' },
+  { q: 'MR applications are common in:', opts: ['Industrial training', 'Design and manufacturing', 'Healthcare', 'All of the above'], ans: 3, exp: 'MR is applied across industrial training, design and manufacturing workflows, and complex healthcare procedures.' },
+  { q: 'XR stands for:', opts: ['Extra Reality', 'Experimental Reality', 'Extended Reality', 'External Reality'], ans: 2, exp: 'XR stands for Extended Reality — it is an umbrella term covering all immersive technologies including AR, VR, and MR.' },
+  { q: 'XR includes:', opts: ['AR only', 'MR only', 'VR only', 'AR, VR, and MR'], ans: 3, exp: 'Extended Reality (XR) is the collective term for the full spectrum of immersive technologies: Augmented, Virtual, and Mixed Reality.' },
+  { q: 'XR is an umbrella term for:', opts: ['Gaming technologies', 'Immersive technologies', 'Web technologies', 'Cloud technologies'], ans: 1, exp: 'XR serves as the overarching umbrella term for all immersive technologies that blend or replace the real world with digital content.' },
+  { q: 'XR aims to:', opts: ['Limit interaction', 'Enhance human experience', 'Reduce realism', 'Replace hardware'], ans: 1, exp: 'XR technologies aim to enhance human experience by creating richer, more interactive connections between people and digital content.' },
+  { q: 'XR is commonly used in:', opts: ['Entertainment', 'Training', 'Education', 'All of the above'], ans: 3, exp: 'XR is deployed across entertainment, professional training, education, healthcare, and many other fields.' },
+  { q: 'Haptic technology relates to:', opts: ['Visual feedback', 'Audio feedback', 'Touch feedback', 'Motion tracking'], ans: 2, exp: 'Haptic technology simulates the sense of touch, providing physical feedback to users through vibration, force, or motion.' },
+  { q: 'Haptic feedback provides:', opts: ['Sound', 'Images', 'Text', 'Vibration or force'], ans: 3, exp: 'Haptic feedback delivers physical sensations — vibrations, forces, or motions — that simulate touch and texture in virtual environments.' },
+  { q: 'Haptic technology is used in:', opts: ['Gaming controllers', 'Medical simulators', 'Mobile phones', 'All of the above'], ans: 3, exp: 'Haptic technology is embedded in gaming controllers for realism, medical simulators for training, and mobile phones for tactile notifications.' },
+  { q: 'Haptic devices simulate:', opts: ['Smell', 'Touch sensation', 'Vision', 'Taste'], ans: 1, exp: 'Haptic devices recreate the sense of touch — simulating textures, resistance, and physical sensations in virtual or remote interactions.' },
+  { q: 'Haptics improve:', opts: ['User immersion', 'Battery life', 'Internet speed', 'Storage capacity'], ans: 0, exp: 'Haptic feedback significantly improves user immersion by adding a tactile dimension to virtual experiences, making them feel more real.' },
+  { q: 'Immersive technology in education enables:', opts: ['Passive learning', 'Experiential learning', 'Manual teaching only', 'Offline study'], ans: 1, exp: 'Immersive technology transforms education by enabling experiential learning — students actively experience and explore concepts rather than just reading.' },
+  { q: 'In healthcare, VR is used for:', opts: ['Surgery training', 'Therapy', 'Pain management', 'All of the above'], ans: 3, exp: 'VR serves multiple healthcare purposes: training surgeons in risk-free simulations, providing psychological therapy, and distracting patients from pain.' },
+  { q: 'AR in retail helps customers with:', opts: ['Virtual try-on', 'Inventory storage', 'Virtual try-on', 'Billing'], ans: 0, exp: 'AR enables virtual try-on experiences in retail — customers can see how clothes, glasses, or furniture look on them before purchasing.' },
+  { q: 'Immersive technology in architecture allows:', opts: ['Paper designs', '2D sketches only', 'Virtual walkthroughs', 'Manual drafting'], ans: 2, exp: 'Architects use immersive technology to create virtual walkthroughs of buildings before they are built, helping clients visualize spaces.' },
+  { q: 'VR is widely used for:', opts: ['Military training', 'Flight simulation', 'Driving simulation', 'All of the above'], ans: 3, exp: 'VR provides safe, cost-effective simulation environments for military combat training, pilot flight training, and driver training.' },
+  { q: 'Gaming industry benefits from immersive technology by:', opts: ['Reducing graphics', 'Increasing realism', 'Limiting interaction', 'Offline play'], ans: 1, exp: 'Immersive technology dramatically increases realism in gaming by placing players inside virtual worlds with 360-degree environments.' },
+  { q: 'Immersive technology in tourism offers:', opts: ['Virtual tours', 'Physical travel only', 'Offline guides', 'All of the above'], ans: 0, exp: 'Tourism uses immersive technology to offer virtual tours of destinations, allowing people to explore places without physical travel.' },
+  { q: 'MR is useful in manufacturing for:', opts: ['Equipment maintenance', 'Assembly guidance', 'Training', 'All of the above'], ans: 3, exp: 'MR assists manufacturing workers with real-time equipment maintenance overlays, step-by-step assembly guidance, and immersive training.' },
+  { q: 'Immersive technology improves training by:', opts: ['Increasing cost', 'Reducing engagement', 'Providing realistic simulations', 'Manual repetition'], ans: 2, exp: 'Immersive technology enhances training by providing realistic simulations where trainees can practice dangerous or complex tasks safely.' },
+  { q: 'Which sector uses immersive tech for skill development?', opts: ['Education', 'Healthcare', 'Industry', 'All of the above'], ans: 3, exp: 'Immersive technology is used for skill development across education, healthcare, and industry, each leveraging simulations for hands-on learning.' },
+  { q: 'Green computing refers to:', opts: ['Fast computing', 'Environmentally sustainable computing', 'Gaming computers', 'Cloud computing'], ans: 1, exp: 'Green computing focuses on designing, manufacturing, using, and disposing of computers in environmentally sustainable and responsible ways.' },
+  { q: 'Main goal of green computing is to:', opts: ['Increase performance only', 'Reduce environmental impact', 'Increase power usage', 'Reduce hardware waste'], ans: 1, exp: 'The primary goal of green computing is to reduce the environmental impact of IT operations through energy efficiency and sustainability.' },
+  { q: 'Green computing promotes:', opts: ['Energy efficiency', 'Reduced carbon footprint', 'Sustainable IT practices', 'All of the above'], ans: 3, exp: 'Green computing promotes a combination of energy efficiency, reduced carbon emissions, and sustainable IT practices across the industry.' },
+  { q: 'Green computing is important because:', opts: ['IT consumes large energy', 'E-waste is increasing', 'Environmental concerns', 'All of the above'], ans: 3, exp: 'Green computing addresses the growing environmental challenges of IT — high energy consumption, rising e-waste, and increasing carbon emissions.' },
+  { q: 'Which is NOT a green computing practice?', opts: ['Virtualization', 'Energy-efficient hardware', 'Excessive power usage', 'Recycling'], ans: 2, exp: 'Excessive power usage is the opposite of green computing. Green practices include virtualization, energy-efficient hardware, and recycling.' },
+  { q: 'Energy-efficient hardware consumes:', opts: ['More power', 'Less power', 'No power', 'Unlimited power'], ans: 1, exp: 'Energy-efficient hardware is specifically designed to perform the same tasks while consuming significantly less electrical power.' },
+  { q: 'Data centers are major consumers of:', opts: ['Water only', 'Energy', 'Internet', 'Software'], ans: 1, exp: 'Data centers are among the largest consumers of energy globally, requiring massive amounts of electricity for servers and cooling systems.' },
+  { q: 'Green data centers use:', opts: ['Renewable energy', 'Efficient cooling systems', 'Virtualization', 'All of the above'], ans: 3, exp: 'Green data centers combine renewable energy sources, energy-efficient cooling, and virtualization to minimize their environmental footprint.' },
+  { q: 'Virtualization helps green computing by:', opts: ['Increasing hardware usage', 'Reducing number of servers', 'Increasing heat', 'Increasing power consumption'], ans: 1, exp: 'Virtualization allows multiple virtual machines to run on one physical server, drastically reducing the number of servers needed and saving energy.' },
+  { q: 'Energy-efficient processors help by:', opts: ['Increasing heat', 'Reducing power consumption', 'Increasing cost', 'Slowing performance'], ans: 1, exp: 'Energy-efficient processors deliver required computing performance while drawing less power, reducing electricity bills and heat generation.' },
+  { q: 'E-waste refers to:', opts: ['Plastic waste', 'Organic waste', 'Electronic waste', 'Paper waste'], ans: 2, exp: 'E-waste is discarded electronic equipment — old computers, phones, televisions, and other devices that have reached end-of-life.' },
+  { q: 'Improper e-waste disposal causes:', opts: ['Environmental pollution', 'Health hazards', 'Resource loss', 'All of the above'], ans: 3, exp: 'Improper e-waste disposal releases toxic chemicals that pollute soil and water, create serious health hazards, and waste valuable recoverable materials.' },
+  { q: 'Recycling e-waste helps in:', opts: ['Pollution reduction', 'Resource recovery', 'Sustainability', 'All of the above'], ans: 3, exp: 'Recycling e-waste reduces pollution, recovers precious metals and components for reuse, and supports long-term environmental sustainability.' },
+  { q: 'Which is an example of e-waste?', opts: ['Old mobile phone', 'Broken laptop', 'Discarded printer', 'All of the above'], ans: 3, exp: 'All discarded electronic devices — old phones, broken laptops, unused printers — are examples of e-waste requiring proper disposal.' },
+  { q: 'Green computing encourages:', opts: ['Throwing electronics', 'Reuse and recycling', 'Frequent replacement', 'More waste'], ans: 1, exp: 'Green computing encourages extending device lifespans through reuse and proper recycling at end-of-life rather than frequent disposal.' },
+  { q: 'Quantum computing is based on:', opts: ['Classical physics', 'Quantum mechanics', 'Newton\'s laws', 'Relativity only'], ans: 1, exp: 'Quantum computing harnesses the principles of quantum mechanics — superposition, entanglement, and interference — to process information.' },
+  { q: 'Basic unit of quantum computing is:', opts: ['Bit', 'Qubit', 'Byte', 'Register'], ans: 1, exp: 'The qubit (quantum bit) is the fundamental unit of quantum information, analogous to the classical bit but with far greater capabilities.' },
+  { q: 'A qubit can represent:', opts: ['0 only', '1 only', 'Both 0 and 1 simultaneously', 'Neither 0 nor 1'], ans: 2, exp: 'Thanks to quantum superposition, a qubit can exist as 0, 1, or both simultaneously — enabling massively parallel computation.' },
+  { q: 'Quantum superposition allows qubits to:', opts: ['Store single value', 'Store multiple states', 'Store data permanently', 'Work offline'], ans: 1, exp: 'Superposition allows a qubit to exist in multiple states at once, enabling quantum computers to process many possibilities simultaneously.' },
+  { q: 'Quantum entanglement means:', opts: ['Qubits are independent', 'Qubits are connected', 'Qubits are deleted', 'Qubits are classical'], ans: 1, exp: 'Quantum entanglement links qubits so the state of one instantly influences the other, regardless of distance — enabling powerful correlations.' },
+  { q: 'Quantum computing is useful for:', opts: ['Complex problem solving', 'Optimization problems', 'Cryptography', 'All of the above'], ans: 3, exp: 'Quantum computing excels at complex simulations, optimization across vast solution spaces, and breaking or building cryptographic systems.' },
+  { q: 'Quantum computers can break:', opts: ['Simple passwords', 'Classical encryption algorithms', 'Firewalls', 'Databases'], ans: 1, exp: 'Quantum computers threaten classical encryption (like RSA) by solving the underlying mathematical problems exponentially faster than classical machines.' },
+  { q: 'Quantum computing is used in:', opts: ['Drug discovery', 'Financial modeling', 'Material science', 'All of the above'], ans: 3, exp: 'Quantum computing accelerates drug discovery by simulating molecules, improves financial modeling, and enables breakthroughs in material science.' },
+  { q: 'Quantum computing improves:', opts: ['Parallel processing', 'Speed for specific problems', 'Accuracy', 'All of the above'], ans: 3, exp: 'Quantum computing offers improved parallel processing, dramatically faster solutions for specific problems, and greater accuracy in simulations.' },
+  { q: 'Which company works on quantum computing?', opts: ['IBM', 'Google', 'Microsoft', 'All of the above'], ans: 3, exp: 'IBM (IBM Quantum), Google (Sycamore), and Microsoft (Azure Quantum) are all major players investing heavily in quantum computing research.' },
+  { q: 'AR differs from VR because AR:', opts: ['Is fully virtual', 'Enhances real world', 'Blocks real world', 'Is offline'], ans: 1, exp: 'Unlike VR which replaces reality entirely, AR enhances the real world by overlaying digital content on top of what the user sees.' },
+  { q: 'VR provides:', opts: ['Partial immersion', 'Full immersion', 'No immersion', 'Mixed immersion'], ans: 1, exp: 'VR provides full immersion by completely surrounding the user with a computer-generated environment, blocking out the physical world.' },
+  { q: 'MR is best suited for:', opts: ['Simple games', 'Real-world industrial tasks', 'Text processing', 'Offline browsing'], ans: 1, exp: 'MR shines in real-world industrial tasks where workers need digital guidance overlaid on physical objects, like maintenance and assembly.' },
+  { q: 'XR is evolving due to:', opts: ['Sensor technology', 'AI and computing power', 'Graphics improvement', 'All of the above'], ans: 3, exp: 'XR advancement is driven by better sensors, more powerful AI and computing, and improved graphics rendering capabilities together.' },
+  { q: 'Haptic technology adds:', opts: ['Physical realism', 'Virtual realism', 'Auditory realism', 'All of the above'], ans: 0, exp: 'Haptic technology adds physical realism to virtual experiences by simulating touch, force, and texture sensations in digital environments.' },
+  { q: 'Immersive technology increases:', opts: ['User engagement', 'Realism', 'Interaction', 'All of the above'], ans: 3, exp: 'Immersive technology simultaneously increases user engagement, realism of experiences, and depth of interaction with digital content.' },
+  { q: 'Green computing reduces:', opts: ['Performance', 'Environmental impact', 'Data security', 'Cost only'], ans: 1, exp: 'Green computing\'s core purpose is to reduce the environmental impact of computing through energy efficiency and sustainable practices.' },
+  { q: 'Energy-efficient data centers aim to:', opts: ['Increase heat', 'Reduce power usage', 'Increase pollution', 'Increase servers'], ans: 1, exp: 'Energy-efficient data centers are designed to deliver the same computing capacity while significantly reducing electricity consumption.' },
+  { q: 'Cloud computing supports green computing by:', opts: ['Resource sharing', 'Energy efficiency', 'Reduced hardware', 'All of the above'], ans: 3, exp: 'Cloud computing supports green goals through resource sharing across users, energy-efficient operations at scale, and reduced need for individual hardware.' },
+  { q: 'Recycling electronics helps recover:', opts: ['Precious metals', 'Components', 'Plastics', 'All of the above'], ans: 3, exp: 'Electronic recycling recovers gold, silver, copper and other precious metals, reusable components, and recyclable plastics from old devices.' },
+  { q: 'Quantum computers in future will outperform classical computers in:', opts: ['Email', 'Word processing', 'Specific complex problems', 'Simple calculations'], ans: 2, exp: 'Quantum computers will outperform classical ones in specific complex problems like molecular simulation, optimization, and cryptanalysis — not everyday tasks.' },
+  { q: 'Classical computers use:', opts: ['Qubits', 'Photons', 'Waves', 'Bits'], ans: 3, exp: 'Classical computers process information using bits — binary digits that are always either 0 or 1, unlike the multi-state qubits of quantum computers.' },
+  { q: 'Quantum computing is currently:', opts: ['Fully mature', 'Experimental', 'Obsolete', 'Widely commercial'], ans: 1, exp: 'Quantum computing is still largely experimental — while significant progress has been made, reliable large-scale quantum computers are not yet commercially available.' },
+  { q: 'One major challenge of quantum computing is:', opts: ['Heat', 'Error correction', 'Cost', 'All of the above'], ans: 3, exp: 'Quantum computing faces multiple challenges: extreme sensitivity to heat, high error rates requiring complex correction, and enormous development costs.' },
+  { q: 'Immersive tech in training reduces:', opts: ['Learning effectiveness', 'Risk and cost', 'Realism', 'Interaction'], ans: 1, exp: 'Immersive training simulations reduce risk by allowing practice in safe virtual environments, and cut costs by replacing expensive real-world setups.' },
+  { q: 'AR can be used for:', opts: ['Maintenance guidance', 'Navigation', 'Education', 'All of the above'], ans: 3, exp: 'AR is versatile — it guides technicians through maintenance steps, assists navigation with live overlays, and enhances educational visualization.' },
+  { q: 'VR therapy is used for:', opts: ['Anxiety', 'PTSD', 'Phobia treatment', 'All of the above'], ans: 3, exp: 'VR therapy is clinically used to treat anxiety disorders, PTSD through controlled exposure, and phobias in safe simulated environments.' },
+  { q: 'Green computing supports:', opts: ['Sustainable development', 'Environmental protection', 'Energy conservation', 'All of the above'], ans: 3, exp: 'Green computing contributes to sustainable development goals, environmental protection, and energy conservation all at once.' },
+  { q: 'E-waste contains:', opts: ['Toxic substances', 'Valuable materials', 'Recyclable components', 'All of the above'], ans: 3, exp: 'E-waste is a complex mix of toxic substances like lead and mercury, valuable materials like gold, and many recyclable plastic and metal components.' },
+  { q: 'Proper e-waste management reduces:', opts: ['Pollution', 'Resource depletion', 'Health risks', 'All of the above'], ans: 3, exp: 'Proper e-waste management simultaneously reduces environmental pollution, conserves natural resources, and protects public health.' },
+  { q: 'Quantum supremacy refers to:', opts: ['Quantum computer outperforming classical computer', 'Faster internet', 'AI dominance', 'Cloud superiority'], ans: 0, exp: 'Quantum supremacy is achieved when a quantum computer solves a problem that would be practically impossible for any classical computer to solve.' },
+  { q: 'Quantum computing is NOT suitable for:', opts: ['Optimization', 'Simple arithmetic', 'Simulation', 'Cryptography'], ans: 1, exp: 'Simple arithmetic is efficiently handled by classical computers. Quantum computing\'s advantage lies in complex optimization, simulation, and cryptography.' },
+  { q: 'Immersive technology relies heavily on:', opts: ['Sensors', 'Displays', 'Computing power', 'All of the above'], ans: 3, exp: 'Immersive technology requires sensors for tracking, high-resolution displays for visualization, and powerful computing to render real-time environments.' },
+  { q: 'Haptic gloves are used to:', opts: ['See virtual objects', 'Feel virtual objects', 'Hear sounds', 'Store data'], ans: 1, exp: 'Haptic gloves use actuators to simulate the sensation of touching, gripping, and feeling virtual objects in immersive environments.' },
+  { q: 'XR technology is expected to grow due to:', opts: ['Malware development', 'Gaming demand', 'Industrial use', 'All of the above'], ans: 3, exp: 'XR growth is driven by gaming consumer demand, expanding industrial and enterprise use cases, and continuous hardware improvements.' },
+  { q: 'Green computing helps organizations by:', opts: ['Reducing energy costs', 'Improving brand image', 'Compliance with regulations', 'All of the above'], ans: 3, exp: 'Organizations benefit from green computing through lower energy bills, enhanced sustainability reputation, and compliance with environmental regulations.' },
+  { q: 'Data center cooling is important to:', opts: ['Increase noise', 'Reduce overheating', 'Increase power use', 'Increase servers'], ans: 1, exp: 'Cooling systems are critical in data centers to prevent servers from overheating, which would cause hardware failure and data loss.' },
+  { q: 'Quantum bits are sensitive to:', opts: ['Noise', 'Interference', 'Temperature', 'All of the above'], ans: 3, exp: 'Qubits are extremely fragile — even tiny amounts of noise, electromagnetic interference, or temperature change can destroy quantum states (decoherence).' },
+  { q: 'Which reality blends physical and digital worlds?', opts: ['VR', 'AR', 'MR', 'XR'], ans: 2, exp: 'Mixed Reality (MR) is specifically defined by its blending of physical and digital worlds, allowing them to coexist and interact.' },
+  { q: 'Immersive technology is transforming:', opts: ['Education', 'Healthcare', 'Industry', 'All sectors'], ans: 3, exp: 'Immersive technology is driving transformation across all sectors — education, healthcare, manufacturing, entertainment, and beyond.' },
+  { q: 'Green computing promotes:', opts: ['Long device lifespan', 'Efficient resource usage', 'Sustainability', 'All of the above'], ans: 3, exp: 'Green computing promotes extending device lifespans, using resources efficiently, and building sustainable IT ecosystems.' },
+  { q: 'Quantum computing may revolutionize:', opts: ['Artificial Intelligence', 'Cryptography', 'Scientific research', 'All of the above'], ans: 3, exp: 'Quantum computing has the potential to revolutionize AI training, break and rebuild cryptographic systems, and accelerate scientific discovery.' },
+  { q: 'VR requires high:', opts: ['Network bandwidth', 'Graphics processing', 'Latency control', 'All of the above'], ans: 3, exp: 'VR demands high network bandwidth for streaming, powerful graphics processing for rendering, and ultra-low latency to prevent motion sickness.' },
+  { q: 'Immersive technology enhances learning by:', opts: ['Visualization', 'Engagement', 'Interaction', 'All of the above'], ans: 3, exp: 'Immersive technology improves learning outcomes through rich visualization of concepts, higher student engagement, and active interaction.' },
+  { q: 'Future computing trends include:', opts: ['Immersive technology', 'Quantum computing', 'Green computing', 'All of the above'], ans: 3, exp: 'The future of computing is shaped by immersive XR technologies, quantum computing breakthroughs, and green sustainable computing practices together.' },
+
+];
+
+    // --- Shuffle helper ---
+    function shuffle(arr) {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    // Randomize question order; also randomize each question's option order
+    // and track where the correct answer ended up.
+    const shuffledQuestions = shuffle(quizData).map(item => {
+        const correctText = item.opts[item.ans];
+        const shuffledOpts = shuffle(item.opts);
+        const newAnsIndex = shuffledOpts.indexOf(correctText);
+        return { ...item, opts: shuffledOpts, ans: newAnsIndex, correctText };
+    });
+
+    const qList = document.getElementById('questions-list');
+
+    // Build quiz
+    shuffledQuestions.forEach((item, i) => {
+        const div = document.createElement('div');
+        div.className = 'q-block';
+        div.innerHTML = `
+            <div class="q-number">Question ${i + 1} of ${shuffledQuestions.length}</div>
+            <span class="q-text">${item.q}</span>
+            ${item.opts.map((o, oi) => `
+                <input type="radio" name="q${i}" id="q${i}o${oi}" value="${oi}">
+                <label class="opt-label" for="q${i}o${oi}">
+                    <span class="radio-dot"></span>${o}
+                </label>
+            `).join('')}
+        `;
+        qList.appendChild(div);
+    });
+
+    // Progress bar
+    shuffledQuestions.forEach((_, i) => {
+        qList.querySelectorAll(`input[name="q${i}"]`).forEach(radio => {
+            radio.addEventListener('change', updateProgress);
+        });
+    });
+
+    function updateProgress() {
+        const answered = shuffledQuestions.filter((_, i) =>
+            document.querySelector(`input[name="q${i}"]:checked`)
+        ).length;
+        document.getElementById('progress').style.width = `${(answered / shuffledQuestions.length) * 100}%`;
+    }
+
+    function processQuiz() {
+        let score = 0;
+        const expList = document.getElementById('explanations-list');
+        expList.innerHTML = '';
+
+        // Results shown in the same shuffled order as the quiz
+        shuffledQuestions.forEach((item, i) => {
+            const selected = document.querySelector(`input[name="q${i}"]:checked`);
+            const userVal = selected ? parseInt(selected.value) : null;
+            const isCorrect = userVal === item.ans;
+            if (isCorrect) score++;
+
+            const card = document.createElement('div');
+            card.className = 'review-card';
+            card.style.animationDelay = `${i * 0.07}s`;
+
+            let userRow = '';
+            if (userVal !== null && !isCorrect) {
+                userRow = `
+                    <div class="answer-row wrong">
+                        <div class="answer-meta">Your Answer</div>
+                        <div class="answer-text">${item.opts[userVal]}</div>
+                    </div>
+                `;
+            }
+
+            card.innerHTML = `
+                <span class="q-text">${i + 1}. ${item.q}</span>
+                ${userRow}
+                <div class="answer-row correct">
+                    <div class="answer-meta">Correct Answer</div>
+                    <div class="answer-text">${item.correctText}</div>
+                </div>
+                <div class="explanation">${item.exp}</div>
+            `;
+            expList.appendChild(card);
+        });
+
+        document.getElementById('quiz-ui').style.display = 'none';
+        document.getElementById('review-section').style.display = 'block';
+
+        const pct = Math.round((score / shuffledQuestions.length) * 100);
+        document.getElementById('final-score').innerHTML = `
+            <span class="score-val">${score} / ${shuffledQuestions.length}</span> correct &nbsp;·&nbsp; ${pct}%
+        `;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+</body>
+</html>

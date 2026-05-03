@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eti MCQ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0b0e;
+            --surface: #111318;
+            --surface-2: #181b22;
+            --border: #22262f;
+            --border-hover: #3a3f52;
+            --text-primary: #eef0f6;
+            --text-secondary: #9098b0;
+            --text-muted: #4a5068;
+            --accent: #00d4e8;
+            --accent-dim: rgba(0, 212, 232, 0.11);
+            --accent-glow: rgba(0, 212, 232, 0.3);
+            --correct: #00e07a;
+            --correct-dim: rgba(0, 224, 122, 0.1);
+            --wrong: #ff4d5a;
+            --wrong-dim: rgba(255, 77, 90, 0.1);
+            --radius: 10px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Sora', sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        body::before { display: none; }
+
+        .container {
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 48px 20px 80px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header { margin-bottom: 36px; }
+
+        .header-eyebrow {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent-glow);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(0.85); }
+        }
+
+        .eyebrow-text {
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+
+        h1 {
+            font-size: 1.55rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+            line-height: 1.3;
+        }
+
+        .subtitle {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+
+        .divider { display: none; }
+
+        .progress-bar {
+            height: 2px;
+            background: var(--border);
+            border-radius: 99px;
+            margin-bottom: 36px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #7c3aed);
+            border-radius: 99px;
+            transition: width 0.4s ease;
+        }
+
+        .q-block {
+            margin-bottom: 28px;
+            animation: fadeUp 0.35s ease both;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .q-block:nth-child(1) { animation-delay: 0.05s; }
+        .q-block:nth-child(2) { animation-delay: 0.1s; }
+        .q-block:nth-child(3) { animation-delay: 0.15s; }
+        .q-block:nth-child(4) { animation-delay: 0.2s; }
+        .q-block:nth-child(5) { animation-delay: 0.25s; }
+
+        .q-number {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .q-text {
+            font-size: 0.97rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 14px;
+            display: block;
+            line-height: 1.55;
+        }
+
+        /* Hide native radio */
+        input[type="radio"] { display: none; }
+
+        .opt-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 7px;
+            cursor: pointer;
+            transition: border-color 0.18s, background 0.18s, color 0.18s;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            background: var(--surface);
+        }
+
+        .opt-label:hover {
+            border-color: var(--border-hover);
+            background: var(--surface-2);
+            color: var(--text-primary);
+        }
+
+        .radio-dot { display: none; }
+
+        /* Checked — highlight the row only */
+        input[type="radio"]:checked + .opt-label {
+            border-color: var(--accent);
+            background: var(--accent-dim);
+            color: var(--text-primary);
+
+        }
+
+        /* Submit Button */
+        .btn-submit {
+            width: 100%;
+            padding: 13px;
+            background: var(--accent);
+            color: var(--bg);
+            border: none;
+            border-radius: var(--radius);
+            font-family: 'Sora', sans-serif;
+            font-size: 0.92rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.18s, transform 0.18s, box-shadow 0.18s;
+            margin-top: 8px;
+            letter-spacing: 0.01em;
+            box-shadow: 0 0 18px var(--accent-glow);
+        }
+
+        .btn-submit:hover {
+            opacity: 0.88;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 28px var(--accent-glow);
+        }
+
+        .btn-submit:active { transform: translateY(0); }
+
+        .score-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            padding: 6px 14px;
+            border-radius: 99px;
+            font-size: 0.83rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-top: 12px;
+        }
+
+        .score-val {
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .review-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 10px;
+            animation: fadeUp 0.3s ease both;
+        }
+
+        .review-card .q-text {
+            font-size: 0.93rem;
+            margin-bottom: 14px;
+        }
+
+        .answer-row {
+            padding: 8px 12px;
+            border-radius: 7px;
+            margin-bottom: 7px;
+        }
+
+        .answer-row.correct { background: var(--correct-dim); border: 1px solid rgba(0,224,122,0.18); }
+        .answer-row.wrong { background: var(--wrong-dim); border: 1px solid rgba(255,77,90,0.13); }
+
+        .answer-icon { display: none; }
+
+        .answer-meta {
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+        .answer-row.correct .answer-meta { color: var(--correct); }
+        .answer-row.wrong .answer-meta { color: var(--wrong); }
+
+        .answer-text { font-size: 0.86rem; color: var(--text-primary); font-weight: 500; }
+
+        .explanation {
+            font-size: 0.84rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+            margin-top: 4px;
+        }
+
+        .btn-retry {
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-family: 'Sora', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.18s;
+            margin-top: 20px;
+        }
+        .btn-retry:hover { border-color: var(--border-hover); color: var(--text-primary); background: var(--surface); }
+
+        #review-section { display: none; }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div id="quiz-ui">
+        <header>
+            <div class="header-eyebrow">
+                <span class="dot"></span>
+                <span class="eyebrow-text">Assessment</span>
+            </div>
+            <h1>Unit 1 — AI Fundamentals</h1>
+            <p class="subtitle">Select one answer for each question below.</p>
+        </header>
+        <div class="divider"></div>
+        <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+        <div id="questions-list"></div>
+        <button class="btn-submit" onclick="processQuiz()">Submit Assessment</button>
+    </div>
+
+    <div id="review-section">
+        <header>
+            <div class="header-eyebrow">
+                <span class="dot" style="background:#00e07a; box-shadow: 0 0 8px rgba(0,224,122,0.4);"></span>
+                <span class="eyebrow-text" style="color:#00e07a;">Results</span>
+            </div>
+            <h1>Results</h1>
+            <div id="final-score" class="score-pill"></div>
+        </header>
+        <div class="divider"></div>
+        <div id="explanations-list"></div>
+        <button class="btn-retry" onclick="location.reload()">↺ &nbsp;Retake Assessment</button>
+    </div>
+
+</div>
+
+<script>
+    const quizData = [
+  { q: 'Who is known as the father of Artificial Intelligence?', opts: ['Alan Turing', 'John McCarthy', 'Andrew Ng', 'Geoffrey Hinton'], ans: 1, exp: 'John McCarthy coined the term "Artificial Intelligence" in 1956 and is widely regarded as the father of AI.' },
+  { q: 'Which discipline is NOT directly a part of AI core contributors?', opts: ['Mathematics', 'Psychology', 'Astrology', 'Linguistics'], ans: 2, exp: 'Astrology is not a scientific discipline contributing to AI development.' },
+  { q: 'What is the ultimate goal of Artificial Intelligence?', opts: ['Only solve mathematical problems', 'Mimic human intelligence to solve complex tasks', 'Operate machines without human intervention', 'Build hardware devices'], ans: 1, exp: 'The goal of AI is to simulate human intelligence for solving complex real-world problems.' },
+  { q: 'Which statement fits "Weak AI" or Narrow AI?', opts: ['Has general human-level intelligence', 'Excels at multiple tasks simultaneously', 'Performs dedicated tasks within a limited scope', 'Can reason like a human'], ans: 2, exp: 'Weak AI is designed for specific tasks such as voice assistants or recommendation systems.' },
+  { q: 'What differentiates Super AI from General AI?', opts: ['Super AI has narrowly focused skills', 'General AI can exceed human intellectual performance', 'Super AI surpasses human intelligence in every domain', 'Super AI has no cognitive abilities'], ans: 2, exp: 'Super AI refers to systems that outperform humans in every intellectual and cognitive domain.' },
+  { q: 'Reactive Machines in AI are characterized by', opts: ['the ability to store past experiences', 'purely reacting to current inputs without memory', 'being self-aware', 'understanding human emotions'], ans: 1, exp: 'Reactive machines respond only to present inputs and do not learn from past experiences.' },
+  { q: 'What is the major focus of Theory of Mind AI?', opts: ['Data storage', 'Understanding emotions and beliefs', 'Performing calculations quickly', 'Robot mechanics'], ans: 1, exp: 'Theory of Mind AI aims to understand human emotions, beliefs, and social interactions.' },
+  { q: 'Which AI category is still hypothetical and involves consciousness?', opts: ['Reactive Machines', 'Limited Memory', 'Self-Awareness AI', 'Narrow AI'], ans: 2, exp: 'Self-Awareness AI would possess consciousness similar to humans, but remains theoretical.' },
+  { q: 'AI helps in healthcare by ......', opts: ['Diagnosing diseases and patient monitoring', 'Replacing doctors fully', 'Only recording patient data', 'Eliminating all human interaction'], ans: 0, exp: 'AI supports healthcare through diagnosis, monitoring, predictive analysis, and medical imaging.' },
+  { q: 'What role does linguistics play in AI?', opts: ['Hardware design', 'Natural Language Processing', 'Robotics control', 'Statistical analysis'], ans: 1, exp: 'Linguistics helps AI understand, process, and generate human language through NLP.' },
+  { q: 'Machine Learning is best described as:', opts: ['Programming specific instructions explicitly', 'Training systems to learn from data', 'Hardware manufacturing', 'Software debugging'], ans: 1, exp: 'Machine Learning allows systems to learn patterns from data without explicit programming.' },
+  { q: 'Which is an example of supervised learning?', opts: ['Clustering customer groups', 'Email spam filtering with labeled emails', 'Random data generation', 'Exploring databases'], ans: 1, exp: 'Supervised learning uses labeled data such as spam and non-spam emails for training.' },
+  { q: 'What algorithm is mainly used in supervised learning?', opts: ['K-means clustering', 'Logistic regression', 'PCA', 'Reinforcement learning'], ans: 1, exp: 'Logistic regression is a common supervised learning algorithm used for classification problems.' },
+  { q: 'Unsupervised learning primarily involves:', opts: ['Learning from labelled data', 'Discovering patterns from unlabelled data', 'Making decisions based on rewards', 'Pre-programmed rules'], ans: 1, exp: 'Unsupervised learning identifies hidden structures and patterns in unlabeled datasets.' },
+  { q: 'Reinforcement learning is based on', opts: ['receiving rewards or penalties through trial and error', 'grouping data clusters', 'identifying keywords', 'using labeled data only'], ans: 0, exp: 'Reinforcement learning trains agents through rewards and penalties from interactions.' },
+  { q: 'Which of the following is NOT an example of ML application?', opts: ['Fraud detection', 'Spam detection', 'Chess playing with fixed rules only', 'Customer segmentation'], ans: 2, exp: 'Chess with only predefined fixed rules does not necessarily involve machine learning.' },
+  { q: 'Q-learning is a technique used in ......', opts: ['Unsupervised Learning', 'Supervised Learning', 'Reinforcement Learning', 'Data Mining'], ans: 2, exp: 'Q-learning is a reinforcement learning algorithm used for decision-making through rewards.' },
+  { q: 'ML benefits retail mainly by .....', opts: ['Robotics automation', 'Customer behaviour analysis and recommendations', 'Manufacturing', 'Network security'], ans: 1, exp: 'Machine learning helps retailers understand customer preferences and provide personalized recommendations.' },
+  { q: 'Which technique is part of unsupervised learning?', opts: ['Support Vector Machines', 'K-means clustering', 'Decision Trees', 'Reinforcement learning'], ans: 1, exp: 'K-means clustering groups similar data points without labeled outputs.' },
+  { q: 'Which field overlaps with AI/ML but is focused on data-driven insights?', opts: ['Physics', 'Data Science', 'Hardware Engineering', 'Linguistics'], ans: 1, exp: 'Data Science focuses on extracting insights and knowledge from data using analytical methods.' },
+  { q: 'Deep Learning primarily uses', opts: ['Decision Trees', 'Neural Networks with many layers', 'Statistical methods only', 'Simple linear regression'], ans: 1, exp: 'Deep learning is based on deep neural networks containing multiple hidden layers.' },
+  { q: 'Deep Learning models excel at processing ......', opts: ['Simple numeric data only', 'Complex unstructured data like images and speech', 'Only texts', 'Only numerical data'], ans: 1, exp: 'Deep learning performs exceptionally well on complex data such as speech, text, and images.' },
+  { q: 'An advantage of Deep Learning is ......', opts: ['Manual feature engineering', 'High accuracy in complex tasks', 'Low computational resources needed', 'Easy interpretability'], ans: 1, exp: 'Deep learning provides high accuracy in tasks like image recognition and language translation.' },
+  { q: 'A big challenge in Deep Learning is .....', opts: ['Lack of data', 'Excessive interpretability', 'Simplicity of models', 'Universal understanding by humans'], ans: 0, exp: 'Deep learning models require very large datasets to achieve strong performance.' },
+  { q: 'GPUs are important in DL because they', opts: ['Provide more storage', 'Accelerate complex computations efficiently', 'Reduce data requirements', 'Produce data labels'], ans: 1, exp: 'GPUs speed up deep learning by performing parallel mathematical computations efficiently.' },
+  { q: 'What is overfitting in Deep Learning?', opts: ['Model performs well on new data only.', 'Model fits training data too closely reducing generalization.', 'Model training completed fast.', 'Data normalization process.'], ans: 1, exp: 'Overfitting occurs when a model memorizes training data instead of learning general patterns, causing poor performance on unseen data.' },
+  { q: 'Deep learning models improve with', opts: ['More data and training time.', 'Less computational power.', 'Fixed data only.', 'Manual intervention in feature selection.'], ans: 0, exp: 'Deep learning models generally perform better when trained on larger datasets with sufficient training time.' },
+  { q: 'Which layer in deep learning captures non-linear transformations?', opts: ['Input Layer', 'Hidden Layers', 'Output Layer', 'Data preprocessing'], ans: 1, exp: 'Hidden layers apply activation functions that help neural networks learn complex non-linear relationships.' },
+  { q: 'An example of DL application in healthcare is ......', opts: ['Algorithmic trading.', 'Medical image analysis.', 'Automated marketing.', 'Cybersecurity threat detection.'], ans: 1, exp: 'Deep learning is widely used in healthcare for analyzing X-rays, MRIs, and other medical images.' },
+  { q: 'Which is a disadvantage of DL models?', opts: ['They require minimal data.', 'Difficult to interpret results (black-box).', 'Easy to train on CPUs.', 'Limited applicability.'], ans: 1, exp: 'Deep learning models are often difficult to interpret because their internal operations are highly complex.' },
+  { q: 'Neural networks are inspired by ...', opts: ['Human brain neurons', 'Computer circuits', 'Statistical models', 'Logistic regression'], ans: 0, exp: 'Artificial neural networks are inspired by the structure and functioning of neurons in the human brain.' },
+  { q: 'The activation function in neural networks:', opts: ['Summarizes inputs linearly.', 'Normalizes weights.', 'Introduces non-linearity.', 'Connects layers.'], ans: 2, exp: 'Activation functions help neural networks learn complex patterns by introducing non-linear behavior.' },
+  { q: 'The learning process in neural networks involves ...', opts: ['manually adjusting weights.', 'weight adjustment through backpropagation.', 'clustering data.', 'data labelling.'], ans: 1, exp: 'Backpropagation updates weights based on prediction errors to improve model accuracy.' },
+  { q: 'What is weighted sum in neural networks?', opts: ['Sum of all inputs without weights.', 'Sum of inputs multiplied by weights.', 'Average of output values.', 'Total number of nodes.'], ans: 1, exp: 'Each input is multiplied by its corresponding weight and then summed before passing through the activation function.' },
+  { q: 'Neural networks are widely used for', opts: ['Pattern recognition and classification.', 'Operating systems.', 'Hardware design.', 'Network set-up.'], ans: 0, exp: 'Neural networks are excellent at identifying patterns and classifying complex data.' },
+  { q: "What is the output layer's job?", opts: ['Process input data.', 'Adjust weights during training.', 'Generate final model prediction.', 'Store training data.'], ans: 2, exp: 'The output layer provides the final prediction or classification result of the neural network.' },
+  { q: "Why are neural networks sometimes called 'black box' systems?", opts: ['Because they are simple to understand.', 'Their internal decision processes are complex and hard to interpret.', 'Because they use black colored hardware.', 'They do not produce outputs.'], ans: 1, exp: 'Neural networks contain many hidden computations that make their decision-making difficult to explain.' },
+  { q: 'Which method helps neural networks learn from error?', opts: ['Forward propagation.', 'Backpropagation.', 'Data preprocessing.', 'Parameter tuning.'], ans: 1, exp: 'Backpropagation calculates errors and updates weights to improve network performance.' },
+  { q: 'Layers between input and output layers are called', opts: ['Data layers.', 'Hidden layers.', 'Input layers.', 'Output layers.'], ans: 1, exp: 'Hidden layers perform intermediate processing and feature extraction in neural networks.' },
+  { q: 'Neural networks can adapt and recognize patterns better than ......', opts: ['Rule-based systems.', 'Linear models.', 'Traditional programming.', 'All of the above.'], ans: 3, exp: 'Neural networks are more flexible and effective at learning complex patterns compared to traditional methods.' },
+  { q: 'Generative AI is designed to', opts: ['Analyze but not create content', 'Create new content from learned patterns', 'Only classify data', 'Run hardware operations'], ans: 1, exp: 'Generative AI learns patterns from data and generates new text, images, music, or other content.' },
+  { q: 'Which data format is NOT used to train Generative AI?', opts: ['Text', 'Images', '3D signals', 'Only numeric tables'], ans: 3, exp: 'Generative AI is trained using many formats like text, images, audio, and videos — not only numeric tables.' },
+  { q: "The 'Foundation Model' in Generative AI is", opts: ['A small lightweight model.', 'A large neural network trained on massive diverse data.', 'A simple decision tree.', 'A rule-based system.'], ans: 1, exp: 'Foundation models are large-scale models trained on huge datasets and used for multiple AI tasks.' },
+  { q: 'The self-attention mechanism in Transformers helps', opts: ['Focus on all parts of the input sequence for context.', 'Filter irrelevant data before training.', 'Generate random outputs.', 'Only translate languages.'], ans: 0, exp: 'Self-attention allows Transformers to understand relationships between different words in a sequence.' },
+  { q: 'Multi-head attention means .....', opts: ['Running several attention layers in parallel.', 'One attention head per sequence.', 'Removing attention heads.', 'Simpler output generation.'], ans: 0, exp: 'Multi-head attention helps the model focus on different relationships in the data simultaneously.' },
+  { q: 'Positional encoding in Transformers is used because', opts: ['Transformers have no inherent sequence processing.', 'To encode data size.', 'To speed-up training.', 'To eliminate tokens.'], ans: 0, exp: 'Positional encoding provides sequence order information since Transformers process all tokens in parallel.' },
+  { q: 'Which is NOT a type of Generative AI?', opts: ['Text generation', 'Image generation', 'Database management', 'Music generation'], ans: 2, exp: 'Database management is not a generative AI task, unlike text, image, or music generation.' },
+  { q: 'An example of text generation model is', opts: ['DALL-E', 'GPT', 'MidJourney', 'Jukebox'], ans: 1, exp: 'GPT is a text generation model capable of producing human-like language.' },
+  { q: 'One application of Generative AI in finance is', opts: ['Fraud detection.', 'Automated report generation.', 'Stock trading without AI.', 'Network security hardware.'], ans: 1, exp: 'Generative AI can automatically generate financial summaries and business reports.' },
+  { q: 'Transformer models use which processing architecture?', opts: ['Encoder-decoder', 'Recurrent networks', 'Feedforward only', 'Clustering layers'], ans: 0, exp: 'Transformers commonly use an encoder-decoder architecture for tasks like translation and text generation.' },
+    ];
+
+    // --- Shuffle helper ---
+    function shuffle(arr) {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    // Randomize question order; also randomize each question's option order
+    // and track where the correct answer ended up.
+    const shuffledQuestions = shuffle(quizData).map(item => {
+        const correctText = item.opts[item.ans];
+        const shuffledOpts = shuffle(item.opts);
+        const newAnsIndex = shuffledOpts.indexOf(correctText);
+        return { ...item, opts: shuffledOpts, ans: newAnsIndex, correctText };
+    });
+
+    const qList = document.getElementById('questions-list');
+
+    // Build quiz
+    shuffledQuestions.forEach((item, i) => {
+        const div = document.createElement('div');
+        div.className = 'q-block';
+        div.innerHTML = `
+            <div class="q-number">Question ${i + 1} of ${shuffledQuestions.length}</div>
+            <span class="q-text">${item.q}</span>
+            ${item.opts.map((o, oi) => `
+                <input type="radio" name="q${i}" id="q${i}o${oi}" value="${oi}">
+                <label class="opt-label" for="q${i}o${oi}">
+                    <span class="radio-dot"></span>${o}
+                </label>
+            `).join('')}
+        `;
+        qList.appendChild(div);
+    });
+
+    // Progress bar
+    shuffledQuestions.forEach((_, i) => {
+        qList.querySelectorAll(`input[name="q${i}"]`).forEach(radio => {
+            radio.addEventListener('change', updateProgress);
+        });
+    });
+
+    function updateProgress() {
+        const answered = shuffledQuestions.filter((_, i) =>
+            document.querySelector(`input[name="q${i}"]:checked`)
+        ).length;
+        document.getElementById('progress').style.width = `${(answered / shuffledQuestions.length) * 100}%`;
+    }
+
+    function processQuiz() {
+        let score = 0;
+        const expList = document.getElementById('explanations-list');
+        expList.innerHTML = '';
+
+        // Results shown in the same shuffled order as the quiz
+        shuffledQuestions.forEach((item, i) => {
+            const selected = document.querySelector(`input[name="q${i}"]:checked`);
+            const userVal = selected ? parseInt(selected.value) : null;
+            const isCorrect = userVal === item.ans;
+            if (isCorrect) score++;
+
+            const card = document.createElement('div');
+            card.className = 'review-card';
+            card.style.animationDelay = `${i * 0.07}s`;
+
+            let userRow = '';
+            if (userVal !== null && !isCorrect) {
+                userRow = `
+                    <div class="answer-row wrong">
+                        <div class="answer-meta">Your Answer</div>
+                        <div class="answer-text">${item.opts[userVal]}</div>
+                    </div>
+                `;
+            }
+
+            card.innerHTML = `
+                <span class="q-text">${i + 1}. ${item.q}</span>
+                ${userRow}
+                <div class="answer-row correct">
+                    <div class="answer-meta">Correct Answer</div>
+                    <div class="answer-text">${item.correctText}</div>
+                </div>
+                <div class="explanation">${item.exp}</div>
+            `;
+            expList.appendChild(card);
+        });
+
+        document.getElementById('quiz-ui').style.display = 'none';
+        document.getElementById('review-section').style.display = 'block';
+
+        const pct = Math.round((score / shuffledQuestions.length) * 100);
+        document.getElementById('final-score').innerHTML = `
+            <span class="score-val">${score} / ${shuffledQuestions.length}</span> correct &nbsp;·&nbsp; ${pct}%
+        `;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+</body>
+</html>

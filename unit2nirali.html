@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 2 - Internet of Things</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0b0e;
+            --surface: #111318;
+            --surface-2: #181b22;
+            --border: #22262f;
+            --border-hover: #3a3f52;
+            --text-primary: #eef0f6;
+            --text-secondary: #9098b0;
+            --text-muted: #4a5068;
+            --accent: #00d4e8;
+            --accent-dim: rgba(0, 212, 232, 0.11);
+            --accent-glow: rgba(0, 212, 232, 0.3);
+            --correct: #00e07a;
+            --correct-dim: rgba(0, 224, 122, 0.1);
+            --wrong: #ff4d5a;
+            --wrong-dim: rgba(255, 77, 90, 0.1);
+            --radius: 10px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Sora', sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        body::before { display: none; }
+
+        .container {
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 48px 20px 80px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header { margin-bottom: 36px; }
+
+        .header-eyebrow {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent-glow);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(0.85); }
+        }
+
+        .eyebrow-text {
+            font-size: 0.72rem;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+
+        h1 {
+            font-size: 1.55rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+            line-height: 1.3;
+        }
+
+        .subtitle {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+
+        .divider { display: none; }
+
+        .progress-bar {
+            height: 2px;
+            background: var(--border);
+            border-radius: 99px;
+            margin-bottom: 36px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #7c3aed);
+            border-radius: 99px;
+            transition: width 0.4s ease;
+        }
+
+        .q-block {
+            margin-bottom: 28px;
+            animation: fadeUp 0.35s ease both;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .q-block:nth-child(1) { animation-delay: 0.05s; }
+        .q-block:nth-child(2) { animation-delay: 0.1s; }
+        .q-block:nth-child(3) { animation-delay: 0.15s; }
+        .q-block:nth-child(4) { animation-delay: 0.2s; }
+        .q-block:nth-child(5) { animation-delay: 0.25s; }
+
+        .q-number {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .q-text {
+            font-size: 0.97rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 14px;
+            display: block;
+            line-height: 1.55;
+        }
+
+        /* Hide native radio */
+        input[type="radio"] { display: none; }
+
+        .opt-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 7px;
+            cursor: pointer;
+            transition: border-color 0.18s, background 0.18s, color 0.18s;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            background: var(--surface);
+        }
+
+        .opt-label:hover {
+            border-color: var(--border-hover);
+            background: var(--surface-2);
+            color: var(--text-primary);
+        }
+
+        .radio-dot { display: none; }
+
+        /* Checked — highlight the row only */
+        input[type="radio"]:checked + .opt-label {
+            border-color: var(--accent);
+            background: var(--accent-dim);
+            color: var(--text-primary);
+
+        }
+
+        /* Submit Button */
+        .btn-submit {
+            width: 100%;
+            padding: 13px;
+            background: var(--accent);
+            color: var(--bg);
+            border: none;
+            border-radius: var(--radius);
+            font-family: 'Sora', sans-serif;
+            font-size: 0.92rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.18s, transform 0.18s, box-shadow 0.18s;
+            margin-top: 8px;
+            letter-spacing: 0.01em;
+            box-shadow: 0 0 18px var(--accent-glow);
+        }
+
+        .btn-submit:hover {
+            opacity: 0.88;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 28px var(--accent-glow);
+        }
+
+        .btn-submit:active { transform: translateY(0); }
+
+        .score-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            padding: 6px 14px;
+            border-radius: 99px;
+            font-size: 0.83rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-top: 12px;
+        }
+
+        .score-val {
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .review-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 10px;
+            animation: fadeUp 0.3s ease both;
+        }
+
+        .review-card .q-text {
+            font-size: 0.93rem;
+            margin-bottom: 14px;
+        }
+
+        .answer-row {
+            padding: 8px 12px;
+            border-radius: 7px;
+            margin-bottom: 7px;
+        }
+
+        .answer-row.correct { background: var(--correct-dim); border: 1px solid rgba(0,224,122,0.18); }
+        .answer-row.wrong { background: var(--wrong-dim); border: 1px solid rgba(255,77,90,0.13); }
+
+        .answer-icon { display: none; }
+
+        .answer-meta {
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+        .answer-row.correct .answer-meta { color: var(--correct); }
+        .answer-row.wrong .answer-meta { color: var(--wrong); }
+
+        .answer-text { font-size: 0.86rem; color: var(--text-primary); font-weight: 500; }
+
+        .explanation {
+            font-size: 0.84rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            padding-top: 10px;
+            border-top: 1px solid var(--border);
+            margin-top: 4px;
+        }
+
+        .btn-retry {
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-family: 'Sora', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.18s;
+            margin-top: 20px;
+        }
+        .btn-retry:hover { border-color: var(--border-hover); color: var(--text-primary); background: var(--surface); }
+
+        #review-section { display: none; }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div id="quiz-ui">
+        <header>
+            <div class="header-eyebrow">
+                <span class="dot"></span>
+                <span class="eyebrow-text">Assessment</span>
+            </div>
+            <h1>Unit 2 - Internet of Things</h1>
+            <p class="subtitle">Select one answer for each question below.</p>
+        </header>
+        <div class="divider"></div>
+        <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+        <div id="questions-list"></div>
+        <button class="btn-submit" onclick="processQuiz()">Submit Assessment</button>
+    </div>
+
+    <div id="review-section">
+        <header>
+            <div class="header-eyebrow">
+                <span class="dot" style="background:#00e07a; box-shadow: 0 0 8px rgba(0,224,122,0.4);"></span>
+                <span class="eyebrow-text" style="color:#00e07a;">Results</span>
+            </div>
+            <h1>Assessment Complete</h1>
+            <div id="final-score" class="score-pill"></div>
+        </header>
+        <div class="divider"></div>
+        <div id="explanations-list"></div>
+        <button class="btn-retry" onclick="location.reload()">↺ &nbsp;Retake Assessment</button>
+    </div>
+
+</div>
+
+<script>
+    const quizData = [
+  { q: 'Which of the following is a key characteristic of 5G that enables real-time applications like autonomous driving?', opts: ['High power consumption', 'Ultra-low latency', 'Limited device connectivity', 'Low data rates'], ans: 1, exp: '5G reduces delay in communication, enabling real-time systems like autonomous vehicles.' },
+  { q: 'What is the typical peak data rate supported by 5G networks?', opts: ['1 Gbps', '10 Gbps', '20 Gbps', '100 Mbps'], ans: 2, exp: '5G can achieve up to ~20 Gbps peak data rates under ideal conditions.' },
+  { q: 'Which 5G feature allows it to support up to 1 million devices per square kilometre?', opts: ['Network slicing', 'Massive Machine-Type Communications (mMTC)', 'URLLC', 'Beamforming'], ans: 1, exp: 'mMTC is designed for dense IoT device connectivity.' },
+  { q: 'Which application area of 5G is most associated with real-time remote surgeries?', opts: ['Smart agriculture', 'Healthcare', 'Smart homes', 'Logistics'], ans: 1, exp: 'Low latency and high reliability enable remote surgical operations.' },
+  { q: 'What is the purpose of network slicing in 5G technology?', opts: ['Increase power consumption', 'Create multiple virtual networks on same infrastructure', 'Reduce network coverage', 'Limit device connectivity'], ans: 1, exp: 'Network slicing allows customized virtual networks for different use cases.' },
+  { q: 'Which of the following is an application of 5G in smart cities?', opts: ['Remote gaming', 'Traffic management with real-time sensor data', 'Virtual reality training for surgeons', 'Precision farming'], ans: 1, exp: '5G enables real-time traffic monitoring and control systems.' },
+  { q: 'Which 5G characteristic improves energy efficiency for IoT devices?', opts: ['High latency', 'Optimized power consumption', 'Limited bandwidth', 'Low reliability'], ans: 1, exp: '5G is designed to reduce energy usage in IoT devices.' },
+  { q: 'IoT stands for', opts: ['Internet of Technology', 'Intranet of Things', 'Internet of Things', 'Information of Things'], ans: 2, exp: 'IoT refers to interconnected physical devices communicating over the internet.' },
+  { q: 'What is the Internet of Things (IoT)?', opts: ['Only smartphone technology', 'Network of interconnected physical devices that exchange data', 'A type of virus', 'Website communication protocol'], ans: 1, exp: 'IoT connects real-world devices for data sharing and automation.' },
+  { q: 'Which of the following is a key characteristic of IoT?', opts: ['Manual operation', 'Interoperability', 'Interconnectivity', 'Sampling'], ans: 2, exp: 'IoT devices are connected and communicate with each other.' },
+  { q: 'Which IoT feature enables devices to operate without human involvement?', opts: ['Automation', 'Virtualization', 'Encryption', 'Translation'], ans: 0, exp: 'Automation allows devices to function independently.' },
+  { q: '"Things" in IoT refers to', opts: ['Only smartphones', 'Any physical object with sensor and connectivity', 'Website links', 'Only computers'], ans: 1, exp: "Any sensor-enabled physical object is considered an IoT 'thing'." },
+  { q: 'Which communication technology is widely used in IoT?', opts: ['HDMI', 'USB', 'Wi-Fi', 'VGA'], ans: 2, exp: 'Wi-Fi is commonly used for IoT device connectivity.' },
+  { q: 'Which of the following is an application of IoT?', opts: ['Social media chatting', 'Smart home automation', 'Offline gaming', 'File compression'], ans: 1, exp: 'IoT enables smart control of home devices.' },
+  { q: 'IoT allows devices to collect and share data using', opts: ['Sensors', 'CDs', 'Pen drive', 'Speakers'], ans: 0, exp: 'Sensors collect real-world data for IoT systems.' },
+  { q: 'Which is an advantage of IoT?', opts: ['Reduced automation', 'Increased human effort', 'Real-time monitoring', 'Less data availability'], ans: 2, exp: 'IoT enables continuous monitoring of systems.' },
+  { q: 'Which of the following is a limitation of IoT?', opts: ['High scalability', 'Security and privacy issues', 'Increased efficiency', 'Better data collection'], ans: 1, exp: 'IoT devices are vulnerable to cyber attacks.' },
+  { q: 'Which characteristic of IoT enables devices to work together?', opts: ['Fragmentation', 'Interoperability', 'Decoupling', 'Transport'], ans: 1, exp: 'Interoperability ensures different devices can communicate.' },
+  { q: 'Smart watches, fitness trackers, and medical sensors fall under which IoT application area?', opts: ['Industrial automation', 'Healthcare', 'Smart homes', 'Agriculture'], ans: 1, exp: 'These devices monitor health-related data.' },
+  { q: 'Which of the following is NOT an IoT advantage?', opts: ['Improved monitoring', 'Better decision-making', 'Increased cyber risks', 'Automation'], ans: 2, exp: 'Cyber risks are a disadvantage, not an advantage.' },
+  { q: 'Cloud computing helps IoT by', opts: ['Storing and processing large amounts of data', 'Creating viruses', 'Blocking communication', 'Removing internet access'], ans: 0, exp: 'Cloud supports IoT data storage and analytics.' },
+  { q: 'Which component is essential in IoT devices?', opts: ['Sensors and actuators', 'Chalk and board', 'Data analytics only', 'Hard disk'], ans: 0, exp: 'They interact with the physical environment.' },
+  { q: 'Which IoT application is widely used in agriculture?', opts: ['Weather-based irrigation systems', 'Online shopping portals', 'Music streaming', 'Video editing'], ans: 0, exp: 'IoT helps automate irrigation based on weather data.' },
+  { q: 'Physical design of IoT mainly focuses on', opts: ['Sensors', 'Hardware components', 'Application layer', 'Software standards'], ans: 1, exp: 'Physical design refers to devices and hardware.' },
+  { q: 'Which of the following is part of the physical design of IoT?', opts: ['IoT protocols', 'Sensors and actuators', 'Cloud databases', 'Data analytics'], ans: 1, exp: 'These are the physical elements of IoT systems.' },
+  { q: 'Logical design of IoT deals with', opts: ['Hardware wiring', 'Functional blocks and data flows', 'Power supply', 'Battery types'], ans: 1, exp: 'Logical design focuses on how IoT systems function conceptually using data flow and functional blocks.' },
+  { q: 'Which is NOT a physical component of IoT?', opts: ['Sensors', 'RFID tags', 'Cloud services', 'Actuators'], ans: 2, exp: 'Cloud services belong to software/cloud layer, not physical IoT hardware.' },
+  { q: 'An actuator in IoT is used for', opts: ['Receiving data', 'Storing data', 'Performing actions', 'Testing networks'], ans: 2, exp: 'Actuators convert electrical signals into physical actions.' },
+  { q: 'Which device converts physical signals into electrical signals?', opts: ['Actuator', 'Sensor', 'Router', 'Microcontroller'], ans: 1, exp: 'Sensors detect physical changes and convert them into electrical signals.' },
+  { q: 'Which of the following is part of logical design?', opts: ['RFID', 'MQTT protocol', 'ESP32 board', 'Temperature sensor'], ans: 1, exp: 'MQTT is a communication protocol used in IoT logical design.' },
+  { q: 'IoT architecture commonly uses how many layers?', opts: ['1', '3', '5', '7'], ans: 1, exp: 'The basic IoT architecture consists of Perception, Network, and Application layers.' },
+  { q: 'The perception layer in IoT architecture handles', opts: ['Data processing', 'Sensing and data collection', 'Application services', 'Communication security'], ans: 1, exp: 'This layer collects data from the physical environment.' },
+  { q: 'The network layer in IoT architecture is responsible for', opts: ['Storing data only', 'Object identification', 'Transmitting data', 'Physical design'], ans: 2, exp: 'It transfers data between devices and systems.' },
+  { q: 'Application layer in IoT handles', opts: ['Signal amplification', 'User-side services', 'Device manufacturing', 'Power management'], ans: 1, exp: 'It provides services directly to the user.' },
+  { q: 'Which of these is a communication technology used in physical design?', opts: ['Wi-Fi', 'Excel', 'Twitter', 'HTML'], ans: 0, exp: 'Wi-Fi is commonly used for IoT device communication.' },
+  { q: 'IoT logical design uses functional blocks such as', opts: ['Power blocks', 'Communication blocks', 'Display blocks', 'Motor blocks'], ans: 1, exp: 'Logical design includes communication, security, and management blocks.' },
+  { q: 'Which of the following is part of the IoT functional block?', opts: ['Security', 'Network', 'Bulb', 'Middleware'], ans: 0, exp: 'Security is an important functional block in IoT systems.' },
+  { q: 'Physical design includes which component?', opts: ['Cloud API', 'Shoes', 'SQL database', 'Wire'], ans: 3, exp: 'Physical design deals with hardware components like wires and sensors.' },
+  { q: 'The main job of the IoT communication block is', opts: ['to cook food', 'to transfer data between devices', 'to store raw data', 'to protect files'], ans: 1, exp: 'It enables data exchange across IoT components.' },
+  { q: 'In IoT architecture, which layer handles data routing?', opts: ['Application', 'Network', 'Perception', 'Storage'], ans: 1, exp: 'Network layer manages routing and transmission of data.' },
+  { q: 'Logical design describes', opts: ['How the device physically looks', 'How IoT functions conceptually', 'Voltage requirements', 'Mechanical shape'], ans: 1, exp: 'Logical design defines system behavior, not physical structure.' },
+  { q: 'Which of these is a sensing component?', opts: ['LED', 'Sensors', 'Speaker', 'Data warehouse'], ans: 1, exp: 'Sensors detect environmental changes.' },
+  { q: 'The 3-layer IoT architecture is also called', opts: ['Simple IoT architecture', 'Basic reference model', 'Open IoT structure', 'Smart architecture'], ans: 1, exp: 'The 3-layer model is the standard IoT reference architecture.' },
+  { q: 'RFID tags are used in IoT for', opts: ['Audio output', 'Object identification', 'Multimedia sharing', 'Gaming'], ans: 1, exp: 'RFID helps in identifying objects wirelessly.' },
+  { q: 'Micro-controllers like Arduino belong to', opts: ['Logical design', 'IoT Protocols', 'Database architecture', 'Functional blocks'], ans: 3, exp: 'Microcontrollers are part of IoT hardware functional components.' },
+  { q: 'Logical design defines', opts: ['IoT network placement', 'IoT communication protocols', 'IoT battery size', 'Motor speed'], ans: 1, exp: 'Logical design includes protocols like MQTT, CoAP, etc.' },
+  { q: 'The physical design determines', opts: ['Cloud storage type', 'Actual IoT device components', 'Software algorithms', 'User interface'], ans: 1, exp: 'Physical design defines hardware structure.' },
+  { q: 'Which architecture layer is closest to the IoT device?', opts: ['Application', 'Network', 'Perception', 'Storage'], ans: 2, exp: 'Perception layer interacts directly with physical devices.' },
+  { q: 'In IoT, "Things" refer to', opts: ['Only mobile phones', 'Physical devices with sensors', 'Software applications', 'Audio devices only'], ans: 1, exp: "Any sensor-enabled physical object is an IoT 'thing'." },
+  { q: 'Which is NOT included in logical design?', opts: ['Data Flow', 'IoT Protocols', 'Hardware sensors', 'Functional blocks'], ans: 2, exp: 'Sensors belong to physical design, not logical design.' },
+  { q: 'Fog computing belongs to which layer?', opts: ['Perception', 'Application', 'Network / Middleware', 'Hardware'], ans: 2, exp: 'Fog computing acts between edge devices and cloud, hence it is part of network/middleware layer.' },
+  { q: 'Which protocol is used in IoT logical design for messaging?', opts: ['MQTT', 'HDMI', 'VGA', 'FTP'], ans: 0, exp: 'MQTT is a lightweight messaging protocol widely used in IoT communication.' },
+  { q: 'A common physical IoT component for connectivity is', opts: ['ESP8266 module', 'Adobe Reader', 'PowerPoint', 'Facebook app'], ans: 0, exp: 'ESP8266 is a Wi-Fi enabled microcontroller module used in IoT devices.' },
+  { q: 'IoT architecture focuses on', opts: ['Device modelling', 'Layered communication', 'Movie editing', 'Painting'], ans: 1, exp: 'IoT architecture is based on layered structure for efficient communication.' },
+  { q: 'Which layer ensures user-specific IoT services?', opts: ['Network', 'Application', 'Perception', 'Physical'], ans: 1, exp: 'Application layer provides services directly to users.' },
+  { q: '"IoT functional view" refers to', opts: ['Logical design', 'Clothing design', 'Hardware manufacturing', 'Android coding'], ans: 0, exp: 'Functional view describes how IoT system works conceptually.' },
+  { q: 'In logical design, data processing is part of', opts: ['Functional block', 'Battery block', 'Physical tool', 'Mechanical block'], ans: 0, exp: 'Functional blocks handle processing, communication, and control.' },
+  { q: 'Which of the following best describes IoT architecture?', opts: ['A layered structure', 'A flat structure', 'A random structure', 'A circular structure'], ans: 0, exp: 'IoT architecture is organized into layers for structured communication.' },
+  { q: 'An example of a physical design communication device is', opts: ['LDR sensor', 'Bluetooth module', 'SQL server', 'Cloud analytics'], ans: 1, exp: 'Bluetooth module is a hardware communication device.' },
+  { q: 'Which layer includes device addressing?', opts: ['Application', 'Network', 'Perception', 'Security layer'], ans: 1, exp: 'Network layer handles addressing and routing of data.' },
+  { q: 'Sensors and actuators are part of which layer?', opts: ['Network', 'Perception', 'Application', 'Processing'], ans: 1, exp: 'Perception layer interacts with physical devices.' },
+  { q: 'Which is a key function of IoT architecture?', opts: ['Organizing data flow', 'Video editing', 'Graphic design', 'Gaming support'], ans: 0, exp: 'IoT architecture manages how data flows between devices and systems.' },
+  { q: 'A gateway in IoT is mainly used for', opts: ['Cooking', 'Bridging devices with the internet', 'Taking photos', 'Increasing sound'], ans: 1, exp: 'Gateways connect IoT devices to cloud or external networks.' },
+  { q: 'Logical design focuses on', opts: ['Device structure', 'Conceptual technical representation', 'Physical body', 'Mechanical shape'], ans: 1, exp: 'Logical design represents system behavior and structure conceptually.' },
+  { q: 'Which of the following is a physical IoT device?', opts: ['Cloud software', 'Wi-Fi router', 'Big data analytics', 'HTML code'], ans: 1, exp: 'Wi-Fi router is a physical networking device.' },
+  { q: 'The architecture layer that makes decisions for the user is', opts: ['Perception', 'Application', 'Network', 'Transport'], ans: 1, exp: 'Application layer provides decision-making services to users.' },
+  { q: 'Middleware IoT architecture often lies between', opts: ['Application and hardware', 'Network and perception', 'User and government', 'Internet and email'], ans: 0, exp: 'Middleware connects hardware layer with application layer.' },
+  { q: 'IoT protocols mainly belong to', opts: ['Logical design', 'Physical design', 'Robotics', 'Mathematics'], ans: 0, exp: 'Protocols define communication rules in IoT logical design.' },
+  { q: 'The physical design of IoT includes which of these?', opts: ['Wi-Fi module', 'XML', 'SQL', 'Website'], ans: 0, exp: 'Wi-Fi module is a hardware component in IoT devices.' },
+  { q: 'The operation of sensors in IoT is part of', opts: ['Logical design', 'Physical design', 'Application design', 'Cloud design'], ans: 1, exp: 'Sensors are hardware components in physical design.' },
+  { q: 'A sensor is a device that', opts: ['Performs physical action', 'Converts physical quantity into electrical signals', 'Stores data', 'Only transmits data'], ans: 1, exp: 'Sensors detect physical changes and convert them into signals.' },
+  { q: 'Which of the following is an example of an actuator?', opts: ['Temperature sensor', 'Soil moisture sensor', 'DC motor', 'LDR sensor'], ans: 2, exp: 'Actuators perform physical actions like movement.' },
+  { q: 'A PIR sensor is used to detect', opts: ['Light', 'Motion', 'Pressure', 'Sound'], ans: 1, exp: 'PIR sensors detect movement of objects or humans.' },
+  { q: 'Which sensor is used for measuring temperature?', opts: ['LM35', 'Ultrasonic sensor', 'Motion sensor', 'IR sensor'], ans: 0, exp: 'LM35 is a temperature sensor.' },
+  { q: 'Which of the following detects light intensity?', opts: ['DHT11', 'LDR', 'Load cell', 'Thermistor'], ans: 1, exp: 'LDR (Light Dependent Resistor) measures light intensity.' },
+  { q: 'The MQ-2 sensor is used to detect', opts: ['Motion', 'Gas', 'Water level', 'Pressure'], ans: 1, exp: 'MQ-2 is a gas sensor used to detect LPG, smoke, and flammable gases.' },
+  { q: 'Which actuator converts electrical energy into rotational motion?', opts: ['Relay', 'DC motor', 'LDR', 'Thermistor'], ans: 1, exp: 'DC motors convert electrical energy into rotational mechanical motion.' },
+  { q: 'A servo motor is an actuator used for', opts: ['Temperature sensing', 'Precise angular movement', 'Sound detection', 'Light measurement'], ans: 1, exp: 'Servo motors are used for controlled angular positioning.' },
+  { q: 'Which sensor is used for distance measurement in IoT?', opts: ['Ultrasonic sensor', 'Thermistor', 'IR flame sensor', 'MQ-135'], ans: 0, exp: 'Ultrasonic sensors measure distance using sound waves.' },
+  { q: 'Which sensor is commonly used in smart homes for humidity and temperature?', opts: ['LDR', 'DHT11', 'Load cell', 'Motion sensor'], ans: 1, exp: 'DHT11 measures temperature and humidity.' },
+  { q: 'Load cells are used to measure', opts: ['Light', 'Gas', 'Weight / force', 'Altitude'], ans: 2, exp: 'Load cells measure force or weight applied on them.' },
+  { q: 'Which of these is NOT a sensor?', opts: ['Gyroscope', 'Accelerometer', 'Relay', 'Thermistor'], ans: 2, exp: 'Relay is an actuator used for switching electrical circuits.' },
+  { q: 'An actuator that allows switching of high-voltage devices is', opts: ['Servo motor', 'Relay', 'LDR', 'IR sensor'], ans: 1, exp: 'Relay acts as an electrically operated switch.' },
+  { q: 'A thermistor is used for', opts: ['Temperature measurement', 'Sound detection', 'Distance measurement', 'Vibration detection'], ans: 0, exp: 'Thermistors change resistance based on temperature.' },
+  { q: 'Which sensor is used in smartphones for screen rotation?', opts: ['Gyroscope', 'Gas sensor', 'PIR sensor', 'LDR'], ans: 0, exp: 'Gyroscope detects orientation and rotation.' },
+  { q: 'Accelerometers measure', opts: ['Temperature', 'Gas concentration', 'Acceleration / tilt', 'Noise level'], ans: 2, exp: 'Accelerometers measure motion, tilt, and vibration.' },
+  { q: 'A buzzer in IoT acts as a', opts: ['Sensor', 'Actuator', 'Controller', 'Storage device'], ans: 1, exp: 'Buzzers produce sound as an output device.' },
+  { q: 'Which sensor is used in smoke detection?', opts: ['MQ-2', 'BMP180', 'LDR', 'PIR'], ans: 0, exp: 'MQ-2 detects smoke and combustible gases.' },
+  { q: 'Which sensor is used to detect fire?', opts: ['LDR', 'Flame sensor', 'DHT11', 'Ultrasonic'], ans: 1, exp: 'Flame sensors detect infrared radiation from fire.' },
+  { q: 'A stepper motor is used when', opts: ['Rotation in steps is required', 'Gas detection is needed', 'Temperature must be sensed', 'Light measurement is needed'], ans: 0, exp: 'Stepper motors move in precise step angles.' },
+  { q: 'Which sensor detects sound levels?', opts: ['BMP180', 'Sound sensor', 'Ultrasonic', 'Gyroscope'], ans: 1, exp: 'Sound sensors detect audio intensity levels.' },
+  { q: 'The BMP180 sensor is used for', opts: ['Gas detection', 'Altitude and pressure', 'Vibration measurement', 'Light sensing'], ans: 1, exp: 'BMP180 measures atmospheric pressure and altitude.' },
+  { q: 'A water level sensor is used to', opts: ['Monitor humidity', 'Detect water depth or presence', 'Measure gas', 'Control motor speed'], ans: 1, exp: 'It detects the level or presence of water.' },
+  { q: 'Which of the following is a digital sensor?', opts: ['LDR', 'Thermistor', 'DHT22', 'Load cell'], ans: 2, exp: 'DHT22 provides digital temperature and humidity data.' },
+  { q: 'The IR sensor mainly detects', opts: ['Infrared radiation and object presence', 'Temperature', 'Water flow', 'Gas leakage'], ans: 0, exp: 'IR sensors detect objects using infrared light reflection.' },
+  { q: 'A relay can be classified as', opts: ['Input sensor', 'Output actuator', 'Storage device', 'Power supply'], ans: 1, exp: 'Relays control high-power devices as outputs.' },
+  { q: 'Which sensor is suitable for soil moisture measurement?', opts: ['PIR', 'Capacitive soil moisture sensor', 'MQ-135', 'Ultrasonic'], ans: 1, exp: 'It measures moisture content in soil.' },
+  { q: 'A vibration sensor is used for', opts: ['Detecting movement in machines', 'Measuring humidity', 'Reading light intensity', 'Checking pressure'], ans: 0, exp: 'Vibration sensors detect machine movement or shock.' },
+  { q: 'A photodiode is primarily used for', opts: ['Gas detection', 'Light sensing', 'Sound detection', 'Temperature measurement'], ans: 1, exp: 'Photodiodes convert light into electrical current.' },
+  { q: 'Which of these is an example of an actuator used in home automation?', opts: ['Ultrasonic sensor', 'Electric door lock', 'Gas sensor', 'DHT11'], ans: 1, exp: 'Electric locks physically control access, making them actuators.' },
+  { q: 'A flow sensor is used to measure', opts: ['Gas', 'Fluid movement', 'Sound', 'Pressure'], ans: 1, exp: 'Flow sensors are used to measure the flow rate of liquids or gases.' },
+  { q: 'The role of an actuator in IoT is to', opts: ['Process data', 'Sense environmental changes', 'Perform an action based on input', 'Store cloud information'], ans: 2, exp: 'Actuators convert electrical signals into physical actions like turning motors or opening valves.' },
+  { q: 'Which sensor is commonly used in IoT-based weather monitoring systems?', opts: ['PIR sensor', 'DHT22', 'Ultrasonic sensor', 'Relay'], ans: 1, exp: 'DHT22 is used to measure temperature and humidity in weather monitoring systems.' },
+  { q: 'Which actuator is used to control water flow in smart irrigation systems?', opts: ['Servo motor', 'Solenoid valve', 'LDR', 'Gyroscope'], ans: 1, exp: 'Solenoid valves control water flow automatically in irrigation systems.' },
+  { q: 'A Hall Effect sensor is used to measure', opts: ['Temperature', 'Magnetic field', 'Humidity', 'Sound'], ans: 1, exp: 'Hall Effect sensors detect magnetic fields and are used in position and speed detection.' },
+  { q: '5G networks are mainly designed to support', opts: ['Only voice calls', 'Low-speed IoT devices', 'High-speed, low-latency communication', 'Cable TV signals'], ans: 2, exp: '5G is designed for ultra-fast communication with minimal delay.' },
+  { q: 'Which of the following is a key characteristic of 5G?', opts: ['High latency', 'Low bandwidth', 'Ultra-low latency', 'Limited connectivity'], ans: 2, exp: '5G reduces delay to milliseconds enabling real-time applications.' },
+  { q: '5G supports IoT using which feature?', opts: ['Massive machine-type communication (mMTC)', 'Dial-up networking', 'USB connections', 'Satellite TV signals'], ans: 0, exp: 'mMTC allows millions of IoT devices to connect simultaneously.' },
+  { q: 'One important application area of 5G-IoT is', opts: ['Remote surgery', 'Smart cities', 'Paper printing', 'Manual farming'], ans: 1, exp: '5G enables smart city applications like traffic control and monitoring systems.' },
+  { q: '5G can support up to', opts: ['Dozens of devices', '100 devices', 'Millions of devices per square kilometre', 'Only one device per household'], ans: 2, exp: '5G is designed for ultra-dense device connectivity.' },
+  { q: 'Which frequency band is commonly used in 5G?', opts: ['Static channels', '700 MHz - 52 GHz', '10-20 kHz', 'Satellite radio'], ans: 1, exp: '5G operates across low, mid, and high frequency bands.' },
+  { q: 'Which characteristic of 5G enables real-time IoT operations?', opts: ['Router', 'Low latency', 'Application Server', 'Satellite radio'], ans: 1, exp: 'Low latency enables real-time communication in IoT applications.' },
+  { q: 'An example of extreme real-time communication using 5G is', opts: ['File transfer', 'Remote surgery', 'Email sending', 'Social media browsing'], ans: 1, exp: 'Remote surgery requires ultra-low latency and high reliability.' },
+  { q: '5G IoT applications in transportation include', opts: ['Self-driving cars', 'Typewriters', 'Postal mail', 'Bicycle sensors only'], ans: 0, exp: '5G enables autonomous vehicles through fast communication.' },
+  { q: 'Next Generation Network (NGN) is primarily based on', opts: ['Circuit-switching', 'Packet-switched IP networks', 'Morse code', 'Analog communication'], ans: 1, exp: 'NGN uses IP-based packet switching for all services.' },
+  { q: 'NGN is designed to integrate', opts: ['Only audio communication', 'Multiple services like voice, video, and data', 'Only video streaming', 'Only SMS services'], ans: 1, exp: 'NGN combines all communication services into one network.' },
+  { q: 'A key feature of NGN is', opts: ['Service independence from the network', 'Limited bandwidth', 'Analog interface', 'No mobility support'], ans: 0, exp: 'Services are independent of underlying infrastructure in NGN.' },
+  { q: 'Which functional block of NGN controls call setup and teardown?', opts: ['Media Gateway', 'Media Gateway Controller', 'Application Server', 'Router'], ans: 1, exp: 'MGC manages call control and signaling.' },
+  { q: 'Media Gateway in NGN is responsible for', opts: ['Converting media streams between networks', 'Performing user authentication', 'Controlling billing', 'Handling email traffic'], ans: 0, exp: 'It connects different network types like PSTN and IP.' },
+  { q: 'The Application Server in NGN provides', opts: ['Power supply', 'Service logic and applications', 'Radio frequency', 'Sensor data'], ans: 1, exp: 'It runs service-based applications for users.' },
+  { q: 'Which component translates between IP and PSTN networks?', opts: ['Media Gateway', 'Router', 'GPS module', 'Application Server'], ans: 0, exp: 'It enables communication between IP and traditional telephony.' },
+  { q: 'NGN architecture supports mobility using', opts: ['Circuit switching', 'Packet routing', 'SMS center', 'Analog lines'], ans: 1, exp: 'Packet switching enables flexible mobility support.' },
+  { q: 'Which of these is a benefit of 5G in IoT applications?', opts: ['Slow response time', 'Reduced device density', 'Massive connectivity', 'Weak security'], ans: 2, exp: '5G supports huge number of connected IoT devices.' },
+  { q: 'The part of NGN that handles service creation is', opts: ['Media Gateway', 'Application Server', 'PSTN switch', 'Antenna'], ans: 1, exp: 'It defines and executes services.' },
+  { q: '5G enables ultra-reliable communication also known as', opts: ['URLLC', 'VoIP', 'PDF files', 'Bluetooth'], ans: 0, exp: 'URLLC ensures ultra-reliable low latency communication.' },
+
+];
+
+    // --- Shuffle helper ---
+    function shuffle(arr) {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    // Randomize question order; also randomize each question's option order
+    // and track where the correct answer ended up.
+    const shuffledQuestions = shuffle(quizData).map(item => {
+        const correctText = item.opts[item.ans];
+        const shuffledOpts = shuffle(item.opts);
+        const newAnsIndex = shuffledOpts.indexOf(correctText);
+        return { ...item, opts: shuffledOpts, ans: newAnsIndex, correctText };
+    });
+
+    const qList = document.getElementById('questions-list');
+
+    // Build quiz
+    shuffledQuestions.forEach((item, i) => {
+        const div = document.createElement('div');
+        div.className = 'q-block';
+        div.innerHTML = `
+            <div class="q-number">Question ${i + 1} of ${shuffledQuestions.length}</div>
+            <span class="q-text">${item.q}</span>
+            ${item.opts.map((o, oi) => `
+                <input type="radio" name="q${i}" id="q${i}o${oi}" value="${oi}">
+                <label class="opt-label" for="q${i}o${oi}">
+                    <span class="radio-dot"></span>${o}
+                </label>
+            `).join('')}
+        `;
+        qList.appendChild(div);
+    });
+
+    // Progress bar
+    shuffledQuestions.forEach((_, i) => {
+        qList.querySelectorAll(`input[name="q${i}"]`).forEach(radio => {
+            radio.addEventListener('change', updateProgress);
+        });
+    });
+
+    function updateProgress() {
+        const answered = shuffledQuestions.filter((_, i) =>
+            document.querySelector(`input[name="q${i}"]:checked`)
+        ).length;
+        document.getElementById('progress').style.width = `${(answered / shuffledQuestions.length) * 100}%`;
+    }
+
+    function processQuiz() {
+        let score = 0;
+        const expList = document.getElementById('explanations-list');
+        expList.innerHTML = '';
+
+        // Results shown in the same shuffled order as the quiz
+        shuffledQuestions.forEach((item, i) => {
+            const selected = document.querySelector(`input[name="q${i}"]:checked`);
+            const userVal = selected ? parseInt(selected.value) : null;
+            const isCorrect = userVal === item.ans;
+            if (isCorrect) score++;
+
+            const card = document.createElement('div');
+            card.className = 'review-card';
+            card.style.animationDelay = `${i * 0.07}s`;
+
+            let userRow = '';
+            if (userVal !== null && !isCorrect) {
+                userRow = `
+                    <div class="answer-row wrong">
+                        <div class="answer-meta">Your Answer</div>
+                        <div class="answer-text">${item.opts[userVal]}</div>
+                    </div>
+                `;
+            }
+
+            card.innerHTML = `
+                <span class="q-text">${i + 1}. ${item.q}</span>
+                ${userRow}
+                <div class="answer-row correct">
+                    <div class="answer-meta">Correct Answer</div>
+                    <div class="answer-text">${item.correctText}</div>
+                </div>
+                <div class="explanation">${item.exp}</div>
+            `;
+            expList.appendChild(card);
+        });
+
+        document.getElementById('quiz-ui').style.display = 'none';
+        document.getElementById('review-section').style.display = 'block';
+
+        const pct = Math.round((score / shuffledQuestions.length) * 100);
+        document.getElementById('final-score').innerHTML = `
+            <span class="score-val">${score} / ${shuffledQuestions.length}</span> correct &nbsp;·&nbsp; ${pct}%
+        `;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+</body>
+</html>
